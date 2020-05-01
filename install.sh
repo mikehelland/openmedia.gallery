@@ -3,6 +3,11 @@ echo IMPORTANT! This requires Postgresql 9.4 or later!
 echo This will install Postgresql if there isn't a version installed
 echo But you should check to see if it's 9.4 or later
 
+
+read -p "Enter a DATABASE NAME [omg_db]: " name
+name=${name:-omg_db}
+export OMG_DB_NAME=$name
+
 echo "Give a db password"
 read -s password
 export OMG_DB_PW=$password
