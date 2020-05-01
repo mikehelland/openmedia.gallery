@@ -9,7 +9,7 @@ export OMG_DB_PW=$password
 
 which psql
 if [ "$?" -gt "0" ]; then
-  ./install_database.sh
+  sudo apt install postgresql postgresql-contrib
 else
   echo "Postgresql is installed. Hopefully 9.4 or later!"
 fi
