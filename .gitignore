@@ -1,0 +1,9 @@
+*~
+.*
+node_modules/
+!.gitignore
+nbproject/
+/nbproject/private/
+www/soundsets.json
+www/preview/*
+*.pem

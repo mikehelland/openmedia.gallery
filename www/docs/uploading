@@ -1,0 +1,41 @@
+<p>
+OMG can use audio samples from anywhere on the Internet. You can:
+</p>
+
+<ul>
+   <li>Use URLs from your own website</li>
+   <li>Use a file-sharing site with public URLs</li>
+   <li>Upload directly to OMG</li>
+</ul>
+
+<p>Every user automatically gets <b>2 mb</b> of storage on OMG.</p>
+
+<p>That doesn't sound like much, but for short MP3 samples like a a snare drum, it's more than it seems.</p>
+
+<!--<div class="main-separator"></div>
+
+<div id="upload-usage">
+   <p>You are using <span id="upload-usage-stats"></span></p>
+   <p>To upload audio samples, <a href="/soundset-editor.htm">make a Sound Set</a></p>
+</div>
+
+<p id="not-logged-in"></p>
+
+   </div>
+
+
+   <script src="/js/usercontrols.js"></script>
+   <script src="/js/omgservice.js"></script>
+   <script>
+   var userControls = document.getElementsByClassName("title-bar-user-controls")[0]
+   setupUserControls(userControls, (user) => {
+         document.getElementById("not-logged-in").style.display = "none"
+         document.getElementById("upload-usage-stats").innerHTML = 
+               "<b>" + omg.util.getFileSizeCaption(user.uploaded_bytes) + "</b> of <b>" +
+               omg.util.getFileSizeCaption(user.upload_limit) + "</b>"
+   }, () => {
+      document.getElementById("upload-usage").style.display = "none"
+      document.getElementById("not-logged-in").innerHTML = userControls.innerHTML
+   });
+   </script>
+-->

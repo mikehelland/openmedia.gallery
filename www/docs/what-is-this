@@ -1,0 +1,58 @@
+   <style>
+   .main-column {
+      padding-top:0px;
+      padding-left:0px;
+      padding-right:0px;
+   }
+   .panel-content {
+      font-size:110%;
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 840px;
+      margin:auto;
+      padding:16px;
+   }
+   #panel-what-is-open-music {
+      background-color: #DDDDDD;
+   }
+   #panel-how-it-works {
+      background-color: #CCCCCC;
+   }
+   .doc-header {display:none;}
+   </style>
+   
+<div id="panel-what-is-omg">
+   <div class="panel-content">
+      <h3>What is OpenMusic.Gallery?</h3>
+      <p>OpenMusic.Gallery is a platform for making and sharing <b>open music</b>.</p>
+            
+   </div>            
+</div>
+
+<div id="panel-what-is-open-music">
+      <div class="panel-content">
+   
+         <h3>What is "open music"?</h3>
+         <p>Like open source software, but applied to music. <b>Open music</b> comes with its "source code".</p>
+         <p>You can change the tempo, the key, the levels, the FX, and the individual notes.</p>
+      </div>            
+</div>
+   
+
+<div id="panel-how-it-works">
+   <div class="panel-content">
+      <h3>How does it work?</h3>
+
+      <p>Sound files on the Internet can be arranged into drumbeats and melodies, which 
+         can be combined to make larger works of music. 
+      </p>
+      <div id="drum-example"></div>
+
+      <p>You can click "Remix" on anything in the gallery to make your own version.</p>
+   </div>
+</div>
+
+<div>
+      <div class="panel-content">
+      <h3><a target="_out" href="https://www.youtube.com/watch?v=g8QuIWtXTzs">VIDEO: An Overview of OpenMusic.Gallery</a></h3>
+      </div>
+</div>

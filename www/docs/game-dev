@@ -1,0 +1,66 @@
+   <style>
+       pre {font-size:1.5em;}
+       .string {color:red;}
+       .comment {color:blue;}
+   </style>
+
+<h3><a target="_out" href="https://www.youtube.com/watch?v=TXpPFBkpXp0">WATCH: Video Tutorial: Add original music to your game in minutes</a></h3>		
+<p>
+Adding music and sounds to your game is easy with OpenMusic.Gallery. Just add a few lines of code.
+</p>
+
+<h4>In your HTML:</h4>
+
+<pre>
+     &lt;script src=<span class="string">"https://openmusic.gallery/omg.js"</span>>&lt;/script>
+</pre>
+
+<h4>When the game is loading:</h4>
+
+<pre>
+     var music = new OMusicPlayer()
+     music.prepareSongFromURL(<span class="string">"http://openmusic.gallery/data/1333"</span>)
+     var laserSound = music.getSound(<span class="string">"SFX"</span>, <span class="string">"laser"</span>)
+
+</pre>
+
+<h4>When the game starts:</h4>
+
+<pre>
+     music.play()
+</pre>
+
+<h4>When the laser is fired:</h4>
+
+<pre>
+     laserSound.play()
+</pre>
+
+<h4>Increase BPM and key when difficulty increases:</h4>
+
+<pre>
+     music.beatParams.bpm += <span class="string">20</span>
+
+     music.keyParams.rootNote += <span class="string">1</span>
+     music.rescaleSong()
+</pre>
+
+<h4>When a boss character shows up:</h4>
+    
+<pre>
+    <span class="comment">// boss enters</span>
+    music.mutePart(<span class="string">"Boss"</span>, false);
+    
+    <span class="comment">// boss exits</span>
+    music.mutePart(<span class="string">"Boss"</span>, true);
+</pre>
+
+
+<h4>When the game ends:</h4>
+
+<pre>
+     music.stop()
+</pre>
+
+   </div>
+
