@@ -45,6 +45,11 @@ module.exports.listen = function () {
         console.log(`port ${httpPort} yo`);
     });
 
+    if (!fs.existsSync("privkey.pem") || !fs.existsSync("fullchain.pem")) {
+        console.log("did not create https server: missing ./fullchain.pem && ./privkey.pem");
+        return
+    }
+
     try {
         var options = {
             key: fs.readFileSync('privkey.pem'),

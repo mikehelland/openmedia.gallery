@@ -14,6 +14,6 @@ require("./server/database")(app)
 
 listen()
 
-// setupSockets
+require("./server/sockets")(httpsServer)
 
 //var viewer = require("./viewer.js");
