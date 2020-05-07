@@ -109,7 +109,7 @@
 
     <header>
         <span class="main-nav-drawer-icon">&#9776;</span>
-        <a href="/"><span class="main-title-open">Open</span><span class="main-title-media">Media</span><span class="main-title-gallery">.Gallery</span></a>
+        <a id="main-header-link" href="/"><span class="main-title-open">Open</span><span class="main-title-media">Media</span><span class="main-title-gallery">.Gallery</span></a>
         <div class="title-bar-user-controls"></div>
     </header>
     <div class="header-shadow">&nbsp;</div>
@@ -157,8 +157,6 @@
     <div class="now-playing">
         <div class="now-playing-caption">Preview: <span id="now-playing-title"></span><br></div>
         <div id="welcome-panel">
-            <p>OMG! <i><b>You</b></i> control the mix!</p>
-            <p>Play something, and remix it here.</p>
 
         </div>
         <!-- FOUC on firefox <iframe id="gauntlet"></iframe>-->
@@ -175,6 +173,8 @@
     <script src="js/usercontrols.js"></script>
     <script src="js/search.js"></script>
 <script>
+document.getElementById("main-header-link").innerHTML = window.location.hostname
+document.title = window.location.hostname
 setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
 
 

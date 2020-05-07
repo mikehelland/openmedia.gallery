@@ -160,7 +160,8 @@ module.exports = (app) => {
             if (err) {
             res.send(err);
             } else {
-            res.send(viewer(docs[0]));
+            //todo res.send(viewer(docs[0]));
+            res.send("todo")
             }
         });
     });
