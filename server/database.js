@@ -8,9 +8,12 @@ module.exports = function (app) {
         console.log("ok.");    
     }
     catch (excp) {
-        console.log(excp.error);
-        console.log(`COULD NOT CONNECT TO DATABASE! Did you run ./install.sh? Check:
-    
+        console.log(excp);
+        console.log(`COULD NOT CONNECT TO DATABASE! 
+        
+        Run with ./runomg.sh
+
+        Check:
         1. OMG_DB_NAME environment variable is set          export OMG_DB_NAME=name
         2. OMG_DB_PW environment variable is set            export OMG_DB_PW=password
         3. Make sure Postgresql 9.4 or later is installed   sudo apt install postgresql postgresql-contrib        

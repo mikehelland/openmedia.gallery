@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin:0px;
+            padding:0px;
+        }
+        canvas {
+            position:absolute;
+            height:100%;
+            width:100%;
+            background-color: black;
+            left:0px;
+            top:35px;
+        }
+        #characters-spritesheet {
+            display:none;
+        }
+        #tools {
+            padding:2px;
+            position:fixed;
+            top:35px;
+            left:0px;
+            width:75px;
+            background-color: #999999;
+            height:100%;
+        }
+        #tools input {
+            width:60px;
+        }
+        #tools img {
+            margin: 2px;
+            width:32px;
+            height:32px;
+        }
+        #tools img.selected {
+            margin: 0px;
+            border: 2px solid white;
+            width:32px;
+            height:32px;
+        }
+
+        #main-menu {
+            padding:2px;
+            position:fixed;
+            top:0px;
+            left:0px;
+            width:100%;
+            background-color: #999999;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <canvas id="mainCanvas"></canvas>
+
+    <div id="main-menu">
+        Map Name: <input id="map-name"> <button id="save-button">Save</button>
+
+    </div>
+
+    <script src="/js/omgservice.js"></script>
+    <script src="map-editor.js"></script>
+    <script>
+
+        var widthInput = document.getElementById('map-width-input')
+        var heightInput = document.getElementById('map-height-input')
+        var tilesizeInput = document.getElementById('map-tile-size-input')
+
+        var canvas = document.getElementById("mainCanvas")
+
+        var editor = new OMGMapEditor(canvas)
+        editor.readOnly = true
+
+        var params = omg.util.getPageParams()
+        if (params.id) {
+            omg.server.getId(params.id, data => {
+                editor.load(data)
+            })
+        }
+
+        setTimeout(function () {
+            editor.draw()
+        }, 2000)
+        
+    
+    </script>
+
+
+    
+    <img id="characters-spritesheet" src="img/characters_alpha.gif">
+    
+    
+</body>
+</html>

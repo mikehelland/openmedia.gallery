@@ -1,0 +1,5 @@
+{
+    "types": ["TILESET"],
+    "editor": "editor.htm",
+    "viewer": "viewer.htm"
+}
