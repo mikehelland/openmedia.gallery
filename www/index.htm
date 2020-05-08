@@ -213,6 +213,22 @@ fp.nowPlaying = document.getElementsByClassName("now-playing")[0]
 
 fp.searchParams.viewerParams = {}
 fp.searchParams.viewerParams.useExternalPlayer = true
+
+fp.searchParams.viewerParams.onclickcontent = viewer => {
+    if (!fp.iframe) {
+        var welcome = document.getElementById("welcome-panel")
+        fp.iframe = document.createElement("iframe")
+        fp.nowPlaying.appendChild(fp.iframe)
+        
+        welcome.style.display = "none"
+        fp.iframe.style.display = "block"
+    }
+
+    fp.iframe.src = viewer.viewerURL + "?id=" + viewer.data.id
+    fp.lastViewer = viewer
+    
+}
+
 fp.searchParams.viewerParams.onplaybuttonclick = function (viewer) {
 
     if (!fp.iframe) {

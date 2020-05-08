@@ -56,25 +56,28 @@ function OMGEmbeddedViewer(params) {
 };
 
 OMGEmbeddedViewer.prototype.setupControls = function (params) {
-    
     this.div.style.position = "relative";
-    
+
     this.makeTopRow()
 
-    var br = document.createElement("br");
-    this.div.appendChild(br);
-
+    //the guts
     this.embedDiv = document.createElement("div")
     this.embedDiv.style.height = (params.height || 150) + "px";
     this.embedDiv.style.overflow = "hidden"
+    this.embedDiv.style.cursor = "pointer"
+    this.embedDiv.onclick = e => {
+        if (this.params.onclickcontent) {
+            this.params.onclickcontent(this)
+        }    
+    }
     this.div.appendChild(this.embedDiv);
 
-    this.makeBottomRow()    
 
+    this.makeBottomRow()    
 };
 
 
-
+OMGEmbeddedViewer.prototype.onclickcontent = function () {}
 
 OMGEmbeddedViewer.prototype.makeTipJar = function () {
     var url = 'bitcoin:' + (this.data.btc_address || '37WEyjvqgY6mEZDMiSTN11YWy5BYP8rP6e') + '?amount=0.00100000&label=OMG%20Tip%20Jar';
