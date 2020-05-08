@@ -14,15 +14,6 @@ function OMGMapEditor (canvas) {
 OMGMapEditor.prototype.loadTileSet = function (tileSet) {
     this.tileListDiv = document.getElementById("tile-list")
 
-    if (tileSet.url && !tileSet.tileCodes) {
-        omg.server.getHTTP(tileSet.url, data => {
-            data.url = tileSet.url
-            this.map.tileSet = data
-            this.loadTileSet(this.map.tileSet)
-        })
-        return
-    }
-
     Object.keys(tileSet.tileCodes).forEach(key => {
         var img = document.createElement("img")
         img.src = tileSet.prefix + tileSet.tileCodes[key] + tileSet.postfix

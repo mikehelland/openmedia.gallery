@@ -56,13 +56,8 @@
     
     <canvas id="mainCanvas"></canvas>
 
-    <div id="main-menu">
-        Map Name: <input id="map-name"> <button id="save-button">Save</button>
-
-    </div>
-
     <script src="/js/omgservice.js"></script>
-    <script src="map-editor.js"></script>
+    <script src="embed.js"></script>
     <script>
 
         var widthInput = document.getElementById('map-width-input')
@@ -71,7 +66,7 @@
 
         var canvas = document.getElementById("mainCanvas")
 
-        var editor = new OMGMapEditor(canvas)
+        var editor = new OMGEmbeddedViewerMAP(canvas)
         editor.readOnly = true
 
         var params = omg.util.getPageParams()
