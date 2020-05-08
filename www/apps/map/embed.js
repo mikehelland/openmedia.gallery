@@ -34,7 +34,6 @@ OMGEmbeddedViewerMAP.prototype.loadTileSet = function (tileSet) {
     Object.keys(tileSet.tileCodes).forEach(key => {
         var img = document.createElement("img")
         img.src = (tileSet.prefix || "") + tileSet.tileCodes[key] + (tileSet.postfix || "")
-        console.log("load", img.src)
         img.onload = e => this.draw()
         this.img.tiles[key] = img
         if (this.tileListDiv) {
