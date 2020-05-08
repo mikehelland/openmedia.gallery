@@ -74,7 +74,7 @@ if (!params.id) {
         deleteButton.style.visibility = "visible";
         var editButton = document.getElementById("edit-button");
         editButton.onclick = function () {
-            window.location = "soundset-editor.htm?id=" + params.id;
+            window.location = "editor.htm?id=" + params.id;
         };
         editButton.style.visibility = "visible";
         if (!response.approved) {
@@ -104,21 +104,21 @@ if (!params.id) {
         var prefix = response.prefix || "";
         var postfix = response.postfix || "";
         var newDiv;
-        for (var i = 0; i < response.data.length; i++) {
+        for (var code in response.tileCodes) {
             newDiv = document.createElement("div");
             newDiv.className = "item";
-            var data = response.data[i];
-            newDiv.innerHTML = "<img src='" + prefix + data.url + postfix +
-                    "'>" + " - " + data.name +
-                    " - <a href='" + prefix + data.url + postfix +
-                    "'>" + data.url + "</a>";
+            var data = response.tileCodes[code];
+            newDiv.innerHTML = "<img src='" + prefix + data + postfix +
+                    "'>" + " - " + code +
+                    " - <a href='" + prefix + data + postfix +
+                    "'>" + data + "</a>";
             itemList.appendChild(newDiv);
         }
 
         setupUserControls(
             document.getElementsByClassName("title-bar-user-controls")[0],
             function () {
-                if (typeof omg !== "undefined" && omg.user && omg.user.admin) {
+                if (!params.mini && typeof omg !== "undefined" && omg.user && omg.user.admin) {
                     setupAdminButtons(response);
                 }
             }

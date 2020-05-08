@@ -77,13 +77,14 @@
 
         <script src="/js/omgservice.js"></script>
         <script>
+
 var inputsDiv = document.getElementById("inputs")
 var inputs = {name: document.getElementById("set-name"),
     data: [],
     prefix: document.getElementById("url-prefix"),
     postfix: document.getElementById("url-postfix")
 };
-var set = {data: []}
+var set = {}
 set.type = "TILESET"
 set.omgVersion = 1
 var autoPrefix
@@ -113,23 +114,23 @@ var setInputs = (data) => {
 var setList = (data) => {
     inputsDiv.innerHTML = ""
     inputs.data = []
-    for (var i = 0; i < data.data.length; i++) {
-        makeListItem(data.data[i])
-    }
 
+    for (var code in data.tileCodes) {
+        makeListItem(code, data.tileCodes[code])
+    }
 }
 
-var makeListItem = (data) => {
+var makeListItem = (code, data) => {
     var div = document.createElement("div")
-    div.innerHTML = "Sound " + (inputs.data.length + 1) + " Name: "
+    div.innerHTML = "Item " + (inputs.data.length + 1) + " Code: "
     var nameInput = document.createElement("input")
-    nameInput.value = data.name
+    nameInput.value = code
     div.appendChild(nameInput)
     var caption = document.createElement("span")
     caption.innerHTML = "URL: "
     div.appendChild(caption)
     var urlInput = document.createElement("input")
-    urlInput.value = data.url
+    urlInput.value = data
     div.appendChild(urlInput)
     inputsDiv.appendChild(div)
     var statusDiv = document.createElement("span")
@@ -141,12 +142,12 @@ var makeListItem = (data) => {
             var filename;
             filename = e.clipboardData.getData("Text");
 
-             nameInput.value = makeSoundName(filename)
+             nameInput.value = makeSoundName(filename) //todo
              data.name = nameInput.value
         }
     }, false);
-    urlInput.onchange = ()=>data.url = urlInput.value
-    nameInput.onchange = ()=>data.name = nameInput.value
+    //urlInput.onchange = ()=>data.url = urlInput.value
+    //nameInput.onchange = ()=>data.name = nameInput.value
 
     var el = document.createElement("div")
     el.innerHTML = "&times;"
@@ -180,9 +181,7 @@ var makeListItem = (data) => {
 }
 
 document.getElementById("add-item").onclick = ()=>{
-    var newData = {url:"",name:""}
-    makeListItem(newData)
-    set.data.push(newData)
+    makeListItem("", "")
 }
 
 var makeSoundName = (filename) => {
@@ -218,8 +217,7 @@ dropZone.ondrop = (e) => {
         }
         var statusDiv = makeListItem(sound)
         statusDiv.innerHTML = "Uploading..."
-        set.data.push(sound)
-
+        
         var fd = new FormData();
         fd.append('setId', set.id);
         fd.append('file', file);
@@ -250,7 +248,7 @@ dropZone.ondrop = (e) => {
 
 document.getElementById("submit-button").onclick = function () {
     console.log("1", set.id)
-    if (!inputs.name.value || set.data.length == 0) {
+    if (!inputs.name.value || inputs.data.length == 0) {
         alert("set needs a name, and a sound with a caption and url.")
         return
     }
@@ -272,8 +270,8 @@ var submit = (cb) => {
     postData.omgVersion = 1
     
     postData.tileCodes = {}
-    set.data.forEach(item => {
-        postData.tileCodes[item.name] = item.url
+    inputs.data.forEach(item => {
+        postData.tileCodes[item.nameInput.value] = item.urlInput.value
     })
 
     omg.server.post(postData, function (response) {

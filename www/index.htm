@@ -171,7 +171,6 @@
 
 
     <script src="js/usercontrols.js"></script>
-    <script src="js/search.js"></script>
 <script>
 document.getElementById("main-header-link").innerHTML = window.location.hostname
 document.title = window.location.hostname
@@ -191,7 +190,7 @@ fp.search = function () {
     fp.searchParams.sort = fp.searchSort.value
     fp.searchParams.users = fp.searchUser.value
     fp.searchParams.q = fp.searchTerms.value
-    omg.search(fp.searchParams);
+    omg.search(fp.searchParams, true);
 };
 
 fp.searchType = document.getElementById("search-type");

@@ -25,8 +25,10 @@ module.exports = function (app) {
                     url: "apps/" + app + "/" + manifest.editor}) 
                 types[type].viewers.push({name: manifest.name, 
                     url: "apps/" + app + "/" + manifest.viewer}) 
-                })
-
+                if (manifest.embed) {
+                    types[type].embed = "apps/" + app + "/" + manifest.embed
+                }
+            })
             console.log("Found app " + app)
         }
             

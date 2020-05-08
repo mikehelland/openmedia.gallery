@@ -100,6 +100,100 @@ omg.server.getTypes = function (callback) {
     omg.server.getHTTP("/types", callback);
 };
 
+/***
+ *  Handy search helper
+ */
+
+omg.search = function (params, loadSearchResults) {
+    var url = "/data/?"
+    if (params.q) {
+        url = url + "&q=" + params.q;
+        params.metaData = false //meta data doesn't come with text search
+    }
+    if (params.metaData) {
+        url = url + "&metaData=true"
+    }
+    if (params.type) {
+        url = url + "&type=" + params.type;
+    }
+    if (params.page) {
+        url = url + "&page=" + params.page;
+    }
+    if (params.user_id) {
+        url = url + "&user_id=" + params.user.id;
+    }
+    if (params.users) {
+        url = url + "&users=" + params.users;
+    }
+    if (params.sort) {
+        url = url + "&sort=" + params.sort;
+    }
+
+    omg.server.getHTTP(url, function (results) {
+        if (loadSearchResults === true) {
+            omg.loadSearchResults(params, results)
+        }
+    });
+    
+};
+
+omg.loadSearchResults = function (params, results) {
+
+    params.resultList.innerHTML = ""
+
+    if (params.page && params.page > 1 && !params.noNextPrev) {
+        var prevButton = document.createElement("button")
+        prevButton.innerHTML = "< Previous"
+        params.resultList.appendChild(prevButton)
+        prevButton.onclick = () => {
+            params.page -= 1
+            omg.search(params)
+        }
+    }
+
+    if (results.length === 0) {
+        return
+    }
+
+    results.forEach(function (result) {
+        var resultDiv = document.createElement("div");
+        resultDiv.className = "omg-viewer";
+        params.resultList.appendChild(resultDiv);
+
+        var viewerParams = params.viewerParams || {}
+        viewerParams.div = resultDiv
+        viewerParams.height = 80
+        viewerParams.onPlay = params.onPlay
+        viewerParams.onStop = params.onStop
+
+        if (params.metaData) {
+            viewerParams.data = result.body;
+            viewerParams.data.id = result.id
+        }
+        else {
+            viewerParams.data = result;
+        }
+        new OMGEmbeddedViewer(viewerParams);
+
+        resultDiv.onclick = function () {
+            var page;
+            if (result.type == "SOUNDSET") {
+                page = "soundset.htm";
+                window.location = page + "?id=" + result.id;
+            }
+        };
+   });
+
+    if (!params.noNextPrev) {
+        var nextButton = document.createElement("button")
+        nextButton.innerHTML = "Next >"
+        params.resultList.appendChild(nextButton)
+        nextButton.onclick = () => {
+            params.page = (params.page || 1) + 1
+            omg.search(params)
+        }    
+    }
+};
 
 /** 
  * Utility functions for the client

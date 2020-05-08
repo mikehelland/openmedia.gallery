@@ -56,9 +56,7 @@
    opacity:0.6;
 }
 .omg-thing-title {
-   top:7px;
-   left:55px;
-   position:absolute;
+   margin:5px;
 }
 .omg-thing-votes {
    margin:0 5px;
@@ -66,9 +64,9 @@
 .omg-thing-user {
    font-size:0.7em;
    font-style:italic;
-   top:27px;
+   /*top:27px;
    left:55px;
-   position:absolute;
+   position:absolute;*/
 }
 
 .omg-music-controls-button:active {
