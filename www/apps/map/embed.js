@@ -11,27 +11,30 @@ function OMGEmbeddedViewerMAP (data, div) {
     this.canvas.style.width = "100%"
     this.canvas.style.height = "100%"
     div.appendChild(this.canvas)
+    console.log("draw1")
     this.load(data)
+    console.log("draw2")
     this.draw()
+    console.log("draw3")
 }
 if (typeof omg === "object" && omg.types && omg.types["MAP"])
     omg.types["MAP"].embedClass = OMGEmbeddedViewerMAP
 
 OMGEmbeddedViewerMAP.prototype.loadTileSet = function (tileSet) {
-    this.tileListDiv = document.getElementById("tile-list")
 
-    if (tileSet.url && !tileSet.tileCodes) {
+    /*if (tileSet.url && !tileSet.tileCodes) {
         omg.server.getHTTP(tileSet.url, data => {
             data.url = tileSet.url
             this.map.tileSet = data
             this.loadTileSet(this.map.tileSet)
         })
         return
-    }
+    }*/
 
     Object.keys(tileSet.tileCodes).forEach(key => {
         var img = document.createElement("img")
-        img.src = tileSet.prefix + tileSet.tileCodes[key] + tileSet.postfix
+        img.src = (tileSet.prefix || "") + tileSet.tileCodes[key] + (tileSet.postfix || "")
+        console.log("load", img.src)
         img.onload = e => this.draw()
         this.img.tiles[key] = img
         if (this.tileListDiv) {

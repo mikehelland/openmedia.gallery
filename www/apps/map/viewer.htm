@@ -66,19 +66,17 @@
 
         var canvas = document.getElementById("mainCanvas")
 
-        var editor = new OMGEmbeddedViewerMAP(canvas)
-        editor.readOnly = true
-
+    
         var params = omg.util.getPageParams()
         if (params.id) {
             omg.server.getId(params.id, data => {
-                editor.load(data)
+                var editor = new OMGEmbeddedViewerMAP(data, canvas)        
+                setTimeout(function () {
+                    editor.draw()
+                }, 2000)
             })
         }
 
-        setTimeout(function () {
-            editor.draw()
-        }, 2000)
         
     
     </script>
