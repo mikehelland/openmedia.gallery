@@ -15,15 +15,13 @@ function OMGEmbeddedViewer(params) {
     if (this.data.type) {
         if (omg.types[this.data.type]) {//} && omg.types[this.data.type].embed) {
             this.type = omg.types[this.data.type]
-            this.editorURL = this.type.editors[0]
-            this.viewerURL = this.type.viewers[0]
+            this.editorURL = this.type.editors[0].url
+            this.viewerURL = this.type.viewers[0].url
 
             if (this.type.embed && !this.type.embedScriptTag) {
                 this.type.onready = []
                 this.type.embedScriptTag = document.createElement("script")
                 this.type.embedScriptTag.onload = e => {
-                    console.log("loaded")
-                    //this.type.embedClass = "OMGEmbeddedViewer" + this.data.type
                     this.type.onready.forEach(f => {
                         try {
                             f()
@@ -45,12 +43,11 @@ function OMGEmbeddedViewer(params) {
     if (!this.type.embedClass) {
         if (this.type.onready) {
             this.type.onready.push(() => {
-                console.log(this.type.embedClass)
                 this.embedViewer = new this.type.embedClass(this.data, this.embedDiv)
             })    
         }
         else {
-            this.embedDiv.innerHTML = JSON.stringify(this.data)
+            this.embedDiv.innerHTML = JSON.stringify(this.data).substr(0,64) + "..."
         }
     }
     else {
@@ -69,6 +66,7 @@ OMGEmbeddedViewer.prototype.setupControls = function (params) {
 
     this.embedDiv = document.createElement("div")
     this.embedDiv.style.height = (params.height || 150) + "px";
+    this.embedDiv.style.overflow = "hidden"
     this.div.appendChild(this.embedDiv);
 
     this.makeBottomRow()    

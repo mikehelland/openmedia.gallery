@@ -1,5 +1,4 @@
 function OMGEmbeddedViewerTILESET(data, div) {
-    console.log("yeeha")
     var prefix = data.prefix || "";
     var postfix = data.postfix || "";
     var newDiv;
