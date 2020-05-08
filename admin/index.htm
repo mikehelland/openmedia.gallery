@@ -14,4 +14,21 @@
             <li><a href="uploads.htm">Uploads</a></li>
             <li><a href="gallery-stats">Gallery Statistics</a></li>
         </ul>
+
+        <br>
+        <p>Post Raw:</p>
+        <textarea id="post-raw-input"></textarea>
+        <button id="post-raw-button">Post</button>
+        <script src="/js/omgservice.js"></script>
+        <script>
+        document.getElementById("post-raw-button").onclick = e => {
+            var text = document.getElementById("post-raw-input").value
+            try {
+                var json = JSON.parse(text)
+                omg.server.post(json, data => {
+                    window.location = "/data/" + data.id
+                })
+            } catch (e) {console.log(e)}
+        }
+        </script>
     </body>

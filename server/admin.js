@@ -2,7 +2,7 @@ module.exports = (app, express) => {
 
     app.use('/admin', function(req,res,next){
         if (!req.user) {
-            return res.redirect("/login.htm?fwd=%2fadmin" + encodeURIComponent(req.url));
+            return res.redirect("/signin.htm?fwd=%2fadmin" + encodeURIComponent(req.url));
         }
 
         if (req.user && req.user.admin) {

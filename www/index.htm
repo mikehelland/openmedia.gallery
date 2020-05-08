@@ -230,7 +230,6 @@ fp.searchParams.viewerParams.onplaybuttonclick = function (viewer) {
 }
 
 window.onload = function () {
-    fp.search()
 
     if (window.location.hash.length === 0 || window.location.hash === "#most-plays") {
     }
@@ -260,6 +259,8 @@ omg.server.getTypes(types => {
                 "' class='create-link'>" + type + "</a>"
         listEl.appendChild(editorLink)
     }
+    fp.search()
+
 })
 
 </script>
