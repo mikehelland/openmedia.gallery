@@ -1,5 +1,5 @@
 module.exports = (app, express) => {
-
+    const fs = require('fs')
     app.use('/admin', function(req,res,next){
         if (!req.user) {
             return res.redirect("/signin.htm?fwd=%2fadmin" + encodeURIComponent(req.url));
