@@ -16,7 +16,7 @@ OMGMapEditor.prototype.loadTileSet = function (tileSet) {
 
     Object.keys(tileSet.tileCodes).forEach(key => {
         var img = document.createElement("img")
-        img.src = tileSet.prefix + tileSet.tileCodes[key] + tileSet.postfix
+        img.src = (tileSet.prefix + "") + tileSet.tileCodes[key] + (tileSet.postfix || "")
         this.img.tiles[key] = img
         if (this.tileListDiv) {
             this.tileListDiv.appendChild(img)
