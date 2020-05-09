@@ -36,7 +36,8 @@ OMGMapEditor.prototype.load = function (map) {
     this.width = map.width 
     this.height = map.height
     this.mapLines = map.mapLines
-
+    this.nameInput.value = this.map.name
+    
     for (var i = 0; i < this.mapLines.length; i++) {
         if (this.mapLines[i].length < this.width) {
             this.mapLines[i] = this.mapLines[i].padEnd(this.width, " ")
@@ -113,13 +114,38 @@ OMGMapEditor.prototype.tileEvent = function (e) {
 }
 
 OMGMapEditor.prototype.setupControls = function () {
+    this.nameInput = document.getElementById("map-name")
+
     document.getElementById("save-button").onclick = () => {
-        this.map.name = document.getElementById("map-name").value
+        this.map.name = this.nameInput.value
         this.map.type = "MAP"
         this.map.omgVersion = 1
+
+        if (this.map.id) {
+            if (this.user && this.map.user_id === this.user.id) {
+                omg.ui.showDialog(document.getElementById("overwrite-or-new"))
+                return
+            }
+            else {
+                delete this.map.id
+            }
+        }
 
         omg.server.post(this.map, res => {
             window.location = "viewer.htm?id=" + res.id
         })
     }
+
+    document.getElementById("new-copy-button").onclick = e => {
+        delete this.map.id
+        omg.server.post(this.map, res => {
+            window.location = "viewer.htm?id=" + res.id
+        })
+    }
+    document.getElementById("overwrite-button").onclick = e => {
+        omg.server.post(this.map, res => {
+            window.location = "viewer.htm?id=" + res.id
+        })
+    }
+    omg.server.getHTTP("/user", user => this.user = user)
 }

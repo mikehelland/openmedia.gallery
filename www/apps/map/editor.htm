@@ -49,7 +49,13 @@
             width:100%;
             background-color: #999999;
         }
-
+        .dialog {
+            background-color: white;
+            border: 1px solid #808080;
+            border-radius: 3px;
+            display: none;
+            padding: 8px;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +82,14 @@
         <div id="character-list">
         </div>
       </div>
+
+    <div class="dialog" id="overwrite-or-new">
+        Do you want to overwrite or create a new copy?
+        <hr>
+        <button id="overwrite-button">Overwrite</button>
+        <br><br>
+        <button id="new-copy-button">New Copy</button>
+    </div>
 
     <script src="/js/omgservice.js"></script>
     <script src="map-editor.js"></script>
