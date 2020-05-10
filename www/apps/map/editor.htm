@@ -10,7 +10,6 @@
             position:absolute;
             height:100%;
             width:100%;
-            background-color: black;
             left:79px;
             top:35px;
         }
@@ -26,8 +25,8 @@
             background-color: #999999;
             height:100%;
         }
-        #tools input {
-            width:60px;
+        #tools select {
+            width:74px;
         }
         #tools img {
             margin: 2px;
@@ -39,6 +38,16 @@
             border: 2px solid white;
             width:32px;
             height:32px;
+        }
+
+        #npc-details {
+            padding:2px;
+            position:fixed;
+            top:35px;
+            right:0px;
+            width:150px;
+            background-color: #999999;
+            height:100%;
         }
 
         #main-menu {
@@ -56,32 +65,70 @@
             display: none;
             padding: 8px;
         }
+        #map-width-input, #map-height-input {
+            width: 30px;
+        }
+
+        #tile-highlight {
+            pointer-events: none;
+            border: 2px solid red;
+            position:absolute;
+            display: none;
+        }
+
+        .npc-tool-item {
+            border: 1px solid #00000000;
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 2px 0px;
+        }
+        .npc-tool-item:hover {
+            border: 1px solid black;
+        }
+
+        #tools button {
+            width:74px;
+        }
+        #character-list {
+            display:none;
+        }
     </style>
 </head>
 <body>
     
     <canvas id="mainCanvas"></canvas>
-
+    
     <div id="main-menu">
-        Map Name: <input id="map-name"> <button id="save-button">Save</button>
+        Map Name: <input id="map-name"> Size: <input id="map-width-input">&times;<input id="map-height-input">
+        <button id="save-button">Save</button>
 
     </div>
 
     <div id="tools">
-        <input id="map-width-input">
-        <br>
-        &times; 
-        <br>
-        <input id="map-height-input">
-        <br>
-        <input id="map-tile-size-input">
+        
+        <select id="tool-box-select">
+            <option>Tiles</option>
+            <option>NPCs</option>
+            <option>HTML</option>
+        </select>
         <hr>
         <div id="tile-list">          
         </div>
-        <hr>
         <div id="character-list">
+            <button id="add-npc-button">+Add</button>
+            <hr>
         </div>
-      </div>
+    </div>
+
+    <div id="npc-details">
+        <img>
+        <input id="npc-details-name"></input>
+        <hr>
+        Dialog:
+        <div id="npc-details-dialog"></div>
+        <button id="npc-details-dialog-add-button">Add Dialog</button>
+    </div>
 
     <div class="dialog" id="overwrite-or-new">
         Do you want to overwrite or create a new copy?
@@ -91,6 +138,7 @@
         <button id="new-copy-button">New Copy</button>
     </div>
 
+    <div id="tile-highlight"></div>
     <script src="/js/omgservice.js"></script>
     <script src="map-editor.js"></script>
     <script>
