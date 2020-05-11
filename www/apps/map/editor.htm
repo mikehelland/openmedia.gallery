@@ -6,7 +6,7 @@
             margin:0px;
             padding:0px;
         }
-        canvas {
+        #back-canvas, #front-canvas {
             position:absolute;
             height:100%;
             width:100%;
@@ -48,6 +48,7 @@
             width:150px;
             background-color: #999999;
             height:100%;
+            display:none;
         }
 
         #main-menu {
@@ -93,11 +94,21 @@
         #character-list {
             display:none;
         }
+
+        #npc-dialog-input {
+            height:200px;
+        }
+        #npc-details-canvas {
+            width: 32px;
+            height:32px;
+
+        }
     </style>
 </head>
 <body>
     
-    <canvas id="mainCanvas"></canvas>
+    <canvas id="back-canvas"></canvas>
+    <canvas id="front-canvas"></canvas>
     
     <div id="main-menu">
         Map Name: <input id="map-name"> Size: <input id="map-width-input">&times;<input id="map-height-input">
@@ -122,12 +133,13 @@
     </div>
 
     <div id="npc-details">
-        <img>
+        <canvas id="npc-details-canvas"></canvas>
         <input id="npc-details-name"></input>
         <hr>
         Dialog:
         <div id="npc-details-dialog"></div>
-        <button id="npc-details-dialog-add-button">Add Dialog</button>
+        <!--<button id="npc-details-dialog-add-button">Add Dialog</button>-->
+        <textarea id="npc-dialog-input"></textarea>
     </div>
 
     <div class="dialog" id="overwrite-or-new">
@@ -161,9 +173,10 @@
         var heightInput = document.getElementById('map-height-input')
         var tilesizeInput = document.getElementById('map-tile-size-input')
 
-        var canvas = document.getElementById("mainCanvas")
+        var canvas = document.getElementById("back-canvas")
+        var canvas2 = document.getElementById("front-canvas")
 
-        var editor = new OMGMapEditor(canvas)
+        var editor = new OMGMapEditor(canvas, canvas2)
 
         var params = omg.util.getPageParams()
         if (params.id) {
