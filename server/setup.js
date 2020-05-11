@@ -38,7 +38,6 @@ app.use(function(request, response, next){
 
 module.exports.app = app
 module.exports.express = express
-module.exports.httpsServer = this.httpsServer
 module.exports.listen = function () {
     var httpPort = process.env.OMG_PORT || 8080;
     http.listen(httpPort, function () {
@@ -64,4 +63,5 @@ module.exports.listen = function () {
         console.log(excp);
         console.log("did not create https server");
     }
+    return httpsServer
 }

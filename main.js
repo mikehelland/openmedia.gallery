@@ -1,4 +1,4 @@
-const {app, httpsServer, express, listen} = require("./server/setup")
+const {app, express, listen} = require("./server/setup")
 
 require("./server/authentication")(app)
 require("./server/routes")(app)
@@ -12,7 +12,7 @@ app.use(express.static('www', {index: "index.htm"}));
 
 require("./server/database")(app)
 
-listen()
+const httpsServer = listen()
 
 require("./server/sockets")(httpsServer)
 

@@ -1,6 +1,6 @@
 module.exports = function (httpsServer) {
     
-    var io = require('socket.io')(httpsServer);
+    var io = require('socket.io').listen(httpsServer);
 
     var rooms = {}
     io.on("connection", socket => {
@@ -96,4 +96,6 @@ module.exports = function (httpsServer) {
             catch (e) {}
         })
     })
+
+    return io
 }
