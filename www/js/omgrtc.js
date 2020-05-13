@@ -4,9 +4,7 @@ function OMGRealTime(signalingServer) {
 
     this.autoRejoin = true
 
-    //this.socket = io("https://powerful-retreat-40064.herokuapp.com/")
-    //this.socket = io(signalingServer || "https://openmedia.gallery/")
-    this.socket = io("")
+    this.socket = io(signalingServer || "")
 
     this.socket.on("joined", users => {
         this.updateUserList(users)

@@ -32,12 +32,6 @@ module.exports = (app, express) => {
         db.users.find(find, options, callback)
     })
 
-    app.get('/admin/rooms', function (req, res) {
-
-        res.send(rooms);
-
-    })
-
     app.get('/admin/gallery-stats', function (req, res) {
 
         var callback = function (err, docs) {

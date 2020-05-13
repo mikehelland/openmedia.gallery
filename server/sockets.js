@@ -1,8 +1,12 @@
-module.exports = function (httpsServer) {
+module.exports = function (app, httpsServer) {
     
+    var rooms = {}
+    app.get('/admin/rooms', function (req, res) {
+        res.send(rooms);
+    })
+
     var io = require('socket.io').listen(httpsServer);
 
-    var rooms = {}
     io.on("connection", socket => {
         var name
         var roomName

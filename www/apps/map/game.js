@@ -2,16 +2,6 @@
 var ge = {}
 ge.userName = window.location.search.slice(1) || (Math.round(Math.random() * 100000) + "")
 
-try { // real time communication
-    ge.rtc = new OMGRealTime("https://openmedia.gallery/")
-    ge.remoteUsers = ge.rtc.remoteUsers
-    ge.rtc.acceptAllCalls = true
-}
-catch (e) {
-    console.log("did not create rtc", e)
-    ge.remoteUsers = {}
-}
-
 ge.stepDuration = 200
 ge.aButton = " "
 ge.bButton = "ArrowLeft"
@@ -952,10 +942,20 @@ ge.endTheShow = (params) => {
 }
 
 
-
+ge.chatServer = ""
 ge.startRTC = () => {
+    try { // real time communication
+        ge.rtc = new OMGRealTime(ge.chatServer)
+        ge.remoteUsers = ge.rtc.remoteUsers
+        ge.rtc.acceptAllCalls = true
+    }
+    catch (e) {
+        console.log("did not create rtc", e)
+        ge.remoteUsers = {}
+    }
+    
     if (ge.rtc) {
-        ge.rtc.join("map1", ge.userName)
+        ge.rtc.join(ge.roomName, ge.userName)
         ge.rtc.onjoined = () => {
             ge.rtc.updateLocalUserData(ge.hero)
         }
@@ -1042,8 +1042,8 @@ ge.startup()
 
 
 //finally, get a map and go
-ge.loadMap = (data) => {
-    
+ge.loadMap = (data, mapName) => {
+    ge.roomName = mapName
     Object.keys(data.tileSet.tileCodes).forEach(key => {
         var img = document.createElement("img")
         //img.src = "img/" + data.tileSet.tileCodes[key]
