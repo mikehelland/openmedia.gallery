@@ -167,8 +167,8 @@ ge.handleTouch = (x,y) => {
     var xDiff = x - window.innerWidth / 2
     var yDiff = y - window.innerHeight / 2
 
-    ge.lastX = xDiff
-    ge.lastY = yDiff
+    ge.lastX = x + " / " + window.innerWidth
+    ge.lastY = y + " / " + window.innerHeight
 
     if (!ge.isTouchingCanvas) {
         if (Math.abs(xDiff) < ge.tileWidth / 2 && Math.abs(yDiff) < ge.tileHeight / 2) {
