@@ -163,9 +163,12 @@ ge.processKeys = () => {
 
 
 ge.handleTouch = (x,y) => {
+
     var xDiff = x - window.innerWidth / 2
     var yDiff = y - window.innerHeight / 2
 
+    ge.lastX = xDiff
+    ge.lastY = yDiff
 
     if (!ge.isTouchingCanvas) {
         if (Math.abs(xDiff) < ge.tileWidth / 2 && Math.abs(yDiff) < ge.tileHeight / 2) {
@@ -432,6 +435,8 @@ ge.drawScene = () => {
 }
 
 ge.drawCharacters = () => {
+    ge.context.fillText(ge.lastX + " x " + ge.lastY, 20, 20)
+
     // the character
     ge.context.drawImage(ge.img.characters,
         ge.hero.spritesheetCoords.x + (ge.animationFrame ? ge.img.frameDiff : 0), 
