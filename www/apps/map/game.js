@@ -164,11 +164,14 @@ ge.processKeys = () => {
 
 ge.handleTouch = (x,y) => {
 
-    var xDiff = x - window.innerWidth / 2
-    var yDiff = y - window.innerHeight / 2
+    //var xDiff = x - window.innerWidth / 2
+    //var yDiff = y - window.innerHeight / 2
 
-    ge.lastX = x + " / " + window.innerWidth
-    ge.lastY = y + " / " + window.innerHeight
+    var xDiff = x - ge.canvas.width / 2
+    var yDiff = y - ge.canvas.height / 2
+
+    ge.lastX = x + " / " + ge.canvas.height
+    ge.lastY = y + " / " + ge.canvas.width
 
     if (!ge.isTouchingCanvas) {
         if (Math.abs(xDiff) < ge.tileWidth / 2 && Math.abs(yDiff) < ge.tileHeight / 2) {
