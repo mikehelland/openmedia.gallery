@@ -421,7 +421,10 @@ ge.render = () => {
 }
 ge.drawScene = () => {
 
-
+    ge.backgroundContext.lineWidth = 4
+    var colorI = 0
+    ge.portalColors = ["red", "blue", "green", "yellow", "purple"]
+    ge.portals = {}
     for (var y = 0; y < ge.map.length; y++) {
         for (var x = 0; x < ge.map[y].length; x++) {
             if (ge.map[y][x] && ge.img.tiles[ge.map[y][x]]) {
@@ -429,12 +432,24 @@ ge.drawScene = () => {
                     x * ge.tileWidth - 0.25, 
                     y * ge.tileHeight - 0.25,
                     ge.tileWidth + 0.5, ge.tileHeight + 0.5)
+
+                if (ge.map[y][x] === "p") {
+                    ge.portals[x + "x" + y] = ge.portalColors[colorI++%ge.portalColors.length]
+                    ge.backgroundContext.strokeStyle = ge.portals[x + "x" + y]
+                    ge.backgroundContext.strokeRect(
+                        x * ge.tileWidth - 0.25, 
+                        y * ge.tileHeight - 0.25,
+                        ge.tileWidth + 0.5, ge.tileHeight + 0.5)
+                }
+    
             }
         }
     }
 }
 
 ge.drawCharacters = () => {
+    
+    ge.context.lineWidth = 2
     
     // the character
     ge.context.drawImage(ge.img.characters,
@@ -451,11 +466,21 @@ ge.drawCharacters = () => {
             ge.offsetLeft + ge.middleTileX, 
             ge.offsetTop + ge.middleTileY + ge.tileHeight,
             ge.tileWidth, 14)
+
+        if (ge.hero.chatPortal) {
+            ge.context.strokeStyle = ge.portals[ge.hero.chatPortal]
+            ge.context.strokeRect(
+                ge.offsetLeft + ge.middleTileX, 
+                ge.offsetTop + ge.middleTileY + ge.tileHeight,
+                ge.tileWidth, 14)
+            }
     
         ge.context.fillStyle = "white"
         ge.context.fillText(ge.userName,
             3 + ge.offsetLeft + ge.middleTileX, 
             12 + ge.offsetTop + ge.middleTileY + ge.tileHeight)    
+
+        
     }
 
     for (var i = 0; i < ge.npcs.length; i++) {
