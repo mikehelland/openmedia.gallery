@@ -997,6 +997,7 @@ ge.startRTC = () => {
         ge.rtc.join(ge.roomName, ge.userName)
         ge.rtc.onjoined = () => {
             ge.rtc.updateLocalUserData(ge.hero)
+            ge.rtc.onnewuser()
         }
         ge.rtc.onincomingcall = (userName, callback) => {
             ge.showDialog([
@@ -1016,7 +1017,8 @@ ge.startRTC = () => {
             console.log("tm", data)
             ge.showTextMessage(data)
         }
-        ge.rtc.onuserdisconnected = (name, user) => {
+        ge.rtc.onuservideodisconnected = (name, user) => {
+            console.log("disconnecnting user video")
             if (user.disconnected && user.peerConnection.connectionState !== "connected") {
                 user.video.style.display = "none"
                 if (ge.remoteVideos.indexOf(user) > -1) {
@@ -1050,7 +1052,7 @@ ge.startRTC = () => {
             }
             ge.serverStatus.innerHTML = count + " users"
         }
-        ge.rtc.onuserdisconnected = ge.rtc.onnewuser
+        //ge.rtc.onuserdisconnected = ge.rtc.onnewuser
         ge.rtc.onuserreconnected = ge.rtc.onnewuser
         ge.rtc.onuserleft = ge.rtc.onnewuser
         var reset = false
