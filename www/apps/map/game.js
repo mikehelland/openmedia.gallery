@@ -946,7 +946,7 @@ for (var i = 0; i < 25; i++) {
 ge.hero.spritesheetCoords = ge.img.getSpriteSheetCoords(ge.hero.characterI)
 
 
-ge.startTheShow = (params) => {
+ge.startTheShow = (params, sendToRoom) => {
     if (params.performer === ge.userName) {
         return
     }
@@ -961,24 +961,23 @@ ge.startTheShow = (params) => {
     var videoId = getYouTubeID(params.src)
     var url = videoId ? "https://www.youtube.com/embed/" + videoId : params.src
 
-    ge.showTime = Date.now()
-    if (!ge.showTimeVideo) {
-        ge.showTimeVideo = document.createElement("iframe")
-        ge.showTimeVideo.autoPlay = true
-        ge.showTimeVideo.style.position = "absolute"
-        ge.showTimeVideo.style.width = "560px"
-        ge.showTimeVideo.style.height = "315px"
-        ge.showTimeVideo.style.left = window.innerWidth / 2 - 280 + "px"
-        ge.showTimeVideo.style.top = "0"
-        document.body.appendChild(ge.showTimeVideo)    
+    if (ge.htmlElements[params.iframe]) {
+        try {
+            ge.htmlElements[params.iframe].prevSrc = ge.htmlElements[params.iframe].child.src
+            ge.htmlElements[params.iframe].child.src = url
+        } catch (e) {console.log(e)}
     }
-    ge.showTimeVideo.src = url
-    //ge.showTimeVideo.play()
+
+    if (sendToRoom) {
+        params.action = "startTheShow"
+        ge.rtc.sendCommandToRoom(params)
+    }
 }
 
 ge.endTheShow = (params) => {
-    document.body.removeChild(ge.showTimeVideo)
-    ge.showTimeVideo.src = ""
+    if (ge.htmlElements[params.iframe].prevSrc) {
+        ge.htmlElements[params.iframe].child.src = ge.htmlElements[params.iframe].prevSrc
+    }
 }
 
 
@@ -1075,13 +1074,14 @@ ge.addHTML = html => {
     div.style.top = html.y * ge.tileHeight + "px"
     div.style.width = html.width * ge.tileWidth + "px"
     div.style.height = html.height * ge.tileHeight + "px"
+    div.style.zIndex = 99
     try {
         div.children[0].style.height = "100%"
         div.children[0].style.width = "100%"    
     }
     catch (e) {}
     ge.background.appendChild(div)
-    ge.htmlElements[html.name] = {div: div, html: html}
+    ge.htmlElements[html.name] = {div: div, html: html, child: div.children[0]}
 }
 
 // if we don't have a user name, ask
