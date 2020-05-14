@@ -13,8 +13,13 @@
             overflow: hidden;
             background-color: black;
         }
-        canvas {
+        #background {
             position:absolute;
+        }
+        #backgroundCanvas {
+            position:absolute;
+            height:100%;
+            width:100%;
         }
         #mainCanvas {
             position:absolute;
@@ -119,7 +124,9 @@
 
     <img id="characters-spritesheet" src="img/characters_alpha.gif">
 
-    <canvas id="backgroundCanvas"></canvas>    
+    <div id="background">
+        <canvas id="backgroundCanvas"></canvas>    
+    </div>
     <canvas id="mainCanvas"></canvas>
     <div id="enter-your-name" class="menu">
         Hi! What's you're name?

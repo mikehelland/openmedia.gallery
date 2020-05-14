@@ -6,6 +6,7 @@ ge.stepDuration = 200
 ge.aButton = " "
 ge.bButton = "ArrowLeft"
 
+ge.background = document.getElementById("background")
 ge.backgroundCanvas = document.getElementById("backgroundCanvas")
 ge.backgroundContext = ge.backgroundCanvas.getContext("2d")
 
@@ -407,12 +408,12 @@ ge.render = () => {
     ge.stepPercent = 0
     if (Date.now() - ge.hero.lastMove < ge.stepDuration) {
         ge.stepPercent = 1 - (Date.now() - ge.hero.lastMove) / ge.stepDuration
-        ge.backgroundCanvas.style.left = ge.tileWidth * (ge.hero.x - ge.hero.facingX * ge.stepPercent) * -1 + ge.middleTileX + "px"
-        ge.backgroundCanvas.style.top = ge.tileHeight * (ge.hero.y - ge.hero.facingY * ge.stepPercent) * -1 + ge.middleTileY  + "px"
+        ge.background.style.left = ge.tileWidth * (ge.hero.x - ge.hero.facingX * ge.stepPercent) * -1 + ge.middleTileX + "px"
+        ge.background.style.top = ge.tileHeight * (ge.hero.y - ge.hero.facingY * ge.stepPercent) * -1 + ge.middleTileY  + "px"
     }
     else {
-        ge.backgroundCanvas.style.left = ge.tileWidth * ge.hero.x * -1 + ge.middleTileX + "px"
-        ge.backgroundCanvas.style.top = ge.tileHeight * ge.hero.y * -1 + ge.middleTileY  + "px"
+        ge.background.style.left = ge.tileWidth * ge.hero.x * -1 + ge.middleTileX + "px"
+        ge.background.style.top = ge.tileHeight * ge.hero.y * -1 + ge.middleTileY  + "px"
     }
 
 
@@ -1066,6 +1067,21 @@ ge.startRTC = () => {
 
 }
 
+ge.addHTML = html => {
+    var div = document.createElement("div")
+    div.innerHTML = html.innerHTML
+    div.style.position = "absolute"
+    div.style.left = html.x * ge.tileWidth + "px"
+    div.style.top = html.y * ge.tileHeight + "px"
+    div.style.width = html.width * ge.tileWidth + "px"
+    div.style.height = html.height * ge.tileHeight + "px"
+    try {
+        div.children[0].style.height = "100%"
+        div.children[0].style.width = "100%"    
+    }
+    catch (e) {}
+    ge.background.appendChild(div)
+}
 
 // if we don't have a user name, ask
 ge.startup = () => {
@@ -1100,19 +1116,16 @@ ge.loadMap = (data, mapName) => {
         var img = document.createElement("img")
         //img.src = "img/" + data.tileSet.tileCodes[key]
         img.src = (data.tileSet.prefix + "") + data.tileSet.tileCodes[key] + (data.tileSet.postfix || "")
-        console.log(img.src)
         ge.img.tiles[key] = img
         img.onload = ()=>{ge.drawnBackground = false}
     })
 
-    console.log(ge.tileWidth, ge.tileHeight)
     ge.backgroundCanvas.width = data.mapLines[0].length * ge.tileWidth
     ge.backgroundCanvas.height = data.mapLines.length * ge.tileHeight
-    ge.backgroundCanvas.style.width = ge.backgroundCanvas.width + "px"
-    ge.backgroundCanvas.style.height = ge.backgroundCanvas.height + "px"
+    ge.background.style.width = ge.backgroundCanvas.width + "px"
+    ge.background.style.height = ge.backgroundCanvas.height + "px"
     
-
-    
+    ge.mapData = data
     ge.map = data.mapLines;
     ge.npcs = data.npcs || []
     ge.npcs.forEach(npc => npc.spritesheetCoords = ge.img.getSpriteSheetCoords(npc.characterI))
@@ -1120,6 +1133,9 @@ ge.loadMap = (data, mapName) => {
     ge.hero.y = data.startY
     ge.hero.facing = 0
 
-
+    if (ge.mapData.html) {
+        ge.mapData.html.forEach(html => ge.addHTML(html))
+    }
+    
     ge.mainLoop()
 }

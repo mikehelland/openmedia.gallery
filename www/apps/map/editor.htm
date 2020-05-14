@@ -40,7 +40,7 @@
             height:32px;
         }
 
-        #npc-details {
+        #npc-details, #html-details {
             padding:2px;
             position:fixed;
             top:35px;
@@ -130,6 +130,10 @@
             <button id="add-npc-button">+Add</button>
             <hr>
         </div>
+        <div id="html-list">
+            <button id="add-html-button">+Add</button>
+            <hr>
+        </div>
     </div>
 
     <div id="npc-details">
@@ -140,6 +144,13 @@
         <div id="npc-details-dialog"></div>
         <!--<button id="npc-details-dialog-add-button">Add Dialog</button>-->
         <textarea id="npc-dialog-input"></textarea>
+    </div>
+
+    <div id="html-details">
+        <input id="html-details-name"></input>
+        <hr>
+        innerHTML:
+        <textarea id="html-input"></textarea>
     </div>
 
     <div class="dialog" id="overwrite-or-new">
