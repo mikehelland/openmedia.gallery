@@ -981,7 +981,18 @@ ge.startRTC = () => {
             console.log("tm", data)
             ge.showTextMessage(data)
         }
-
+        ge.rtc.onuserdisconnected = (name, user) => {
+            if (user.disconnected && user.peerConnection.connectionState !== "connected") {
+                user.video.style.display = "none"
+                if (ge.remoteVideos.indexOf(user) > -1) {
+                    ge.remoteVideos.splice(ge.remoteVideos.indexOf(user), 1)
+                }
+            }
+        }
+        ge.rtc.onuserreconnected = (name, user) => {
+            user.video.style.display = "block"
+        }
+        
         ge.rtc.oncommand = message => {
             if (message.command.action === "startTheShow") {
                 ge.startTheShow(message.command)

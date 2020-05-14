@@ -52,6 +52,8 @@ OMGRealTime.prototype.getUserMedia = function (callback) {
     }
 
     this.localVideo = document.createElement("video")
+    this.localVideo.allowfullscreen = false
+    this.localVideo.playsinline = true
     this.localVideo.controls = true
 
     navigator.mediaDevices.getUserMedia({
@@ -130,7 +132,9 @@ OMGRealTime.prototype.onUserDisconnected = function (name) {
 OMGRealTime.prototype.setupNewUser = function (name, data) {
     this.remoteUsers[name] = data
     this.remoteUsers[name].video = document.createElement("video")
+    this.remoteUsers[name].video.playinline = true
     this.remoteUsers[name].video.controls = true
+    this.remoteUsers[name].video.allowFullScreen = false
     if (this.onnewuser) this.onnewuser(name, this.remoteUsers[name])
 }
 
