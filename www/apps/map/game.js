@@ -450,7 +450,7 @@ ge.drawScene = () => {
 ge.drawCharacters = () => {
     
     ge.context.lineWidth = 2
-    
+
     // the character
     ge.context.drawImage(ge.img.characters,
         ge.hero.spritesheetCoords.x + (ge.animationFrame ? ge.img.frameDiff : 0), 
@@ -519,6 +519,16 @@ ge.drawCharacters = () => {
             ge.context.fillText(user.name,
                 3 + ge.offsetLeft + (user.data.x - ge.hero.x + ge.hero.facingX * ge.stepPercent) * ge.tileWidth + ge.middleTileX, 
                 12 + ge.offsetTop + (user.data.y - ge.hero.y + 1 + ge.hero.facingY * ge.stepPercent) * ge.tileHeight + ge.middleTileY)
+
+            if (user.data.chatPortal) {
+                ge.context.strokeStyle = ge.portals[user.data.chatPortal]
+                ge.context.strokeRect(
+                    ge.offsetLeft + (user.data.x - ge.hero.x + ge.hero.facingX * ge.stepPercent) * ge.tileWidth + ge.middleTileX, 
+                    ge.offsetTop + (user.data.y - ge.hero.y + 1 + ge.hero.facingY * ge.stepPercent) * ge.tileHeight + ge.middleTileY,
+                    ge.tileWidth, 14)
+                }
+            
+        
         }
     }
 }
