@@ -313,7 +313,6 @@ OMGRealTime.prototype.createPeerConnection = function (user) {
     peerConnection.onconnectionstatechange = e => {
         this.log(peerConnection.connectionState)
         if (peerConnection.connectionState === "disconnected") {
-            //this.onUserDisconnected(user.name)
             if (this.onuservideodisconnected) {
                 this.onuservideodisconnected(user.name, user)
             }

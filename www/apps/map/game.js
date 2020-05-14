@@ -1052,7 +1052,7 @@ ge.startRTC = () => {
             }
             ge.serverStatus.innerHTML = count + " users"
         }
-        //ge.rtc.onuserdisconnected = ge.rtc.onnewuser
+        ge.rtc.onuserdisconnected = ge.rtc.onnewuser
         ge.rtc.onuserreconnected = ge.rtc.onnewuser
         ge.rtc.onuserleft = ge.rtc.onnewuser
         var reset = false
