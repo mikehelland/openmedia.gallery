@@ -1004,7 +1004,7 @@ ge.startRTC = () => {
                 {question: "Accept a call from " + userName, options: [
                     {caption: "Yes", action: () => {
                         ge.hideMenus()
-                        if (callback) callback
+                        if (callback) callback()
                     }},
                     {caption: "Nope", action: "hideMenus"}
                 ]}
