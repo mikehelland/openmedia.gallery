@@ -9,13 +9,13 @@
                 left:0px;
                 top:0px;
                 height:99%;
-                width:30%;
+                width:50%;
                 overflow: scroll;
             }
 
             #detail-fragment {
                 position:absolute;
-                left:30%;
+                left:50%;
                 top:0px;
                 margin:20px;
             }
@@ -55,8 +55,8 @@
             <a href="/admin">Admin</a> > Rooms
             <table>
                     <colgroup>
-                        <col width="60%" />
                         <col width="40%" />
+                        <col width="50%" />
                     </colgroup>
                 <thead>
                 <tr>
@@ -86,23 +86,31 @@ var detailInputs = {
     userList: document.getElementById("detail-user-list"),
 }
 var table = document.getElementById("table")
-omg.server.getHTTP("/admin/rooms", (response) => {
-    for (let room in response) {
 
-        var tr = document.createElement("tr")
-        var td = document.createElement("td")
-        td.innerHTML = room
-        tr.appendChild(td)
-        td = document.createElement("td")
-        td.innerHTML = Object.keys(response[room].users).length
-        tr.appendChild(td)
-        table.appendChild(tr)
+var load = () => {
 
-        tr.onclick = () => {
-            loadDetail(room, response[room])
+    omg.server.getHTTP("/admin/rooms", (response) => {
+        table.innerHTML = ""
+        for (let room in response) {
+
+            var tr = document.createElement("tr")
+            var td = document.createElement("td")
+            td.innerHTML = room
+            tr.appendChild(td)
+            td = document.createElement("td")
+            for (let user in response[room].users) {
+                td.innerHTML += user + "<br>"
+            }
+            //td.innerHTML = Object.keys(response[room].users).length
+            tr.appendChild(td)
+            table.appendChild(tr)
+
+            tr.onclick = () => {
+                loadDetail(room, response[room])
+            }
         }
-    }
-})
+    })
+}
 
 var loadDetail = (roomName, room) => {
     detailInputs.name.innerHTML = roomName
@@ -115,8 +123,8 @@ var loadDetail = (roomName, room) => {
     
     
 }
-        
-        
+        load()
+        setInterval(load, 1000 * 30)
         
         </script>
     </body>
