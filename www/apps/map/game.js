@@ -1081,6 +1081,7 @@ ge.addHTML = html => {
     }
     catch (e) {}
     ge.background.appendChild(div)
+    ge.htmlElements[html.name] = {div: div, html: html}
 }
 
 // if we don't have a user name, ask
@@ -1132,8 +1133,9 @@ ge.loadMap = (data, mapName) => {
     ge.hero.x = data.startX
     ge.hero.y = data.startY
     ge.hero.facing = 0
-
-    if (ge.mapData.html) {
+    
+    ge.htmlElements = {}
+    if (ge.mapData.html) {    
         ge.mapData.html.forEach(html => ge.addHTML(html))
     }
     
