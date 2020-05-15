@@ -967,13 +967,13 @@ ge.startTheShow = (params, sendToRoom) => {
 }
 
 ge.endTheShow = (params, sendToRoom) => {
-    if (ge.htmlElements[params.iframe].prevSrc) {
-        ge.htmlElements[params.iframe].child.src = ge.htmlElements[params.iframe].prevSrc
-    }
+    try {
+        ge.htmlElements[params.iframe].child.src = params.src || ge.htmlElements[params.iframe].prevSrc
+    } catch (e) {console.log(e)}
     if (sendToRoom) {
         params.action = "endTheShow"
         ge.rtc.sendCommandToRoom(params)
-        
+
         ge.rtc.updateRoomData(params)
     }
     ge.turnOffVisualApplause()
