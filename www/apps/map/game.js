@@ -61,17 +61,6 @@ ge.hero = {
 }
 
 
-// get the audio started
-/*ge.audioContext = new AudioContext()
-ge.heroAudioMeterDiv = document.createElement("div")
-ge.heroAudioMeterDiv.className = "hero-audio-meter"
-document.body.appendChild(ge.heroAudioMeterDiv)
-navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
-    ge.heroAudioSource = ge.audioContext.createMediaStreamSource(stream)
-    ge.heroVolumeMonitor = new VolumeMonitor(ge.heroAudioSource, ge.heroAudioMeterDiv, ge.audioContext)
-})*/
-
-
 ge.keysPressed = {}
 ge.visibleMenus = []
 
@@ -972,12 +961,18 @@ ge.startTheShow = (params, sendToRoom) => {
         params.action = "startTheShow"
         ge.rtc.sendCommandToRoom(params)
     }
+    ge.turnOnVisualApplause()
 }
 
-ge.endTheShow = (params) => {
+ge.endTheShow = (params, sendToRoom) => {
     if (ge.htmlElements[params.iframe].prevSrc) {
         ge.htmlElements[params.iframe].child.src = ge.htmlElements[params.iframe].prevSrc
     }
+    if (sendToRoom) {
+        params.action = "endTheShow"
+        ge.rtc.sendCommandToRoom(params)
+    }
+    ge.turnOffVisualApplause()
 }
 
 
@@ -1055,13 +1050,6 @@ ge.startRTC = () => {
         ge.rtc.onuserdisconnected = ge.rtc.onnewuser
         ge.rtc.onuserreconnected = ge.rtc.onnewuser
         ge.rtc.onuserleft = ge.rtc.onnewuser
-        var reset = false
-        /*setInterval(() => {
-            if (ge.hero.volume > 0.2 || reset) {
-                ge.rtc.updateLocalUserData(ge.hero)
-                reset = ge.hero.volume > 0.2
-            }
-        }, 100)*/
     }
 
 }
@@ -1082,6 +1070,30 @@ ge.addHTML = html => {
     catch (e) {}
     ge.background.appendChild(div)
     ge.htmlElements[html.name] = {div: div, html: html, child: div.children[0]}
+}
+
+ge.turnOnVisualApplause = () => {
+    // get the audio started
+    ge.audioContext = new AudioContext()
+    ge.heroAudioMeterDiv = document.createElement("div")
+    ge.heroAudioMeterDiv.className = "hero-audio-meter"
+    document.body.appendChild(ge.heroAudioMeterDiv)
+    navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+        ge.heroAudioSource = ge.audioContext.createMediaStreamSource(stream)
+        ge.heroVolumeMonitor = new VolumeMonitor(ge.heroAudioSource, ge.heroAudioMeterDiv, ge.audioContext)
+    })
+    var reset = false
+    ge.handleApplauseMeter = setInterval(() => {
+        if (ge.hero.volume > 0.2 || reset) {
+            ge.rtc.updateLocalUserData(ge.hero)
+            reset = ge.hero.volume > 0.2
+        }
+    }, 500)
+}
+
+ge.turnOffVisualApplause = () => {
+    ge.heroVolumeMonitor = null // disconnect?
+    clearInterval(ge.handleApplauseMeter)
 }
 
 // if we don't have a user name, ask
