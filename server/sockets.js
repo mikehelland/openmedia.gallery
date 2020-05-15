@@ -31,7 +31,9 @@ module.exports = function (app, httpsServer) {
 
             socket.to(msg.room).emit("update-user-list", room.users);
             socket.emit("joined", room.users);
-            
+            if (room.data) {
+                socket.emit("signaling", {type:"command", command: room.data});
+            }
         })
 
 
@@ -83,6 +85,16 @@ module.exports = function (app, httpsServer) {
                 name: name,
                 data, data
             });
+        });
+
+        socket.on("updateRoomData", data => {
+            if (room) {
+                room.data = data
+            }
+            /*socket.to(roomName).emit("updateRemoteUserData", {
+                name: name,
+                data, data
+            });*/
         });
 
         socket.on("signaling", signal => {

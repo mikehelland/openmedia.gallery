@@ -475,6 +475,9 @@ OMGRealTime.prototype.leave = function () {
     this.socket.emit("leave", this.userName)
 }
 
+OMGRealTime.prototype.updateRoomData = function (data) {
+    this.socket.emit("updateRoomData", data)
+}
 
 
 //[1] https://ourcodeworld.com/articles/read/1175/how-to-create-and-configure-your-own-stun-turn-server-with-coturn-in-ubuntu-18-04

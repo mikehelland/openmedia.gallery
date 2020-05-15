@@ -960,6 +960,8 @@ ge.startTheShow = (params, sendToRoom) => {
     if (sendToRoom) {
         params.action = "startTheShow"
         ge.rtc.sendCommandToRoom(params)
+
+        ge.rtc.updateRoomData(params)
     }
     ge.turnOnVisualApplause()
 }
@@ -971,6 +973,8 @@ ge.endTheShow = (params, sendToRoom) => {
     if (sendToRoom) {
         params.action = "endTheShow"
         ge.rtc.sendCommandToRoom(params)
+        
+        ge.rtc.updateRoomData(params)
     }
     ge.turnOffVisualApplause()
 }
