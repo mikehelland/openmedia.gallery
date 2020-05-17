@@ -69,12 +69,13 @@ document.onkeydown = e => {
         ge.audioContext.resume()
     }
 
-    if (e.keyCode === 27) {
+    if (e.keyCode === 27) { //escape
         ge.hideMenus()
         if (ge.stopVideoCalls) {
             ge.stopVideoCalls()
             ge.stopVideoCalls = null
         }
+        ge.mainCanvas.focus()
     }
     if (e.target.tagName.toLowerCase() === "input") {
         return
@@ -190,6 +191,7 @@ ge.canvas.addEventListener("touchstart", e => {
 })
 ge.canvas.onmousedown = e => {
     e.preventDefault()
+    ge.canvas.focus()
     if (ge.audioContext && ge.audioContext.state === 'suspended') {
         ge.audioContext.resume()
     }
@@ -1066,7 +1068,7 @@ ge.addHTML = html => {
     div.style.top = html.y * ge.tileHeight + "px"
     div.style.width = html.width * ge.tileWidth + "px"
     div.style.height = html.height * ge.tileHeight + "px"
-    div.style.zIndex = 99
+    div.style.zIndex = 5
     try {
         div.children[0].style.height = "100%"
         div.children[0].style.width = "100%"    

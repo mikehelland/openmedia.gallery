@@ -112,6 +112,10 @@
             background-color:#000000A0;
             color:white;
         }
+
+        #enter-your-name {
+            z-index: 20;
+        }
     </style>
     <script>
     if (window.location.protocol === "http:" && window.location.port !== "3000") {
@@ -127,7 +131,7 @@
     <div id="background">
         <canvas id="backgroundCanvas"></canvas>    
     </div>
-    <canvas id="mainCanvas"></canvas>
+    <canvas tabindex="1" id="mainCanvas"></canvas>
     <div id="enter-your-name" class="menu">
         Hi! What's you're name?
         <br>
