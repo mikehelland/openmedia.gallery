@@ -75,7 +75,7 @@ document.onkeydown = e => {
             ge.stopVideoCalls()
             ge.stopVideoCalls = null
         }
-        ge.mainCanvas.focus()
+        ge.canvas.focus()
     }
     if (e.target.tagName.toLowerCase() === "input") {
         return
