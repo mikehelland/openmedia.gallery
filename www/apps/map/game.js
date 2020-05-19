@@ -1,6 +1,5 @@
 //game engine
 var ge = {}
-ge.userName = window.location.search.slice(1) || (Math.round(Math.random() * 100000) + "")
 
 ge.stepDuration = 200
 ge.aButton = " "
@@ -71,9 +70,9 @@ document.onkeydown = e => {
 
     if (e.keyCode === 27) { //escape
         ge.hideMenus()
-        if (ge.stopVideoCalls) {
+        if (ge.isShowingVideoChat) {
             ge.stopVideoCalls()
-            ge.stopVideoCalls = null
+            ge.isShowingVideoChat = false
         }
         ge.canvas.focus()
     }
@@ -569,6 +568,7 @@ ge.videoCallGroup = (group) => {
         video.style.width = "25%"
         document.body.appendChild(video)
         video.style.bottom = video.clientHeight + "px"
+        ge.isShowingVideoChat = true
         
 
         for (var user in ge.rtc.remoteUsers) {
@@ -843,10 +843,8 @@ ge.showVideoCallDialog = (user) => {
     ge.rtc.localVideo.style.display = "block"
     ge.rtc.localVideo.style.width = "25%"
     ge.rtc.localVideo.style.left = "0"
-    //ge.rtc.localVideo.style.bottom = "33%"
     document.body.appendChild(ge.rtc.localVideo)
     ge.rtc.localVideo.style.bottom = ge.rtc.localVideo.clientHeight + "px"
-    //ge.rtc.localVideo.style.bottom = ge.rtc.localVideo.clientHeight + 16 + "px"
     
     var i = ge.remoteVideos.indexOf(user)
     if (i === -1) {
@@ -861,17 +859,18 @@ ge.showVideoCallDialog = (user) => {
     user.video.style.bottom = "0px"
     document.body.appendChild(user.video)
 
-    ge.stopVideoCalls = () => {
-        document.body.removeChild(ge.rtc.localVideo)
-        ge.remoteVideos.forEach(user => {
-            document.body.removeChild(user.video)
-            ge.rtc.stopMedia()
-            ge.rtc.closeConnection(user)    
-        })
-        ge.remoteVideos = []
-    }
+    ge.isShowingVideoChat = true
 }
 
+ge.stopVideoCalls = () => {
+    document.body.removeChild(ge.rtc.localVideo)
+    ge.rtc.stopMedia()
+    ge.remoteVideos.forEach(user => {
+        document.body.removeChild(user.video)
+        ge.rtc.closeConnection(user)    
+    })
+    ge.remoteVideos = []
+}
 
 
 
@@ -983,7 +982,7 @@ ge.endTheShow = (params, sendToRoom) => {
 
 
 ge.chatServer = ""
-ge.startRTC = () => {
+ge.startRTC = (userName) => {
     try { // real time communication
         ge.rtc = new OMGRealTime(ge.chatServer)
         ge.remoteUsers = ge.rtc.remoteUsers
@@ -995,6 +994,9 @@ ge.startRTC = () => {
     }
     
     if (ge.rtc) {
+        ge.online = true
+        ge.userName = userName || ge.rtc.userName
+
         ge.rtc.join(ge.roomName, ge.userName)
         ge.rtc.onjoined = () => {
             ge.rtc.updateLocalUserData(ge.hero)
@@ -1111,13 +1113,19 @@ ge.startup = () => {
     var joinButton = document.getElementById("enter-your-name-join")
     joinButton.onclick = e => {
         if (nameInput.value.length > 0) {
-            ge.online = true
-            ge.userName = nameInput.value
-            ge.startRTC()
-            ge.rtc.acceptAllCalls = document.getElementById("auto-accept").checked
-            ge.rtc.autoConnectAll = document.getElementById("auto-connect").checked
+            ge.startRTC(nameInput.value)
+            //ge.rtc.acceptAllCalls = document.getElementById("auto-accept").checked
+            //ge.rtc.autoConnectAll = document.getElementById("auto-connect").checked
             nameMenu.style.display = "none"    
         }
+    }
+    document.getElementById("enter-your-name-join-anon").onclick = e => {
+        ge.startRTC()
+        nameMenu.style.display = "none"    
+    }
+    document.getElementById("enter-your-name-offline").onclick = e => {
+        nameMenu.style.display = "none"    
+        ge.userName = nameInput.value
     }
     nameInput.onkeypress = e => {
         if (e.charCode === 13) {
