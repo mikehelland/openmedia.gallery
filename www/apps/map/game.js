@@ -416,9 +416,9 @@ ge.drawScene = () => {
     var colorI = 0
     ge.portalColors = ["red", "blue", "green", "yellow", "purple"]
     ge.portals = {}
-    for (var y = 0; y < ge.map.length; y++) {
-        for (var x = 0; x < ge.map[y].length; x++) {
-            if (ge.map[y][x] && ge.img.tiles[ge.map[y][x]]) {
+    for (var y = 0; y < ge.mapData.height; y++) {
+        for (var x = 0; x < ge.mapData.width; x++) {
+            if (ge.map[y] && ge.map[y][x] && ge.img.tiles[ge.map[y][x]]) {
                 ge.backgroundContext.drawImage(ge.img.tiles[ge.map[y][x]],
                     x * ge.tileWidth - 0.25, 
                     y * ge.tileHeight - 0.25,
@@ -1147,8 +1147,8 @@ ge.loadMap = (data, mapName) => {
         img.onload = ()=>{ge.drawnBackground = false}
     })
 
-    ge.backgroundCanvas.width = data.mapLines[0].length * ge.tileWidth
-    ge.backgroundCanvas.height = data.mapLines.length * ge.tileHeight
+    ge.backgroundCanvas.width = data.width * ge.tileWidth
+    ge.backgroundCanvas.height = data.height * ge.tileHeight
     ge.background.style.width = ge.backgroundCanvas.width + "px"
     ge.background.style.height = ge.backgroundCanvas.height + "px"
     
