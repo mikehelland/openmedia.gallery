@@ -425,8 +425,15 @@ ge.drawScene = () => {
                     ge.tileWidth + 0.5, ge.tileHeight + 0.5)
 
                 if (ge.map[y][x] === "p") {
-                    ge.portals[x + "x" + y] = ge.portalColors[colorI++%ge.portalColors.length]
-                    ge.backgroundContext.strokeStyle = ge.portals[x + "x" + y]
+                    var portal = undefined
+                    if (ge.portals[x + "x" + (y - 1)]) {
+                        portal = ge.portals[x + "x" + (y - 1)]
+                    }
+                    else if (ge.portals[(x - 1) + "x" + y]) {
+                        portal = ge.portals[(x - 1) + "x" + y]
+                    }
+                    ge.portals[x + "x" + y] = portal || {name: x + "x" + y, color: ge.portalColors[colorI++%ge.portalColors.length]}
+                    ge.backgroundContext.strokeStyle = ge.portals[x + "x" + y].color
                     ge.backgroundContext.strokeRect(
                         x * ge.tileWidth - 0.25, 
                         y * ge.tileHeight - 0.25,
@@ -459,7 +466,7 @@ ge.drawCharacters = () => {
             ge.tileWidth, 14)
 
         if (ge.hero.chatPortal) {
-            ge.context.strokeStyle = ge.portals[ge.hero.chatPortal]
+            ge.context.strokeStyle = ge.portals[ge.hero.chatPortal].color
             ge.context.strokeRect(
                 ge.offsetLeft + ge.middleTileX, 
                 ge.offsetTop + ge.middleTileY + ge.tileHeight,
@@ -512,7 +519,7 @@ ge.drawCharacters = () => {
                 12 + ge.offsetTop + (user.data.y - ge.hero.y + 1 + ge.hero.facingY * ge.stepPercent) * ge.tileHeight + ge.middleTileY)
 
             if (user.data.chatPortal) {
-                ge.context.strokeStyle = ge.portals[user.data.chatPortal]
+                ge.context.strokeStyle = ge.portals[user.data.chatPortal].color
                 ge.context.strokeRect(
                     ge.offsetLeft + (user.data.x - ge.hero.x + ge.hero.facingX * ge.stepPercent) * ge.tileWidth + ge.middleTileX, 
                     ge.offsetTop + (user.data.y - ge.hero.y + 1 + ge.hero.facingY * ge.stepPercent) * ge.tileHeight + ge.middleTileY,
@@ -558,8 +565,8 @@ ge.videoCallUser = (options) => {
     })
 }
 
-ge.videoCallGroup = (group) => {
-    ge.hero.chatPortal = group
+ge.videoCallGroup = (tile) => {
+    ge.hero.chatPortal = ge.portals[tile].name
     ge.rtc.acceptAllCalls = true
     ge.rtc.getUserMedia(video => {
         video.className = "menu"
@@ -574,7 +581,7 @@ ge.videoCallGroup = (group) => {
         for (var user in ge.rtc.remoteUsers) {
             console.log("callgroup2")
     
-            if (ge.rtc.remoteUsers[user].data.chatPortal === group &&
+            if (ge.rtc.remoteUsers[user].data.chatPortal === ge.hero.chatPortal &&
                 !ge.rtc.remoteUsers[user].disconnected) {
                     ge.videoCallUser({name: user})
                 }
