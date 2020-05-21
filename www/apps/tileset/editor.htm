@@ -121,6 +121,7 @@ var setList = (data) => {
 }
 
 var makeListItem = (code, data) => {
+    console.log(code, data)
     var div = document.createElement("div")
     div.innerHTML = "Item " + (inputs.data.length + 1) + " Code: "
     var nameInput = document.createElement("input")
@@ -215,7 +216,7 @@ dropZone.ondrop = (e) => {
         if (inputs.prefix.value !== autoPrefix) {
             sound.url = autoPrefix + sound.url
         }
-        var statusDiv = makeListItem(sound)
+        var statusDiv = makeListItem("", sound.url)
         statusDiv.innerHTML = "Uploading..."
         
         var fd = new FormData();
@@ -262,19 +263,17 @@ document.getElementById("submit-button").onclick = function () {
 }
 
 var submit = (cb) => {
-    var postData = {}
-    postData.name = document.getElementById("set-name").value
-    postData.prefix = document.getElementById("url-prefix").value
-    postData.postfix = document.getElementById("url-postfix").value
-    postData.type = "TILESET"
-    postData.omgVersion = 1
-    
-    postData.tileCodes = {}
+
+    set.name = document.getElementById("set-name").value
+    set.prefix = document.getElementById("url-prefix").value
+    set.postfix = document.getElementById("url-postfix").value
+
+    set.tileCodes = {}
     inputs.data.forEach(item => {
-        postData.tileCodes[item.nameInput.value] = item.urlInput.value
+        set.tileCodes[item.nameInput.value] = item.urlInput.value
     })
 
-    omg.server.post(postData, function (response) {
+    omg.server.post(set, function (response) {
         if (response.id) {
             set.id = response.id
         }

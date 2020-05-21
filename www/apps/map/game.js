@@ -249,14 +249,23 @@ ge.hero.move = (x, y) => {
 
     // check to see if you can move to that position
     var target = ge.map[ge.hero.y + y]
-    if (!target) return updatePosition()
+    if (!target) {
+        ge.finishTouching()
+        ge.leaveMap()
+        return updatePosition()
+    }
     target = target[ge.hero.x + x]
+    if (!target) {
+        ge.finishTouching()
+        ge.leaveMap()
+        return updatePosition()
+    }
     if (target === "p") {
         ge.finishTouching()
         ge.videoCallGroup((ge.hero.x + x) + "x" + (ge.hero.y + y))
         return updatePosition()
     }
-    if (!target || ge.blockedTiles.indexOf(target) > -1) {
+    if (ge.blockedTiles.indexOf(target) > -1) {
         return updatePosition()
     }
     for (var i = 0; i < ge.npcs.length; i++) {
@@ -285,9 +294,9 @@ ge.hero.move = (x, y) => {
     ge.hero.tile = target
     ge.hero.x += x
     ge.hero.y += y
-
+    
     ge.hero.lastMove = Date.now()
-
+    
     updatePosition()
 }
 
@@ -1142,6 +1151,13 @@ ge.startup = () => {
 }
 ge.startup()
 
+ge.leaveMap = () => {
+    if (ge.mapData.parentMap) {
+        fetch(ge.mapData.parentMap.url).then(data => data.json()).then(json => {
+            ge.loadMap(json, ge.mapData.parentMap.url)
+        })
+    }
+}
 
 //finally, get a map and go
 ge.loadMap = (data, mapName) => {
