@@ -989,7 +989,9 @@ ge.endTheShow = (params, sendToRoom) => {
         if (params.src === "") {
             ge.htmlElements[params.iframe].div.style.display = "none"
         }
-        ge.htmlElements[params.iframe].child.src = params.src || ge.htmlElements[params.iframe].prevSrc
+        else {
+            ge.htmlElements[params.iframe].child.src = params.src || ge.htmlElements[params.iframe].prevSrc
+        }
     } catch (e) {console.log(e)}
     if (sendToRoom) {
         params.action = "endTheShow"
