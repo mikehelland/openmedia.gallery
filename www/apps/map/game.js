@@ -1132,7 +1132,11 @@ ge.startup = () => {
             ge.startRTC(nameInput.value)
             //ge.rtc.acceptAllCalls = document.getElementById("auto-accept").checked
             //ge.rtc.autoConnectAll = document.getElementById("auto-connect").checked
-            nameMenu.style.display = "none"    
+            nameMenu.style.display = "none"
+
+            if (ge.onstart) {
+                ge.onstart()
+            }
         }
     }
     document.getElementById("enter-your-name-join-anon").onclick = e => {
