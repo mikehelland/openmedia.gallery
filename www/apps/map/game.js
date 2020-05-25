@@ -16,6 +16,8 @@ ge.canvas.width = ge.canvas.clientWidth
 ge.canvas.height = ge.canvas.clientHeight
 ge.context = ge.canvas.getContext("2d")
 
+ge.originalTitle = document.title
+
 ge.img = {
     characters: document.getElementById("characters-spritesheet"),
     tiles: {},
@@ -1075,7 +1077,7 @@ ge.startRTC = (userName) => {
                     count++
                 }
             }
-            ge.serverStatus.innerHTML = count + " users"
+            ge.serverStatus.innerHTML = document.title = count + "@" + ge.originalTitle
         }
         ge.rtc.onuserdisconnected = ge.rtc.onnewuser
         ge.rtc.onuserreconnected = ge.rtc.onnewuser
