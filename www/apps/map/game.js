@@ -963,6 +963,7 @@ ge.startTheShow = (params, sendToRoom) => {
         return (match && match[2].length === 11) ? match[2] : null;
     }
 
+    ge.htmlElements[params.iframe].div.style.display = "block"
     //todo hang up phone calls?
     var videoId = getYouTubeID(params.src)
     var url = videoId ? "https://www.youtube.com/embed/" + videoId : params.src
@@ -985,6 +986,9 @@ ge.startTheShow = (params, sendToRoom) => {
 
 ge.endTheShow = (params, sendToRoom) => {
     try {
+        if (params.src === "") {
+            ge.htmlElements[params.iframe].div.style.display = "none"
+        }
         ge.htmlElements[params.iframe].child.src = params.src || ge.htmlElements[params.iframe].prevSrc
     } catch (e) {console.log(e)}
     if (sendToRoom) {
