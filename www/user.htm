@@ -73,16 +73,8 @@
    
    <script src="js/omgservice.js"></script>
    <script src="js/usercontrols.js"></script>
-   <script src="js/search.js"></script>
-
-
-   <script src="omg-music/tuna-min.js"></script>
-   <script src="omg-music/omgclasses.js"></script>
-   <script src="omg-music/omusic_player.js"></script>
-   <script src="omg-music/fx.js"></script>
-   <script src="js/omgservice.js"></script>
    <script src="js/embedded_viewer.js"></script>
-   
+ 
    <script>
       setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0], function (user) {
          /*omg.util.getUserThings({user: user, 
@@ -96,13 +88,6 @@
          document.getElementById("upload-usage").innerHTML = 
             omg.util.getFileSizeCaption(user.uploaded_bytes) + " / " + 
             omg.util.getFileSizeCaption(user.upload_limit)
-
-         omg.search({
-            user:  user,
-            resultList: document.getElementsByClassName("search-things")[0],
-            metaData: true,
-            viewerParams: {deleteButton: true}
-         })
 
          if (user.btc_address) {
             user.btc_address = user.btc_address.trim();
@@ -125,11 +110,30 @@
                viewerParams: {deleteButton: true},
                type: filterTypeInput.value,
                q: queryInput.value
-            }) 
+            }, true) 
             return false
          }
          console.log(searchForm)
+
+         omg.server.getTypes(types => {
+            omg.types = types
+            for (var type in types) {
+               var optionEl = document.createElement("option")
+               optionEl.innerHTML = type
+               filterTypeInput.appendChild(optionEl)
+            }
+
+            omg.search({
+               user:  user,
+               resultList: document.getElementsByClassName("search-things")[0],
+               metaData: true,
+               viewerParams: {deleteButton: true}
+            }, true)
+
+         })
       });
+
+
    </script>
 
 </body>

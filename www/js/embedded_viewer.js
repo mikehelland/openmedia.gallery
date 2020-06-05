@@ -191,12 +191,12 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     this.voteButton.title = "Upvote";
 
     
-    if (false && params.deleteButton) {
-        resultData = document.createElement("span");
+    if (this.params.deleteButton) {
+        var resultData = document.createElement("span");
         resultData.className = "omg-music-controls-button";
         resultData.innerHTML = "Delete &times;";
         resultData.onclick = () => {
-            omg.server.deleteId(result.id, function () {
+            omg.server.deleteId(this.data.id, () => {
                 this.div.parentElement.removeChild(this.div)
             });
         }
