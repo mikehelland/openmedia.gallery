@@ -41,6 +41,7 @@ module.exports = function (app, httpsServer) {
             if (name) {
                 delete room.users[name]
             }
+            socket.leave(roomName)
             io.in(roomName).emit("userLeft", name);
         });
 
@@ -48,6 +49,7 @@ module.exports = function (app, httpsServer) {
             if (name) {
                 delete room.users[name]
             }
+            socket.leave(roomName)
             io.in(roomName).emit("userDisconnected", name);
         });
 

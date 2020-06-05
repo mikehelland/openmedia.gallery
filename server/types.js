@@ -1,7 +1,5 @@
 // see what apps are installed on this server and what types they support
-// currently, just put a folder in www/apps/ 
-// the name of the folder is the type
-// the folder should have an editor.htm
+// each app has a manifest.json that describes the different activities it does
 
 module.exports = function (app) {
     var fs = require("fs");
@@ -16,18 +14,44 @@ module.exports = function (app) {
         if (fs.existsSync(path + "manifest.json")) {
 
             var manifest = JSON.parse(fs.readFileSync(path + "manifest.json"))
-            manifest.types.forEach(type => {
-                if (!types[type]) {
-                    types[type] = {editors: [], viewers: []}
-                } 
+            if (!manifest.activities) {
+                return
+            }
 
-                types[type].editors.push({name: manifest.name, 
-                    url: "apps/" + app + "/" + manifest.editor}) 
-                types[type].viewers.push({name: manifest.name, 
-                    url: "apps/" + app + "/" + manifest.viewer}) 
-                if (manifest.embed) {
-                    types[type].embed = "apps/" + app + "/" + manifest.embed
+            manifest.activities.forEach(activity => {
+
+                if (activity.views) {
+                    activity.views.forEach(type => {
+                        if (!types[type]) {
+                            types[type] = {editors: [], viewers: []}
+                        } 
+        
+                        types[type].viewers.push({name: activity.name, 
+                            url: "apps/" + app + "/" + activity.url}) 
+                    })    
                 }
+
+                if (activity.edits) {
+                    activity.edits.forEach(type => {
+                        if (!types[type]) {
+                            types[type] = {editors: [], viewers: []}
+                        } 
+        
+                        types[type].editors.push({name: activity.name, 
+                            url: "apps/" + app + "/" + activity.url})     
+                    })
+                }
+
+                if (activity.embeds) {
+                    activity.embeds.forEach(type => {
+                        if (!types[type]) {
+                            types[type] = {editors: [], viewers: []}
+                        } 
+                        types[type].embed = "apps/" + app + "/" + activity.url
+        
+                    })
+                }
+
             })
             console.log("Found app " + app)
         }

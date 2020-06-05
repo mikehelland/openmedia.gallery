@@ -1,6 +1,0 @@
-{
-    "types": ["MAP"],
-    "editor": "editor.htm",
-    "viewer": "viewer.htm",
-    "embed": "embed.js"
-}
