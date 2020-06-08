@@ -47,7 +47,7 @@ return `<!DOCTYPE html>
 <body>
     <header>
         <a class="main-page-link" href="/">
-        <span class="main-title-open">Open</span><span class="main-title-media">Music</span><span class="main-title-gallery">.Gallery</span>
+        <span class="main-title-open">Open</span><span class="main-title-media">Media</span><span class="main-title-gallery">.Gallery</span>
         </a>
 
         <div class="main-description">
@@ -59,24 +59,17 @@ return `<!DOCTYPE html>
 
     <div class="main-body">
 
-      <div id="omgviewer"></div>
+      <div id="omgviewer" class="omg-viewer"></div>
       <br>
       <div class="site-tools">
             <a href="/">&#8962; Home</a>
             <span class="tools-separator">|</span>
-            <a target="_blank" href="/gauntlet/">&plus; Create Music
-            </a> <span class="tools-separator">|</span>
             <a href="/docs?what-is-this">What is this?</a>
       </div>
       
     </div>
 
-   <script src="/omg-music/omgclasses.js"></script>
-   <script src="/omg-music/tuna-min.js"></script>
-   <script src="/omg-music/omusic_player.js"></script>
-   <script src="/omg-music/fx.js"></script>
    <script src="/js/omgservice.js"></script>
-   <script src="/omg-music/libs/viktor/viktor.js"></script>
    <script src="/js/embedded_viewer.js"></script>
 
    <script src="/js/usercontrols.js"></script>
@@ -86,10 +79,11 @@ return `<!DOCTYPE html>
    window.onload = function () {
         setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
         omg.setupShareWindow();
-        
-        viewer = new OMGEmbeddedViewer({div: document.getElementById("omgviewer"),
-            result: data,
+        omg.server.getTypes(() => {
+            viewer = new OMGEmbeddedViewer({div: document.getElementById("omgviewer"),
+            data: data.body,
             height: window.innerHeight - 44 - 250});
+        })
     }
    </script>
 

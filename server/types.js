@@ -27,7 +27,7 @@ module.exports = function (app) {
                         } 
         
                         types[type].viewers.push({name: activity.name, 
-                            url: "apps/" + app + "/" + activity.url}) 
+                            url: "/apps/" + app + "/" + activity.url}) 
                     })    
                 }
 
@@ -38,7 +38,7 @@ module.exports = function (app) {
                         } 
         
                         types[type].editors.push({name: activity.name, 
-                            url: "apps/" + app + "/" + activity.url})     
+                            url: "/apps/" + app + "/" + activity.url})     
                     })
                 }
 
@@ -47,7 +47,7 @@ module.exports = function (app) {
                         if (!types[type]) {
                             types[type] = {editors: [], viewers: []}
                         } 
-                        types[type].embed = "apps/" + app + "/" + activity.url
+                        types[type].embed = "/apps/" + app + "/" + activity.url
         
                     })
                 }

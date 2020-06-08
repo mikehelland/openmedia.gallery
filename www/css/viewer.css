@@ -69,6 +69,16 @@
    position:absolute;*/
 }
 
+.omg-thing-type {
+   opacity: 0.5;
+}
+
+.omg-thing-p {
+   padding-left:12px;
+   padding-right:12px;
+}
+
+
 .omg-music-controls-button:active {
    border:1px solid white;
    color:white;

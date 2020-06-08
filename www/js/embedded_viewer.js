@@ -11,13 +11,17 @@ function OMGEmbeddedViewer(params) {
     this.div = params.div
 
 
-    //todo figure out its type, and a viewer.js
+    //figure out its type, and a viewer.js
     if (this.data.type) {
         if (omg.types[this.data.type]) {//} && omg.types[this.data.type].embed) {
             this.type = omg.types[this.data.type]
-            this.editorURL = this.type.editors[0].url
-            this.viewerURL = this.type.viewers[0].url
-
+            if (this.type.editors[0]) {
+                this.editorURL = this.type.editors[0].url
+            }
+            if (this.type.viewers[0]) {
+                this.viewerURL = this.type.viewers[0].url
+            }
+            
             if (this.type.embed && !this.type.embedScriptTag) {
                 this.type.onready = []
                 this.type.embedScriptTag = document.createElement("script")
@@ -62,7 +66,7 @@ OMGEmbeddedViewer.prototype.setupControls = function (params) {
 
     //the guts
     this.embedDiv = document.createElement("div")
-    this.embedDiv.style.height = (params.height || 150) + "px";
+    this.embedDiv.style.maxHeight = (params.height || 150) + "px";
     this.embedDiv.style.overflow = "hidden"
     this.embedDiv.style.cursor = "pointer"
     this.embedDiv.onclick = e => {
@@ -112,8 +116,8 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
     this.caption = this.data.name || this.data.tags || "";
     if (this.caption.length === 0) {
         // show (type) as caption if there isn't one
-        this.caption = "(" + this.data.type.substring(0, 1).toUpperCase() +
-            this.data.type.substring(1).toLowerCase() + ")";
+        this.caption = "<span class='omg-thing-type'>" + this.data.type.substring(0, 1).toUpperCase() +
+            this.data.type.substring(1).toLowerCase() + "</span>";
     }
     this.captionDiv.innerHTML = this.caption
     this.captionDiv.className = "omg-thing-title";
@@ -144,23 +148,6 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
 
 OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     var bottomRow = document.createElement("div")
-    
-    if (this.data.id && this.editorURL) {
-        this.editButton = document.createElement("a");
-        this.editButton.className = "omg-music-controls-button";
-        this.editButton.innerHTML = "Edit";
-        this.editButton.href = this.editorURL + "?id=" + this.data.id;
-        bottomRow.appendChild(this.editButton)
-    }
-
-    if (this.data.id && this.viewerURL) {
-        this.shareButton = document.createElement("a");
-        this.shareButton.className = "omg-music-controls-button";
-        this.shareButton.innerHTML = "Link";
-        this.shareButton.href = this.viewerURL + "?id=" + this.data.id
-        bottomRow.appendChild(this.shareButton)
-    }
-
 
     this.tipButton = document.createElement("div");
     this.tipButton.className = "omg-music-controls-button";
@@ -181,9 +168,27 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
         }
         else {
             makeTipJar();
-        }
-        
+        }      
     };
+    bottomRow.appendChild(this.tipButton)
+
+    if (this.data.id) {
+        this.shareButton = document.createElement("a");
+        this.shareButton.className = "omg-music-controls-button";
+        this.shareButton.innerHTML = "Link";
+        this.shareButton.href = this.viewerURL ? 
+                this.viewerURL + "?id=" + this.data.id :
+                "/view/" + this.data.id
+        bottomRow.appendChild(this.shareButton)
+    }
+
+    if (this.data.id && this.editorURL) {
+        this.editButton = document.createElement("a");
+        this.editButton.className = "omg-music-controls-button";
+        this.editButton.innerHTML = "Edit";
+        this.editButton.href = this.editorURL + "?id=" + this.data.id;
+        bottomRow.appendChild(this.editButton)
+    }
 
     this.voteButton = document.createElement("div");
     this.voteButton.className = "omg-music-controls-button";

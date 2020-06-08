@@ -1,5 +1,7 @@
 module.exports = (app) => {
 
+    var viewer = require("./viewer.js")
+
     app.get('/user', function (req, res) {
         if (req.user) {
             delete req.user.password;
@@ -90,10 +92,10 @@ module.exports = (app) => {
     });
     app.post('/data/', function (req, res) {
 
-        if (typeof req.body.omgVersion !== "number" || req.body.omgVersion < 1) {
+        /*if (typeof req.body.omgVersion !== "number" || req.body.omgVersion < 1) {
             res.send({});
             return;
-        }
+        }*/
 
         if (req.body.id && !req.user) {
             res.send({});
@@ -154,14 +156,13 @@ module.exports = (app) => {
         });
     });
 
-    app.get('/play/:id', function (req, res) {
+    app.get('/view/:id', function (req, res) {
         var db = app.get('db');
         db.things.find({id: req.params.id}, function (err, docs) {
             if (err) {
-            res.send(err);
+                res.send(err);
             } else {
-            //todo res.send(viewer(docs[0]));
-            res.send("todo")
+                res.send(viewer(docs[0]));
             }
         });
     });

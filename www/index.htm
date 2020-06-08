@@ -95,12 +95,17 @@
 
         }
 
-       .main-nav li:first-child {
+       .main-nav-ul > li:first-child {
             background-color:#606060;
         }
 
         .create-link, .create-link:visited {
             color: white;
+        }
+
+        #post-text {
+            height:5em;
+            width: 100%;
         }
    </style>
 </head>
@@ -116,21 +121,24 @@
 
     <div id="main-body">    
     <nav class="main-nav">
-        <ul>
-            <li><a href="/">&#8962; <span class="nav-text">Home</span></a></li>
-            <li><a href="/live.htm">&#9679; <span class="nav-text">Live!</span></a></li>
-            <li><a href="/docs/">? <span class="nav-text">Help</span></a></li>
+        <ul class="main-nav-ul">
+            <li><a href="index.htm">&#8962; <span class="nav-text">Home</span></a></li>
+            <div id="create-list">
+            </div>    
+            <li><a href="live.htm">&#9679; <span class="nav-text">Live!</span></a></li>
+            <li><a href="docs/">? <span class="nav-text">Help</span></a></li>
         </ul>
         <!--todo recent list somewhere?-->
     </nav>
         
     <div class="main-column">
 
-        <p>What type of thing would you lke to create?</p>
-        <ul id="create-list">
-        </ul>
-
-        <p>Or browse the gallery</p>
+        <p>Post your thoughts, or a file, or a link:</p>
+        <textarea id="post-text"></textarea>
+        <br>
+        <button id="post-button">Post</button>
+        
+        <hr>
 
         <div class="feed-options">
             <select id="search-user">
@@ -264,20 +272,43 @@ document.getElementsByClassName("main-nav-drawer-icon")[0].onclick = function ()
 
 var listEl = document.getElementById("create-list")
 omg.server.getTypes(types => {
-    omg.types = types
     for (var type in types) {
         var optionEl = document.createElement("option")
         optionEl.innerHTML = type
         fp.searchType.appendChild(optionEl)
 
-        var editorLink = document.createElement("li")
-        editorLink.innerHTML = "<a href='" + types[type].editors[0].url + 
-                "' class='create-link'>" + type + "</a>"
-        listEl.appendChild(editorLink)
+        if (types[type].editors.length > 0) {
+            var editorLink = document.createElement("li")
+            editorLink.innerHTML = "<a href='" + types[type].editors[0].url + 
+                    "' class='create-link'>+ <span class='nav-text'>" + type + "</span></a>"
+            listEl.appendChild(editorLink)
+        }
     }
     fp.search()
 
 })
+
+var postInput = document.getElementById("post-text")
+document.getElementById("post-button").onclick = e => {
+    //are we logged in?
+    if (!omg.user) {
+        alert("you have to log in first")
+        return
+    }
+
+    if (postInput.value.trim().length === 0) {
+        return
+    }
+
+    var newPost = {
+        type: "TEXTPOST",
+        text: postInput.value
+    }
+
+    omg.server.post(newPost, result => {
+        postInput.value = ""
+    })
+}
 
 </script>
 </body>

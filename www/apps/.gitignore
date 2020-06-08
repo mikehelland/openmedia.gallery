@@ -1,5 +1,7 @@
 *
 */
 !chat/
-!news/
+!chat/*
+!textpost/
+!textpost/*
 !.gitignore
