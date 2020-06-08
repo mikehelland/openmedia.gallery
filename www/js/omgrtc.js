@@ -46,7 +46,7 @@ function OMGRealTime(signalingServer) {
 
     this.on("signaling", data => this.onSignal(data))
 
-    this.on("updateRemoteUserData", msg => this.updateRemoteUserData(msg))
+    this.on("updateUserData", msg => this.updateRemoteUserData(msg))
 
     this.on("reconnect", () => {
         if (this.autoRejoin && this.isJoined) {
@@ -372,7 +372,7 @@ OMGRealTime.prototype.createPeerConnection = function (user) {
 }
 
 OMGRealTime.prototype.updateLocalUserData = function (user) {
-    this.emit("updateLocalUserData", user)
+    this.emit("updateUserData", user)
 }
 
 OMGRealTime.prototype.updateRemoteUserData = function (msg) {
@@ -385,7 +385,7 @@ OMGRealTime.prototype.updateRemoteUserData = function (msg) {
         this.log("no user to update", msg)
         return
     }   
-    this.remoteUsers[msg.name].data = msg.data
+    this.remoteUsers[msg.name].data = msg
 }
 
 OMGRealTime.prototype.sendTextMessage = function (remoteUserName, message) {

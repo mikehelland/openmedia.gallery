@@ -2,10 +2,10 @@ module.exports = function (app) {
     var massive = require("massive");
     try {
         console.log("Connecting to database...");
-        var massiveInstance = massive.connectSync({connectionString: 
+        var db = massive.connectSync({connectionString: 
                `postgres://${process.env.OMG_DB_NAME}:${process.env.OMG_DB_PW}@localhost/${process.env.OMG_DB_NAME}`});
-        app.set('db', massiveInstance);
-        console.log("ok.");    
+        app.set('db', db);
+        console.log("ok.");
     }
     catch (excp) {
         console.log(excp);

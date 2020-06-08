@@ -1,5 +1,8 @@
 const {app, express, listen} = require("./server/setup")
 
+// connect to the database
+require("./server/database")(app)
+
 require("./server/authentication")(app)
 require("./server/routes")(app)
 
@@ -9,8 +12,6 @@ require("./server/types")(app)
 require("./server/admin")(app, express)
 
 app.use(express.static('www', {index: "index.htm"}));
-
-require("./server/database")(app)
 
 const httpsServer = listen()
 

@@ -47,31 +47,13 @@ module.exports = function (app, httpsServer) {
             else if (msg.msgtype === "signaling") {
                 signal(msg)
             }
+            else if (msg.msgtype === "updateUserData") {
+                updateUserData(msg)
+            }
             else {
                 console.log(msg.msgtype)
             }
-        })
-        
-
-        /*
-        socket.on("updateLocalUserData", data => {
-            if (room.users[name]) {
-                room.users[name].data = data
-            }
-            socket.to(roomName).emit("updateRemoteUserData", {
-                name: name,
-                data, data
-            });
-        });
-
-        socket.on("updateRoomData", data => {
-            if (room) {
-                room.data = data
-            }
-        });
-
-
-*/
+        })        
 
         var send = msg => {
             socket.send(JSON.stringify(msg))
@@ -124,9 +106,8 @@ module.exports = function (app, httpsServer) {
 
         var signal = signal => {
             signal.fromId = id
-            if (!signal.from) {
-                signal.from = name
-            }
+            signal.from = name
+
             try {
                 if (signal.toId) {
                     sendToId(signal.toId, signal)
@@ -136,6 +117,20 @@ module.exports = function (app, httpsServer) {
                 }
             }
             catch (e) {}
+        }
+
+        var updateUserData = msg => {
+            msg.name = name
+            if (room.users[name]) {
+                room.users[name].data = msg
+            }
+            sendToRoom(msg)
+        }
+
+        var updateRoomData = data => {
+            if (room) {
+                room.data = data
+            }
         }
 
     })

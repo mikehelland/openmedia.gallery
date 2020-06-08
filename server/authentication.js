@@ -2,6 +2,20 @@ module.exports = function (app) {
     const passport = require("passport");
     const bcrypt = require('bcrypt');
 
+    // make sure there is at least an admin user
+    var db = app.get("db")
+    if (db) {
+        db.run("select * from users limit 1", (err, results) => {
+            if (results.length === 0) {
+                console.log("adding admin user")
+                bcrypt.hash("admin", 10, function(err, hash) {
+                    var newUser = {username: "admin", bpassword: hash, admin:true};
+                    db.users.save(newUser)
+                })
+            }
+        })    
+    } 
+
     app.use(passport.initialize());
     app.use(passport.session());
     passport.serializeUser(function(user, done) {
