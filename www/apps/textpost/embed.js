@@ -28,7 +28,7 @@ OMGEmbeddedViewerTEXTPOST.prototype.markdown = function (input) {
         this.converter = new showdown.Converter()
     }
 
-    this.div.innerHTML = "<p class='omg-thing-p'>" + this.converter.makeHtml(input) + "</p>";
+    this.div.innerHTML = "<div class='omg-thing-p'>" + this.converter.makeHtml(input) + "</div>";
 }
 
 if (typeof omg === "object" && omg.types && omg.types["TEXTPOST"])

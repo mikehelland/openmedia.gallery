@@ -24,6 +24,11 @@
    float: right;
    padding:5px;
 }
+
+.omg-viewer-bottom-row {
+   border-top: 1px solid #bbbbbb;
+}
+
 .omg-music-controls-play-button, .omg-thing-title, .omg-thing-user {
    display:inline-block;
 }
@@ -38,7 +43,7 @@
    font-size:1.7em;
    font-style:bold;
    cursor:pointer;
-   margin:4px;
+   margin:3px 6px;
    line-height: 32px;
 }
 
@@ -153,28 +158,17 @@
     height:100px;
 }
 
-.omg-soundset-audio-sample {
-   text-align: center;
-   padding:10px;
-   margin:5px;
-   border: 1px solid #808080;
-   border-radius: 18px;
-   width:12em;
-   display:flex;
-   background-color: #F0F0F0;
-   cursor: pointer;
-}
-.omg-soundset-audio-sample a {
-   text-decoration: none;
-   color: black;
-}
-.omg-viewer-soundset-data {
+
+.omg-viewer-comment-box {
+   border-top: 1px solid #bbbbbb;
    display: flex;
-   flex-wrap: wrap;
+   align-items: center;
+   padding:0px;
+   padding-top: 6px;
+   
 }
-.omg-soundset-audio-play {
-   width: 20px;
-}
-.omg-soundset-audio-duration {
-   margin-left: auto;
+.omg-viewer-comment-input {
+   box-sizing: border-box;
+   padding:1px;
+   flex-grow: 1;
 }

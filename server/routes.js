@@ -389,5 +389,26 @@ module.exports = (app) => {
         }); 
     };
     
+    app.post('/comments', (req, res) => {
+        var db = app.get('db');
+
+        if (!db.comments) {
+            //create comment table
+        }
+
+        db.comments.save(req.body, function(err, docs){
+            if (!err) {
+                //db.run("update things set comments = comments + 1 where id=" + req.body.id, function(err, docs){
+            }
+            else {
+                console.log(err);
+                if (err.routine === "errorMissingColumn") {
+                    db.run("alter table things add column playcount bigint default 0");
+                }
+            }
+            res.send(err || docs)
+        });
+    });
+    
 
 }

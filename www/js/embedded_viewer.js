@@ -148,29 +148,23 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
 
 OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     var bottomRow = document.createElement("div")
+    bottomRow.className = "omg-viewer-bottom-row"
 
     this.tipButton = document.createElement("div");
     this.tipButton.className = "omg-music-controls-button";
     this.tipButton.innerHTML = "Tip";
-    this.tipButton.onclick = function () {
-        
-        if (this.tipJar) {
-            omg.ui.showDialog(this.tipJar)
-            return;
-        }
-        
-        if (typeof QRious === "undefined") {
-            var scriptTag = document.createElement("script");
-            scriptTag.onload = makeTipJar;
-            scriptTag.src = "https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js";
-            scriptTag.async = true;
-            document.body.appendChild(scriptTag);
-        }
-        else {
-            makeTipJar();
-        }      
+    this.tipButton.onclick = () => {
+        this.showTipJar()
     };
     bottomRow.appendChild(this.tipButton)
+
+    this.commentButton = document.createElement("div");
+    this.commentButton.className = "omg-music-controls-button";
+    this.commentButton.innerHTML = "Comment";
+    this.commentButton.onclick = () => {
+        this.showComments()
+    };
+    bottomRow.appendChild(this.commentButton)
 
     if (this.data.id) {
         this.shareButton = document.createElement("a");
@@ -217,4 +211,78 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     }
 
     this.div.appendChild(bottomRow)
+}
+
+OMGEmbeddedViewer.prototype.showTipJar = function () {
+
+    if (this.tipJar) {
+        omg.ui.showDialog(this.tipJar)
+        return;
+    }
+    
+    if (typeof QRious === "undefined") {
+        var scriptTag = document.createElement("script");
+        scriptTag.onload = this.makeTipJar;
+        scriptTag.src = "https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js";
+        scriptTag.async = true;
+        document.body.appendChild(scriptTag);
+    }
+    else {
+        this.makeTipJar();
+    }      
+}
+
+OMGEmbeddedViewer.prototype.showComments = function () {
+    if (!this.commentSectionDiv) {
+        this.commentSectionDiv = document.createElement("div")
+        this.div.appendChild(this.commentSectionDiv)
+
+        var commentBox = document.createElement("div")
+        commentBox.className = "omg-viewer-comment-box"
+        
+        var commentUserName = document.createElement("div")
+        commentUserName.innerHTML = omg.user ? omg.user.username : "login!"
+        commentBox.appendChild(commentUserName)
+        
+        this.commentInput = document.createElement("input")
+        this.commentInput.placeholder = "type comment here..."
+        this.commentInput.className = "omg-viewer-comment-input"
+        this.commentInput.onkeypress = e => {
+            if (e.keyCode === 13) {
+                this.postComment()
+            }
+        }
+        commentBox.appendChild(this.commentInput)
+
+        var commentButton = document.createElement("button")
+        commentButton.innerHTML = "Post"
+        commentButton.onclick = e => this.postComment()
+        commentBox.appendChild(commentButton)
+
+        this.commentSectionDiv.appendChild(commentBox)
+        this.commentList = document.createElement("div")
+        this.commentSectionDiv.appendChild(this.commentList)
+    }
+
+    this.commentSectionDiv.style.display = "block"
+    omg.server.getComments(this.data.id, results => {
+        results.forEach(comment => {
+            var commentDiv = document.createElement("div")
+            commentDiv.innerHTML = comment.username + ": " + comment.text
+            this.commentList.appendChild(commentDiv)
+        })
+    })
+}
+
+OMGEmbeddedViewer.prototype.postComment = function () {
+    if (!omg.user) {
+        return
+    }
+
+    if (this.commentInput.value.trim().length === 0) {
+        return
+    }
+    omg.server.postComment(this.commentInput.value, this.data.id, res => {
+        
+    })
 }

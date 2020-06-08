@@ -103,6 +103,22 @@ omg.server.getTypes = function (callback) {
     });
 };
 
+omg.server.getComments = function (id, callback) {
+    omg.server.getHTTP("/comments/" + id, data => {
+        if (callback) callback(data)
+    });
+};
+
+omg.server.postComment = function (commentText, id, callback) {
+    var comment = {
+        text: commentText,
+        id_op: id
+    }
+    omg.server.postHTTP("/comments/", comment, data => {
+        if (callback) callback(data)
+    });
+};
+
 /***
  *  Handy search helper
  */
