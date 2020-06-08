@@ -223,7 +223,7 @@
 
         <div id="activity-log"></div>
 
-        <script src="/socket.io/socket.io.js"></script>
+        <!--<script src="/socket.io/socket.io.js"></script>-->
         <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
         <script src="/js/omgrtc.js"></script>
         <script>
@@ -240,7 +240,7 @@
 
         var userListEl = document.getElementById('user-list')
 
-        var rt = new OMGRealTime("https://openmedia.gallery/")
+        var rt = new OMGRealTime() //"https://openmedia.gallery/")
         rt.acceptAllCalls = true
 
         var activityLog = document.getElementById("activity-log")
@@ -317,6 +317,8 @@
                 user.div.style.display = "none"
             }
         }
+        rt.onuservideodisconnected = rt.onuserdisconnected
+
         rt.onuserreconnected = (name, user) => {
             user.div.style.display = "block"
         }

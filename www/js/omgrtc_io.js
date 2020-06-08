@@ -3,48 +3,32 @@ function OMGRealTime(signalingServer) {
     this.remoteUsers = {}
 
     this.autoRejoin = true
-    var url = signalingServer || location.origin
-    url = url.replace("https://", "wss://")
-    this.socket = new WebSocket(url)
 
-    this.socket.onclose = () => {
-        if (this.ondisconnect) this.ondisconnect()
-    }
+    this.socket = io(signalingServer || "")
 
-    this.socket.onmessage = e => {
-        try {
-            var msg = JSON.parse(e.data)
-        }
-        catch (e) {
-            console.log("Did not parse websocket message", e)
-        }
-
-        if (!msg || !msg.msgtype) {
-            return
-        }
-
-        if (this.events[msg.msgtype]) {
-            this.events[msg.msgtype](msg)
-        }
-    }
-
-    this.events = {}
-    
-    this.on("joined", msg => {
-        this.updateUserList(msg.data)
+    this.socket.on("joined", users => {
+        this.updateUserList(users)
         this.isJoined = true
         if (this.onjoined) this.onjoined(this.remoteUsers)
     })
     
-    this.on("update-user-list", msg => this.updateUserList(msg.data))
-    this.on("userLeft", msg => this.onUserLeft(msg.name))
-    this.on("userDisconnected", msg => this.onUserDisconnected(msg.name))
+    this.socket.on("update-user-list", users => this.updateUserList(users))
+    this.socket.on("userLeft", name => this.onUserLeft(name))
+    this.socket.on("userDisconnected", name => this.onUserDisconnected(name))
 
-    this.on("signaling", data => this.onSignal(data))
+    this.socket.on("incoming-call", async data => this.onIncomingCall(data))
+    this.socket.on("answer-made", data => this.onAnswerMade(data))
+    this.socket.on("candidate", data => this.onCandidate(data))
 
-    this.on("updateRemoteUserData", msg => this.updateRemoteUserData(msg))
+    this.socket.on("signaling", data => this.onSignal(data))
 
-    this.on("reconnect", () => {
+    this.socket.on("updateRemoteUserData", msg => this.updateRemoteUserData(msg))
+
+    this.socket.on("disconnect", () => {
+        if (this.ondisconnect) this.ondisconnect()
+    });
+
+    this.socket.on("reconnect", () => {
         if (this.autoRejoin && this.isJoined) {
             this.isRejoining = true
             this.join(this.roomName, this.userName)
@@ -59,22 +43,13 @@ OMGRealTime.prototype.log = function (message) {
     }
 }
 
-OMGRealTime.prototype.on = function (eventName, handler) {
-    this.events[eventName] = handler
-}
-
-OMGRealTime.prototype.emit = function (type, data) {
-    data.msgtype = type
-    this.socket.send(JSON.stringify(data))
-}
-
-
 OMGRealTime.prototype.getUserMedia = function (callback) {
+    this.log("Getting camera and microphone")
+
     if (this.localStream) {
         if (callback) callback(this.localVideo)
         return
     }
-    this.log("Getting camera and microphone")
 
     this.localVideo = document.createElement("video")
     this.localVideo.allowfullscreen = false
@@ -104,7 +79,7 @@ OMGRealTime.prototype.join = function (roomName, userName) {
     this.userName = userName
     this.roomName = roomName
     this.log("Joining room.")
-    this.emit("join", {
+    this.socket.emit("join", {
         name: userName,
         room: roomName
     })
@@ -166,7 +141,7 @@ OMGRealTime.prototype.setupNewUser = function (name, data) {
 OMGRealTime.prototype.onIncomingCall = async function(data) {
     this.log("incoming-offer")
     var remoteUsers = this.remoteUsers
-    var name = data.from
+    var name = data.callerName
     var user = remoteUsers[name]
     if (!user) {
         this.log("incoming caller doesn't exist", data)
@@ -190,10 +165,9 @@ OMGRealTime.prototype.onIncomingCall = async function(data) {
     }
 
     this.log("make-answer")
-    this.emit("signaling", {
-        type: "answer-made",
+    this.socket.emit("make-answer", {
         answer,
-        toId: user.id
+        to: data.socket
     });    
 };
 
@@ -202,7 +176,7 @@ OMGRealTime.prototype.onIncomingCall = async function(data) {
 OMGRealTime.prototype.onAnswerMade = async function(data) {
     var remoteUsers = this.remoteUsers
     this.log("answer-made")
-    var name = data.from
+    var name = data.calleeName
     var user = remoteUsers[name]
     if (!user) {
         this.log("onanswermade calleeName doesn't exist", name)
@@ -218,7 +192,7 @@ OMGRealTime.prototype.onAnswerMade = async function(data) {
 };
 
 OMGRealTime.prototype.onCandidate = function (data) {
-    var name = data.from
+    var name = data.caller
     var user = this.remoteUsers[name]
     if (!user) {
         this.log("caller doesn't exist", name)
@@ -246,10 +220,9 @@ OMGRealTime.prototype.callUser = async function(name, callback) {
 
     user.outgoingCallCallback = callback
     var whenReady = () => {
-        this.emit("signaling", {
+        this.socket.emit("signaling", {
             from: this.userName,
             to: name,
-            toId: user.id,
             type: "call"
         })
     }
@@ -292,9 +265,8 @@ OMGRealTime.prototype.createPeerConnection = function (user) {
     peerConnection.onicecandidate = (event) => {
         console.log("onicecandidate")
         if (event.candidate) {
-            this.emit("signaling", {
-                type: "candidate",
-                toId: user.id,
+            this.socket.emit("candidate", {
+                to: user.id,
                 candidate: event.candidate.candidate,
                 label: event.candidate.sdpMLineIndex,
                 id: event.candidate.sdpMid
@@ -313,10 +285,9 @@ OMGRealTime.prototype.createPeerConnection = function (user) {
             return peerConnection.setLocalDescription(offer);
         })
         .then(() => {
-            this.emit("signaling", {
-                type: "offer",
+            this.socket.emit("call-user", {
                 offer: peerConnection.localDescription, 
-                toId: user.id
+                to: user.id
             })
         })
         .catch((error) => this.log("error negotiating"));
@@ -368,7 +339,7 @@ OMGRealTime.prototype.createPeerConnection = function (user) {
 }
 
 OMGRealTime.prototype.updateLocalUserData = function (user) {
-    this.emit("updateLocalUserData", user)
+    this.socket.emit("updateLocalUserData", user)
 }
 
 OMGRealTime.prototype.updateRemoteUserData = function (msg) {
@@ -385,30 +356,25 @@ OMGRealTime.prototype.updateRemoteUserData = function (msg) {
 }
 
 OMGRealTime.prototype.sendTextMessage = function (remoteUserName, message) {
-    if (this.remoteUsers[remoteUserName]) {
-        this.emit("signaling", {
-            type: "textMessage",
-            to: remoteUserName,
-            toId: this.remoteUsers[remoteUserName].id,
-            from: this.userName,
-            message: message
-        })    
-    }
+    this.socket.emit("signaling", {
+        type: "textMessage",
+        to: remoteUserName,
+        from: this.userName,
+        message: message
+    })
 }
 
 OMGRealTime.prototype.sendCommand = function (remoteUserName, command) {
-    if (this.remoteUsers[remoteUserName]) {
-        this.emit("signaling", {
-            type: "command",
-            toId: this.remoteUsers[remoteUserName],
-            from: this.userName,
-            command: command
-        })
-    }
+    this.socket.emit("signaling", {
+        type: "command",
+        to: remoteUserName,
+        from: this.userName,
+        command: command
+    })
 }
 
 OMGRealTime.prototype.sendCommandToRoom = function (command) {
-    this.emit("signaling", {
+    this.socket.emit("signaling", {
         type: "command",
         from: this.userName,
         command: command,
@@ -427,15 +393,6 @@ OMGRealTime.prototype.onSignal = function (signal) {
     else if (signal.type === "pickup") {
         this.onPickUp(signal)
     }
-    else if (signal.type === "offer") {
-        this.onIncomingCall(signal)
-    }
-    else if (signal.type === "candidate") {
-        this.onCandidate(signal)
-    }
-    else if (signal.type === "answer-made") {
-        this.onAnswerMade(signal)
-    }
     else if (signal.type === "textMessage") {
         this.ontextmessage(signal)
     }
@@ -447,19 +404,21 @@ OMGRealTime.prototype.onSignal = function (signal) {
 OMGRealTime.prototype.onGetCall = function (signal) {
     this.log("get call " + signal.from)
     var pickUp = () => {
-        var msg = {
-            type: "pickup",
-            from: this.userName,
-            to: signal.from,
-            toId: signal.fromId
-        }
         if (!this.localStream) {
             this.getUserMedia(() => {
-                this.emit("signaling", msg)
+                this.socket.emit("signaling", {
+                    type: "pickup",
+                    from: this.userName,
+                    to: signal.from
+                })
             })
         }
         else {
-            this.emit("signaling", msg)
+            this.socket.emit("signaling", {
+                type: "pickup",
+                from: this.userName,
+                to: signal.from
+            })
         }
     }
 
@@ -513,10 +472,12 @@ OMGRealTime.prototype.closeConnections = function () {
 }
 
 OMGRealTime.prototype.leave = function () {
-    this.emit("leave", {})
+    this.socket.emit("leave", this.userName)
 }
 
 OMGRealTime.prototype.updateRoomData = function (data) {
-    this.emit("updateRoomData", data)
+    this.socket.emit("updateRoomData", data)
 }
 
+
+//[1] https://ourcodeworld.com/articles/read/1175/how-to-create-and-configure-your-own-stun-turn-server-with-coturn-in-ubuntu-18-04

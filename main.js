@@ -14,6 +14,7 @@ require("./server/database")(app)
 
 const httpsServer = listen()
 
-require("./server/sockets")(app, httpsServer)
+//require("./server/sockets")(app, httpsServer)
+require("./server/sockets2")(app, httpsServer)
 
 //var viewer = require("./viewer.js");
