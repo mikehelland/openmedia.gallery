@@ -7,6 +7,10 @@ function OMGRealTime(signalingServer) {
     url = url.replace("https://", "wss://")
     this.socket = new WebSocket(url)
 
+    this.socket.onopen = (e) => {
+        if (this.onready) this.onready()
+    }
+
     this.socket.onclose = () => {
         if (this.ondisconnect) this.ondisconnect()
     }
