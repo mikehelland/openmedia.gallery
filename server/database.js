@@ -6,10 +6,14 @@ module.exports = function (app) {
     Run with ./runomg.sh
 
     Check:
-    1. OMG_DB_NAME environment variable is set          export OMG_DB_NAME=name
-    2. OMG_DB_PW environment variable is set            export OMG_DB_PW=password
-    3. Make sure Postgresql 9.4 or later is installed   sudo apt install postgresql postgresql-contrib        
-    4. Also make sure database exists                   ./create_database.sh`
+    1. OMG_DB_NAME environment variable is set          
+        export OMG_DB_NAME=name
+    2. OMG_DB_PW environment variable is set            
+        export OMG_DB_PW=password
+    3. Make sure Postgresql 9.4 or later is installed   
+        sudo apt install postgresql postgresql-contrib        
+    4. Also make sure database exists                   
+        ./create_database.sh`
 
     var db
     var connect = () => {
@@ -49,6 +53,7 @@ module.exports = function (app) {
                 downvotes bigint default 0,
                 deleted boolean default false,
                 other jsonb)`, (err,res) => {
+                    // remake the db object so it has the new table
                     connect()
                 })
         }

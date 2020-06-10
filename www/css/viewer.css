@@ -7,10 +7,14 @@
    border:1px solid #808080;
    font-size:90%;
    color:black;
-   background: rgba(0, 0, 0, 0) linear-gradient(135deg, rgb(249, 241, 232) 0%, rgb(205, 214, 227) 100%) repeat scroll 0% 0%;
    margin-top:9px;
    margin-bottom:9px;
 }
+
+.omg-viewer-thing {
+   background: rgba(0, 0, 0, 0) linear-gradient(135deg, rgb(249, 241, 232) 0%, rgb(205, 214, 227) 100%) repeat scroll 0% 0%;
+}
+
 .omg-music-controls-button {
    display:inline-block;
    margin-right: 0 5px;
@@ -163,7 +167,7 @@
    border-top: 1px solid #bbbbbb;
    display: flex;
    align-items: center;
-   padding:0px;
+   padding:3px;
    padding-top: 6px;
    
 }
@@ -171,15 +175,39 @@
    box-sizing: border-box;
    padding:1px;
    flex-grow: 1;
+   margin-left: 3px;
 }
 
 .omg-viewer-comment {
+   margin: 3px;
+   margin-left: 9px;
+}
+
+.omg-viewer-comment-text {
    padding: 7px;
-   margin: 7px;
    border-radius: 4px;
    background-color: #cccccc;
 }
 
-.omg-viewer-comment-username {
+.omg-viewer-comment-section a {
    color:darkblue;
+}
+
+.omg-viewer-comment-button {
+   padding-left: 0px;
+   padding-right: 0px;
+}
+
+.omg-viewer-comment-tools {
+   color:darkblue;
+   margin-left: 3px;
+   padding:3px;
+}
+
+.omg-viewer-comment-reply-to {
+   cursor: pointer;
+}
+
+.omg-viewer-comment-section {
+   background-color: #b1b1b1;
 }

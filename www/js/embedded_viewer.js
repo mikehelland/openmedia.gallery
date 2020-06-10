@@ -8,11 +8,13 @@ if (typeof omg === "undefined") {
 function OMGEmbeddedViewer(params) {
     this.params = params
     this.data = params.data
-    this.div = params.div
     this.metaData = params.metaData
+    this.parentDiv = params.div
+    this.div = document.createElement("div")
+    this.div.className = "omg-viewer-thing"
+    this.parentDiv.appendChild(this.div)
 
-
-    //figure out its type, and a viewer.js
+    //figure out its type, and a viewer script
     if (this.data.type) {
         if (omg.types[this.data.type]) {//} && omg.types[this.data.type].embed) {
             this.type = omg.types[this.data.type]
@@ -247,71 +249,20 @@ OMGEmbeddedViewer.prototype.showComments = function () {
         return
     }
 
-    if (!this.commentSectionDiv) {
-        this.commentSectionDiv = document.createElement("div")
-        this.div.appendChild(this.commentSectionDiv)
-
-        var commentBox = document.createElement("div")
-        commentBox.className = "omg-viewer-comment-box"
-        
-        var commentUserName = document.createElement("div")
-        commentUserName.innerHTML = omg.user ? omg.user.username : "login!"
-        commentBox.appendChild(commentUserName)
-        
-        this.commentInput = document.createElement("input")
-        this.commentInput.placeholder = "type comment here..."
-        this.commentInput.className = "omg-viewer-comment-input"
-        this.commentInput.onkeypress = e => {
-            if (e.keyCode === 13) {
-                this.postComment()
-            }
-        }
-        commentBox.appendChild(this.commentInput)
-
-        var commentButton = document.createElement("button")
-        commentButton.innerHTML = "Post"
-        commentButton.onclick = e => this.postComment()
-        commentBox.appendChild(commentButton)
-
-        this.commentSectionDiv.appendChild(commentBox)
-        this.commentList = document.createElement("div")
-        this.commentSectionDiv.appendChild(this.commentList)
+    if (!this.commentSection) {
+        this.commentSection = new OMGComments(this.data.id)
+        this.commentSectionDiv = this.commentSection.div
+        this.parentDiv.appendChild(this.commentSectionDiv)
     }
     else {
-        this.commentList.innerHTML = ""
+        this.commentSection.commentList.innerHTML = ""
     }
 
     this.commentSectionDiv.style.display = "block"
     omg.server.getComments(this.data.id, results => {
         results.forEach(comment => {
-            this.makeCommentDiv(comment)
+            this.commentSection.makeCommentDiv(comment)
         })
     })
     this.isCommentsShowing = true
-}
-
-OMGEmbeddedViewer.prototype.postComment = function () {
-    if (!omg.user) {
-        alert("login first")
-        return
-    }
-
-    if (this.commentInput.value.trim().length === 0) {
-        return
-    }
-    omg.server.postComment(this.commentInput.value, this.data.id, 0, res => {
-        console.log(res)
-        this.commentInput.value = ""
-        this.makeCommentDiv(res)
-    })
-}
-
-OMGEmbeddedViewer.prototype.makeCommentDiv = function (comment) {
-
-    var commentDiv = document.createElement("div")
-    commentDiv.innerHTML = "<a href='' class='omg-viewer-comment-username'>" + 
-                            comment.username.trim() + "</a> " + comment.text
-    commentDiv.className = "omg-viewer-comment"
-    this.commentList.appendChild(commentDiv)
-
 }

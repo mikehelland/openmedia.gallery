@@ -167,7 +167,7 @@ omg.loadSearchResults = function (params, results) {
         params.resultList.appendChild(prevButton)
         prevButton.onclick = () => {
             params.page -= 1
-            omg.search(params)
+            omg.search(params, true)
         }
     }
 
@@ -185,7 +185,7 @@ omg.loadSearchResults = function (params, results) {
         params.resultList.appendChild(nextButton)
         nextButton.onclick = () => {
             params.page = (params.page || 1) + 1
-            omg.search(params)
+            omg.search(params, true)
         }    
     }
 };

@@ -71,6 +71,7 @@ return `<!DOCTYPE html>
 
    <script src="/js/omgservice.js"></script>
    <script src="/js/embedded_viewer.js"></script>
+   <script src="/js/comments.js"></script>
 
    <script src="/js/usercontrols.js"></script>
    <script src="/js/sharecontrols.js"></script>
