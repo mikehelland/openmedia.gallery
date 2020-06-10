@@ -109,10 +109,11 @@ omg.server.getComments = function (id, callback) {
     });
 };
 
-omg.server.postComment = function (commentText, id, callback) {
+omg.server.postComment = function (commentText, id_thing, id_parent, callback) {
     var comment = {
         text: commentText,
-        id_op: id
+        id_thing: id_thing,
+        id_parent, id_parent
     }
     omg.server.postHTTP("/comments/", comment, data => {
         if (callback) callback(data)
@@ -175,33 +176,8 @@ omg.loadSearchResults = function (params, results) {
     }
 
     results.forEach(function (result) {
-        var resultDiv = document.createElement("div");
-        resultDiv.className = "omg-viewer";
-        params.resultList.appendChild(resultDiv);
-
-        var viewerParams = params.viewerParams || {}
-        viewerParams.div = resultDiv
-        viewerParams.height = 80
-        viewerParams.onPlay = params.onPlay
-        viewerParams.onStop = params.onStop
-
-        if (params.metaData) {
-            viewerParams.data = result.body;
-            viewerParams.data.id = result.id
-        }
-        else {
-            viewerParams.data = result;
-        }
-        new OMGEmbeddedViewer(viewerParams);
-
-        resultDiv.onclick = function () {
-            var page;
-            if (result.type == "SOUNDSET") {
-                page = "soundset.htm";
-                window.location = page + "?id=" + result.id;
-            }
-        };
-   });
+        omg.loadSearchResult(result, params)
+    });
 
     if (!params.noNextPrev) {
         var nextButton = document.createElement("button")
@@ -213,6 +189,35 @@ omg.loadSearchResults = function (params, results) {
         }    
     }
 };
+
+omg.loadSearchResult = function (result, params) {
+
+    var resultDiv = document.createElement("div");
+    resultDiv.className = "omg-viewer";
+
+    if (params.prepend) {
+        params.resultList.insertBefore(resultDiv, params.resultList.firstChild)
+    }
+    else {
+        params.resultList.appendChild(resultDiv)
+    }
+
+    var viewerParams = params.viewerParams || {}
+    viewerParams.div = resultDiv
+    viewerParams.height = 80
+    viewerParams.onPlay = params.onPlay
+    viewerParams.onStop = params.onStop
+
+    if (params.metaData) {
+        viewerParams.metaData = result
+        viewerParams.data = result.body;
+        viewerParams.data.id = result.id
+    }
+    else {
+        viewerParams.data = result;
+    }
+    new OMGEmbeddedViewer(viewerParams);
+}
 
 /** 
  * Utility functions for the client

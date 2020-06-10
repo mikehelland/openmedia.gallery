@@ -307,6 +307,9 @@ document.getElementById("post-button").onclick = e => {
 
     omg.server.post(newPost, result => {
         postInput.value = ""
+        
+        omg.loadSearchResult(result, {prepend: true, 
+            resultList: fp.searchParams.resultList})
     })
 }
 

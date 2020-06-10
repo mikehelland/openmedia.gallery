@@ -79,9 +79,12 @@ return `<!DOCTYPE html>
    window.onload = function () {
         setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
         omg.setupShareWindow();
+        data.body.id = data.id
         omg.server.getTypes(() => {
             viewer = new OMGEmbeddedViewer({div: document.getElementById("omgviewer"),
             data: data.body,
+            metaData: data,
+            showComments: true,
             height: window.innerHeight - 44 - 250});
         })
     }

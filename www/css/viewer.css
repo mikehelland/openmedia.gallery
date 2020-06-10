@@ -8,8 +8,8 @@
    font-size:90%;
    color:black;
    background: rgba(0, 0, 0, 0) linear-gradient(135deg, rgb(249, 241, 232) 0%, rgb(205, 214, 227) 100%) repeat scroll 0% 0%;
-   margin-top:6px;
-   margin-bottom:6px;
+   margin-top:9px;
+   margin-bottom:9px;
 }
 .omg-music-controls-button {
    display:inline-block;
@@ -171,4 +171,15 @@
    box-sizing: border-box;
    padding:1px;
    flex-grow: 1;
+}
+
+.omg-viewer-comment {
+   padding: 7px;
+   margin: 7px;
+   border-radius: 4px;
+   background-color: #cccccc;
+}
+
+.omg-viewer-comment-username {
+   color:darkblue;
 }

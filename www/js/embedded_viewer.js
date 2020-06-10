@@ -9,6 +9,7 @@ function OMGEmbeddedViewer(params) {
     this.params = params
     this.data = params.data
     this.div = params.div
+    this.metaData = params.metaData
 
 
     //figure out its type, and a viewer.js
@@ -56,6 +57,10 @@ function OMGEmbeddedViewer(params) {
     }
     else {
         this.embedViewer = new this.type.embedClass(this.data, this.embedDiv)
+    }
+
+    if (this.params.showComments) {
+        this.showComments()
     }
 };
 
@@ -161,6 +166,9 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     this.commentButton = document.createElement("div");
     this.commentButton.className = "omg-music-controls-button";
     this.commentButton.innerHTML = "Comment";
+    if (this.metaData && this.metaData.commentcount > 0) {
+        this.commentButton.innerHTML += " (" + this.metaData.commentcount + ")"
+    }
     this.commentButton.onclick = () => {
         this.showComments()
     };
@@ -233,6 +241,12 @@ OMGEmbeddedViewer.prototype.showTipJar = function () {
 }
 
 OMGEmbeddedViewer.prototype.showComments = function () {
+    if (this.isCommentsShowing) {
+        this.commentSectionDiv.style.display = "none"
+        this.isCommentsShowing = false
+        return
+    }
+
     if (!this.commentSectionDiv) {
         this.commentSectionDiv = document.createElement("div")
         this.div.appendChild(this.commentSectionDiv)
@@ -263,26 +277,41 @@ OMGEmbeddedViewer.prototype.showComments = function () {
         this.commentList = document.createElement("div")
         this.commentSectionDiv.appendChild(this.commentList)
     }
+    else {
+        this.commentList.innerHTML = ""
+    }
 
     this.commentSectionDiv.style.display = "block"
     omg.server.getComments(this.data.id, results => {
         results.forEach(comment => {
-            var commentDiv = document.createElement("div")
-            commentDiv.innerHTML = comment.username + ": " + comment.text
-            this.commentList.appendChild(commentDiv)
+            this.makeCommentDiv(comment)
         })
     })
+    this.isCommentsShowing = true
 }
 
 OMGEmbeddedViewer.prototype.postComment = function () {
     if (!omg.user) {
+        alert("login first")
         return
     }
 
     if (this.commentInput.value.trim().length === 0) {
         return
     }
-    omg.server.postComment(this.commentInput.value, this.data.id, res => {
-        
+    omg.server.postComment(this.commentInput.value, this.data.id, 0, res => {
+        console.log(res)
+        this.commentInput.value = ""
+        this.makeCommentDiv(res)
     })
+}
+
+OMGEmbeddedViewer.prototype.makeCommentDiv = function (comment) {
+
+    var commentDiv = document.createElement("div")
+    commentDiv.innerHTML = "<a href='' class='omg-viewer-comment-username'>" + 
+                            comment.username.trim() + "</a> " + comment.text
+    commentDiv.className = "omg-viewer-comment"
+    this.commentList.appendChild(commentDiv)
+
 }

@@ -1,6 +1,7 @@
 module.exports = (app) => {
 
     var viewer = require("./viewer.js")
+    var findColumns = ["playcount", "commentcount", "id", "body"]
 
     app.get('/user', function (req, res) {
         if (req.user) {
@@ -66,6 +67,7 @@ module.exports = (app) => {
         };
 
         // can only get full records (include playcount, votes etc) without text search
+        //todo, wait, what? is that true
         if (req.query.metaData && !req.query.q) {
             getRecords(req, res, options, callback)
         }
@@ -191,9 +193,6 @@ module.exports = (app) => {
         db.run("update things set playcount = playcount + 1 where id=" + req.body.id, function(err, docs){
             if (err) {
                 console.log(err);
-                if (err.routine === "errorMissingColumn") {
-                    db.run("alter table things add column playcount bigint default 0");
-                }
             }
             res.send(err || docs)
         });
@@ -204,7 +203,7 @@ module.exports = (app) => {
         
         var perPage = req.query.perPage || 20;
         db.things.find({"playcount >": 0}, {
-            columns: ["playcount", "id", "body"],
+            columns: findColumns,
             order: "playcount desc",
             offset: (parseInt(req.query.page || "1") - 1) * perPage,
             limit: perPage
@@ -311,16 +310,11 @@ module.exports = (app) => {
                 options.order = "playcount desc"
             }
         }
-    
+        options.columns = findColumns
         if (req.query.q) {
             find = {keys:["body ->> 'tags'", "body ->> 'name'"], term: req.query.q};
-            options.columns = ["playcount", "id", "body"]
-            db.things.find(find, options, callback)    
         }
-        else {
-            options.columns = ["playcount", "id", "body"]
-            db.things.find(find, options, callback)    
-        }
+        db.things.find(find, options, callback)
     };
     
     var getDocs = function (req, res, options, callback) {
@@ -390,25 +384,30 @@ module.exports = (app) => {
     };
     
     app.post('/comments', (req, res) => {
-        var db = app.get('db');
-
-        if (!db.comments) {
-            //create comment table
+        if (!req.user) {
+            res.send("no user")
+            return
         }
+        req.body.id_user = req.user.id
+        req.body.username = req.user.username
 
-        db.comments.save(req.body, function(err, docs){
-            if (!err) {
-                //db.run("update things set comments = comments + 1 where id=" + req.body.id, function(err, docs){
-            }
-            else {
+        var db = app.get('db')
+        db.query("update things set commentcount = commentcount + 1 where id=" + req.body.id_thing, function(err, docs){
+            if (err) {
                 console.log(err);
-                if (err.routine === "errorMissingColumn") {
-                    db.run("alter table things add column playcount bigint default 0");
-                }
+                res.send(err)
+                return
             }
+            db.comments.save(req.body, function(err, docs){
+                res.send(err || docs)
+            });
+        });
+    });
+
+    app.get('/comments/:id', (req, res) => {
+        app.get('db').comments.find({id_thing: req.params.id}, function(err, docs){
             res.send(err || docs)
         });
     });
-    
 
 }

@@ -5,7 +5,18 @@
 
    <link rel="stylesheet" href="css/main.css" type="text/css" />
    <link rel="stylesheet" href="css/viewer.css" type="text/css" />
-
+   <style>
+      .main-body {
+         display: flex;
+         flex-direction: row;
+      }
+      .main-column {
+         flex-grow: 1;
+      }
+      .left-or-top-column {
+         margin-right: 20px;
+      }
+   </style>
 </head>
 <body>
 
@@ -27,6 +38,7 @@
       <hr>
       <div class="user-info">
           Tip Jar Bitcoin address:
+          <br>
           <input id="btc-address">
       </div>
 
