@@ -27,7 +27,6 @@
             grid-area: gauntlet;
             padding:10px 20px;
             background-color:#202020;
-            text-align:center;
             display:flex;
             flex-direction: column;
             flex-grow: 2;
@@ -164,7 +163,7 @@
 
     <div class="now-playing">
         <!-- <div class="now-playing-caption">Preview: <span id="now-playing-title"></span><br></div>-->
-        <div id="welcome-panel">
+        <div id="thing-detail-panel">
 
         </div>
         <!-- FOUC on firefox <iframe id="gauntlet"></iframe>-->
@@ -222,36 +221,37 @@ fp.nowPlaying = document.getElementsByClassName("now-playing")[0]
 fp.searchParams.viewerParams = {}
 fp.searchParams.viewerParams.useExternalPlayer = true
 
+var thingDetail = document.getElementById("thing-detail-panel")
+        
 fp.searchParams.viewerParams.onclickcontent = viewer => {
+
+    if (fp.iframe) {
+        fp.iframe.style.display = "none"
+    }
+    thingDetail.innerHTML = ""
+        
+    if (!viewer.viewerURL) {
+        console.log(viewer.metaData)
+        omg.loadSearchResult(viewer.metaData, {
+            resultList: thingDetail, 
+            viewerParams: {showComments: true},
+            metaData: true
+        })
+        return
+    }
+
     if (!fp.iframe) {
-        var welcome = document.getElementById("welcome-panel")
         fp.iframe = document.createElement("iframe")
         fp.nowPlaying.appendChild(fp.iframe)
         
-        welcome.style.display = "none"
-        fp.iframe.style.display = "block"
     }
 
+    fp.iframe.style.display = "block"
     fp.iframe.src = viewer.viewerURL + "?id=" + viewer.data.id
     fp.lastViewer = viewer
     
 }
 
-fp.searchParams.viewerParams.onplaybuttonclick = function (viewer) {
-
-    if (!fp.iframe) {
-        var welcome = document.getElementById("welcome-panel")
-        fp.iframe = document.createElement("iframe")
-        fp.nowPlaying.appendChild(fp.iframe)
-        
-        welcome.style.display = "none"
-        fp.iframe.style.display = "block"
-    }
-
-    console.log(viewer.data.type)
-    fp.iframe.src = omg.types[viewer.data.type].viewers[0].url + "?id=" + viewer.data.id
-    fp.lastViewer = viewer
-}
 
 window.onload = function () {
 

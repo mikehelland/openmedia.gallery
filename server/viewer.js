@@ -51,7 +51,7 @@ return `<!DOCTYPE html>
         </a>
 
         <div class="main-description">
-            Find, create, and customize music for your project.
+            <!--Find, create, and customize music for your project.-->
         </div>
 
         <div class="title-bar-user-controls"></div>
