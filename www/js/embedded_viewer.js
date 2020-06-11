@@ -47,10 +47,13 @@ function OMGEmbeddedViewer(params) {
 
     this.setupControls(params);
     
-    if (!this.type.embedClass) {
+    if (!this.data.type) {
+        this.embedDiv.innerHTML = JSON.stringify(this.data).substr(0,64) + "..."
+    }
+    else if (!this.type.embedClass) {
         if (this.type.onready) {
             this.type.onready.push(() => {
-                this.embedViewer = new this.type.embedClass(this.data, this.embedDiv)
+                this.embedViewer = new this.type.embedClass(this)
             })    
         }
         else {
@@ -58,7 +61,7 @@ function OMGEmbeddedViewer(params) {
         }
     }
     else {
-        this.embedViewer = new this.type.embedClass(this.data, this.embedDiv)
+        this.embedViewer = new this.type.embedClass(this)
     }
 
     if (this.params.showComments) {
@@ -73,11 +76,14 @@ OMGEmbeddedViewer.prototype.setupControls = function (params) {
 
     //the guts
     this.embedDiv = document.createElement("div")
-    this.embedDiv.style.maxHeight = (params.height || 150) + "px";
-    this.embedDiv.style.overflow = "hidden"
-    this.embedDiv.style.cursor = "pointer"
-    this.embedDiv.onclick = e => {
-        if (this.params.onclickcontent) {
+    if (params.maxHeight) {
+        this.embedDiv.style.maxHeight = params.maxHeight + "px";
+    }
+    this.embedDiv.className = "omg-viewer-embed"
+    
+    if (this.params.onclickcontent) {
+        this.embedDiv.style.cursor = "pointer"
+        this.embedDiv.onclick = e => {
             this.params.onclickcontent(this)
         }    
     }
@@ -121,7 +127,7 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
     //caption
     this.captionDiv = document.createElement("div");
     this.caption = this.data.name || this.data.tags || "";
-    if (this.caption.length === 0) {
+    if (this.caption.length === 0 && this.data.type) {
         // show (type) as caption if there isn't one
         this.caption = "<span class='omg-thing-type'>" + this.data.type.substring(0, 1).toUpperCase() +
             this.data.type.substring(1).toLowerCase() + "</span>";

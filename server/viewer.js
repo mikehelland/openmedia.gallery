@@ -83,10 +83,11 @@ return `<!DOCTYPE html>
         data.body.id = data.id
         omg.server.getTypes(() => {
             viewer = new OMGEmbeddedViewer({div: document.getElementById("omgviewer"),
-            data: data.body,
-            metaData: data,
-            showComments: true,
-            height: window.innerHeight - 44 - 250});
+                data: data.body,
+                metaData: data,
+                showComments: true,
+                //height: window.innerHeight - 44 - 250
+            });
         })
     }
    </script>

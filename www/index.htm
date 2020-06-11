@@ -106,6 +106,22 @@
         #post-text {
             height:5em;
             width: 100%;
+            box-sizing: border-box;
+        }
+
+        .drop-zone-hover {
+            border: 10px dashed #1db918;
+        }
+        .post-attachment-upload {
+            border: 1px solid #808080;
+            padding:3px;
+            display: flex;
+            flex-direction: row;
+        }
+        .post-attachment-upload-status {
+            text-align:right;
+            display: inline-block;
+            flex-grow: 1;
         }
    </style>
 </head>
@@ -134,8 +150,8 @@
     <div class="main-column">
 
         <p>Post your thoughts, or a file, or a link:</p>
-        <textarea id="post-text" placeholder="type stuff here..."></textarea>
-        <br>
+        <textarea id="post-text" placeholder="type stuff or drop stuff here..."></textarea>
+        <div id="post-attachments-list"></div>
         <button id="post-button">Post</button>
         
         <hr>
@@ -165,7 +181,19 @@
     <div class="now-playing">
         <!-- <div class="now-playing-caption">Preview: <span id="now-playing-title"></span><br></div>-->
         <div id="thing-detail-panel">
-
+            <br>
+            <br>
+            <div id="welcome-sign">Welcome!</div>
+            <p>Here are some features of this OMG Server:</p>
+            <ul>
+                <li>Post text, images, audio, or videos</li>
+                <li>Fully nested comments</li>
+                <li>Combine media to make more media</li>
+                <li>Live Collaboration</li>
+                <li>Multi-Party Video Chat</li>
+                <li>Bitcoin Tip Jar for every post and user</li>
+                
+            </ul> 
         </div>
         <!-- FOUC on firefox <iframe id="gauntlet"></iframe>-->
     </div>
@@ -179,143 +207,7 @@
     <script src="js/comments.js"></script>
 
     <script src="js/usercontrols.js"></script>
-<script>
-document.getElementById("main-header-link").innerHTML = window.location.hostname
-document.title = window.location.hostname
-setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
-
-
-
-
-// fp is the front page 
-var fp = {};
-fp.searchParams = omg.util.getPageParams();
-fp.searchParams.resultList = document.getElementsByClassName("search-things")[0];
-fp.searchParams.metaData = true
-
-fp.search = function () {
-    fp.searchParams.type = fp.searchType.value
-    fp.searchParams.sort = fp.searchSort.value
-    fp.searchParams.users = fp.searchUser.value
-    fp.searchParams.q = fp.searchTerms.value
-    omg.search(fp.searchParams, true);
-};
-
-fp.searchType = document.getElementById("search-type");
-fp.searchSort = document.getElementById("search-sort");
-fp.searchUser = document.getElementById("search-user");
-fp.searchTerms = document.getElementById("search-terms");
-
-fp.searchType.onchange = fp.search
-fp.searchSort.onchange = fp.search
-fp.searchUser.onchange = fp.search
-fp.searchTerms.onkeypress = e => {
-    if (e.charCode === 13) {
-        fp.search()
-    }
-}
-
-fp.isMobileDiv = document.getElementsByClassName("is-mobile")[0]
-fp.nowPlayingTitle = document.getElementById("now-playing-title")
-fp.nowPlaying = document.getElementsByClassName("now-playing")[0]
-
-fp.searchParams.viewerParams = {}
-fp.searchParams.viewerParams.height = 90
-fp.searchParams.viewerParams.useExternalPlayer = true
-
-var thingDetail = document.getElementById("thing-detail-panel")
-        
-fp.searchParams.viewerParams.onclickcontent = viewer => {
-
-    if (fp.iframe) {
-        fp.iframe.style.display = "none"
-    }
-    thingDetail.innerHTML = ""
-        
-    if (!viewer.viewerURL) {
-        console.log(viewer.metaData)
-        omg.loadSearchResult(viewer.metaData, {
-            resultList: thingDetail, 
-            viewerParams: {showComments: true},
-            metaData: true
-        })
-        return
-    }
-
-    if (!fp.iframe) {
-        fp.iframe = document.createElement("iframe")
-        fp.nowPlaying.appendChild(fp.iframe)
-        
-    }
-
-    fp.iframe.style.display = "block"
-    fp.iframe.src = viewer.viewerURL + "?id=" + viewer.data.id
-    fp.lastViewer = viewer
-    
-}
-
-
-window.onload = function () {
-
-    if (window.location.hash.length === 0 || window.location.hash === "#most-plays") {
-    }
-    if (window.location.hash === "#most-recent") {
-        //todo
-    }
-};
-
-var menuVisible = false;
-document.getElementsByClassName("main-nav-drawer-icon")[0].onclick = function () {
-    document.getElementsByClassName("main-nav")[0].style.display = menuVisible ? 
-            "" : "block";
-    menuVisible = !menuVisible;
-};
-
-
-var listEl = document.getElementById("create-list")
-omg.server.getTypes(types => {
-    for (var type in types) {
-        var optionEl = document.createElement("option")
-        optionEl.innerHTML = type
-        fp.searchType.appendChild(optionEl)
-
-        if (types[type].editors.length > 0) {
-            var editorLink = document.createElement("li")
-            editorLink.innerHTML = "<a href='" + types[type].editors[0].url + 
-                    "' class='create-link'>+ <span class='nav-text'>" + type + "</span></a>"
-            listEl.appendChild(editorLink)
-        }
-    }
-    fp.search()
-
-})
-
-var postInput = document.getElementById("post-text")
-document.getElementById("post-button").onclick = e => {
-    //are we logged in?
-    if (!omg.user) {
-        alert("you have to log in first")
-        return
-    }
-
-    if (postInput.value.trim().length === 0) {
-        return
-    }
-
-    var newPost = {
-        type: "TEXTPOST",
-        text: postInput.value
-    }
-
-    omg.server.post(newPost, result => {
-        postInput.value = ""
-        
-        omg.loadSearchResult(result, {prepend: true, 
-            resultList: fp.searchParams.resultList})
-    })
-}
-
-</script>
+    <script src="index.js"></script>
 </body>
 
 </html>

@@ -289,6 +289,9 @@ module.exports = (app) => {
         if (req.query.users === "me") {
             find["body ->> 'user_id'"] = req.user ? req.user.id : -1;
         }
+        else {
+            find["body ->> 'draft'"]  = null
+        }
         if (req.query.type) {
             if (req.query.type === "MELODY" || req.query.type === "BASSLINE" || req.query.type === "DRUMBEAT") {
                 find["body ->> 'partType'"] = req.query.type;
