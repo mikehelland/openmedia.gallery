@@ -39,6 +39,7 @@ function OMGComments(id) {
 
     this.div.appendChild(commentBox)
     this.commentList = document.createElement("div")
+    this.commentList.className = "omg-viewer-comments"
     this.div.appendChild(this.commentList)
 }
 
@@ -71,7 +72,7 @@ OMGComments.prototype.makeCommentDiv = function (comment, fresh, afterDiv) {
 
     this.tree[comment.id] = commentDiv
     var parentDiv = this.tree[comment.id_parent] || this.commentList
-    console.log(parentDiv)
+
     if (fresh) {
         if (afterDiv) {
             afterDiv.parentElement.insertBefore(commentDiv, afterDiv.nextSibling)
@@ -86,7 +87,7 @@ OMGComments.prototype.makeCommentDiv = function (comment, fresh, afterDiv) {
     
     var tools = document.createElement("div")
     tools.className = "omg-viewer-comment-tools"
-    var commentReplyDiv = document.createElement("div")
+    var commentReplyDiv = document.createElement("span")
     commentReplyDiv.innerHTML = "Reply"
     commentReplyDiv.className = "omg-viewer-comment-reply-to"
 
@@ -103,6 +104,7 @@ OMGComments.prototype.makeCommentDiv = function (comment, fresh, afterDiv) {
 
 OMGComments.prototype.makeCommentReplyDiv = function (comment, afterDiv) {
     var replyDiv = document.createElement("div")
+    replyDiv.className = "omg-viewer-comment-reply-box"
     var commentInput = document.createElement("input")
     commentInput.placeholder = "type reply here..."
     commentInput.className = "omg-viewer-comment-input"

@@ -204,9 +204,9 @@ omg.loadSearchResult = function (result, params) {
 
     var viewerParams = params.viewerParams || {}
     viewerParams.div = resultDiv
-    viewerParams.height = 80
-    viewerParams.onPlay = params.onPlay
-    viewerParams.onStop = params.onStop
+    
+    //viewerParams.onPlay = params.onPlay
+    //viewerParams.onStop = params.onStop
 
     if (params.metaData) {
         viewerParams.metaData = result

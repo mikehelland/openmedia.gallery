@@ -206,7 +206,7 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
         resultData.innerHTML = "Delete &times;";
         resultData.onclick = () => {
             omg.server.deleteId(this.data.id, () => {
-                this.div.parentElement.removeChild(this.div)
+                this.parentDiv.parentElement.removeChild(this.parentDiv)
             });
         }
         resultData.style.float = "right"

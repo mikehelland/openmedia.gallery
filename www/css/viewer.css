@@ -178,8 +178,12 @@
    margin-left: 3px;
 }
 
+.omg-viewer-comments {
+   padding-right:6px;
+}
 .omg-viewer-comment {
    margin: 3px;
+   margin-right: 0px;
    margin-left: 9px;
 }
 
@@ -196,12 +200,15 @@
 .omg-viewer-comment-button {
    padding-left: 0px;
    padding-right: 0px;
+   font-size: 10px;
 }
 
 .omg-viewer-comment-tools {
    color:darkblue;
-   margin-left: 3px;
    padding:3px;
+   text-align: right;
+   padding-right:0px;
+   margin-right:0px;
 }
 
 .omg-viewer-comment-reply-to {
@@ -210,4 +217,9 @@
 
 .omg-viewer-comment-section {
    background-color: #b1b1b1;
+}
+
+.omg-viewer-comment-reply-box {
+   display: flex;
+   flex-direction: row;
 }
