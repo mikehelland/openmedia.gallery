@@ -46,6 +46,7 @@ OMGEmbeddedViewerTEXTPOST.prototype.makeAttachments = function (data) {
     var videoCount = 0
     var audioCount = 0
     var otherCount = 0
+    var imgLimit = 1
     if (data.attachments && data.attachments.length > 0) {
         var otherAttachments = document.createElement("div")
         otherAttachments.innerHTML = "Attachments:"
@@ -55,12 +56,18 @@ OMGEmbeddedViewerTEXTPOST.prototype.makeAttachments = function (data) {
             var type = attachment.mimeType.split("/")[0]
             
             var attachmentDiv
-            if (type === "image") {
-                attachmentDiv = document.createElement("img")
+            if (type === "image" || type === "audio" || type === "video") {
+                if (type === "image") {
+                    attachmentDiv = document.createElement("img")
+                }
+                else {
+                    attachmentDiv = document.createElement(type)
+                    attachmentDiv.controls = true
+                }
+                
                 attachmentDiv.src = attachment.url
-                attachmentDiv.className = "omg-viewer-attachment-image"
+                attachmentDiv.className = "omg-viewer-attachment-" + type
                 this.div.appendChild(attachmentDiv)
-                imageCount++
             }
             else {
                 attachmentDiv = document.createElement("div")
