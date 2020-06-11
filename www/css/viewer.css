@@ -230,7 +230,7 @@
    margin:3px;
 }
 
-.omg-viewer-attachment-image {
+.omg-viewer-attachment-image, .omg-viewer-attachment-audio, .omg-viewer-attachment-video {
    width: 100%;
 }
 

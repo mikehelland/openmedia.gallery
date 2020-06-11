@@ -123,6 +123,15 @@
             display: inline-block;
             flex-grow: 1;
         }
+
+        #welcome-feature-list a {
+            color: white;
+        }
+
+        #formatting-guide-link {
+            color:white;
+            font-size:12px;
+        }
    </style>
 </head>
 
@@ -153,6 +162,7 @@
         <textarea id="post-text" placeholder="type stuff or drop things here..."></textarea>
         <div id="post-attachments-list"></div>
         <button id="post-button">Post</button>
+        <a id="formatting-guide-link" target="_out" href="https://guides.github.com/features/mastering-markdown/#syntax">Formatting Guide</a>
         
         <hr>
 
@@ -183,10 +193,11 @@
         <div id="thing-detail-panel">
             <br>
             <div id="welcome-sign">Welcome!</div>
-            <ul>
+            <ul id="welcome-feature-list">
                 <li>Post text, images, audio, or videos</li>
-                <li>Combine media to make more media</li>
+                <li>Format posts with <a target="_out" href="https://guides.github.com/features/mastering-markdown/#syntax">markdown</a></li>
                 <li>Fully nested comments</li>
+                <li>Combine media to make more media</li>
                 <li>Live Collaboration</li>
                 <li>Multi-Party Video Chat</li>
                 <li>Bitcoin tip jars</li>

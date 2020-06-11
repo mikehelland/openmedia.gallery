@@ -36,17 +36,15 @@ function OMGEmbeddedViewerTEXTPOST(viewer) {
 OMGEmbeddedViewerTEXTPOST.prototype.markdown = function (input) {
     if (!this.converter) {
         this.converter = new showdown.Converter()
+        this.converter.setOption('simplifiedAutoLink', 'value');
+        this.converter.setOption('openLinksInNewWindow', true);
     }
 
     this.textDiv.innerHTML = this.converter.makeHtml(input);
 }
 
 OMGEmbeddedViewerTEXTPOST.prototype.makeAttachments = function (data) {
-    var imageCount = 0
-    var videoCount = 0
-    var audioCount = 0
     var otherCount = 0
-    var imgLimit = 1
     if (data.attachments && data.attachments.length > 0) {
         var otherAttachments = document.createElement("div")
         otherAttachments.innerHTML = "Attachments:"
@@ -56,18 +54,21 @@ OMGEmbeddedViewerTEXTPOST.prototype.makeAttachments = function (data) {
             var type = attachment.mimeType.split("/")[0]
             
             var attachmentDiv
-            if (type === "image" || type === "audio" || type === "video") {
-                if (type === "image") {
-                    attachmentDiv = document.createElement("img")
-                }
-                else {
-                    attachmentDiv = document.createElement(type)
-                    attachmentDiv.controls = true
-                }
-                
-                attachmentDiv.src = attachment.url
-                attachmentDiv.className = "omg-viewer-attachment-" + type
-                this.div.appendChild(attachmentDiv)
+
+            var other = false
+            if (type === "image") {
+                attachmentDiv = document.createElement("img")
+            }
+            else if (type === "audio") {
+                var link = document.createElement("a")
+                link.innerHTML = attachment.name
+                this.div.appendChild(link)
+                attachmentDiv = document.createElement(type)
+                attachmentDiv.controls = true
+            }
+            else if (type === "video") {
+                attachmentDiv = document.createElement(type)
+                attachmentDiv.controls = true
             }
             else {
                 attachmentDiv = document.createElement("div")
@@ -76,6 +77,13 @@ OMGEmbeddedViewerTEXTPOST.prototype.makeAttachments = function (data) {
                 attachmentDiv.classList.add("omg-thing-p")
                 otherAttachments.appendChild(attachmentDiv)
                 otherCount++
+                other = true
+            }
+
+            if (!other) {
+                attachmentDiv.src = attachment.url
+                attachmentDiv.className = "omg-viewer-attachment-" + type
+                this.div.appendChild(attachmentDiv)
             }
         }
 
