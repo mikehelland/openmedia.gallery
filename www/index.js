@@ -198,7 +198,7 @@ var handleDroppedItem = (item) => {
     var file = item.getAsFile()
     var media = {
         mimeType: item.type, //.startsWith("image/")
-        url: "/uploads/" + omg.user.id + "/" + draftPost.id + "/" + file.name, 
+        url: window.location.origin + "/uploads/" + omg.user.id + "/" + draftPost.id + "/" + file.name, 
         name: makeMediaName(file.name)
     }
     draftPost.attachments.push(media)

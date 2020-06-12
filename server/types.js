@@ -1,16 +1,21 @@
 // see what apps are installed on this server and what types they support
 // each app has a manifest.json that describes the different activities it does
 
-module.exports = function (app) {
+module.exports = function (expressApp, express) {
     var fs = require("fs");
 
     var types = {}
     
-    fs.readdirSync("www/apps").forEach(app  => {
+    fs.readdirSync("apps").forEach(app  => {
         if (app.startsWith(".")) {
             return
         }
-        var path = "www/apps/" + app + "/"
+        var path = "apps/" + app + "/"
+
+        if (fs.existsSync(path + "www")) {
+            expressApp.use("/" + path, express.static(path + "www/", {index: "index.htm"}));
+        }
+
         if (fs.existsSync(path + "manifest.json")) {
 
             var manifest = JSON.parse(fs.readFileSync(path + "manifest.json"))
@@ -58,7 +63,7 @@ module.exports = function (app) {
             
     })
 
-    app.get('/types', function (req, res) {
+    expressApp.get('/types', function (req, res) {
         res.send(types);
     });
 

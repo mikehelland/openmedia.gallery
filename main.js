@@ -7,7 +7,7 @@ require("./server/authentication")(app)
 require("./server/routes")(app)
 
 // the server can support different types by adding to www/apps/
-require("./server/types")(app)
+require("./server/types")(app, express)
 
 require("./server/admin")(app, express)
 

@@ -272,3 +272,37 @@ OMGEmbeddedViewer.prototype.showComments = function () {
     })
     this.isCommentsShowing = true
 }
+
+OMGEmbeddedViewer.prototype.loadScriptsForType = (scripts, type, callback) => {
+    console.log(type)
+    var type = omg.types[type]
+    if (this.scriptsLoaded) {
+        callback()
+    }
+    else if (type.onembedready) {
+        type.onembedready.push(callback)
+    }
+    else {
+        var loadedScripts = 0
+        type.onembedready = [callback]
+        scripts.forEach(script => {
+            var scriptEl = document.createElement("script")
+            //scriptEl.async = true
+            scriptEl.onload = e => {
+                loadedScripts++
+                if (loadedScripts === scripts.length) {
+                    this.scriptsLoaded = true
+                    type.onembedready.forEach(f => {
+                        try {
+                            f()
+                        } catch (e) {console.log(e)}
+                    })
+                    type.onembedready = []
+                }
+            }
+            scriptEl.src = script
+            document.body.appendChild(scriptEl)
+            
+        })
+    }
+}
