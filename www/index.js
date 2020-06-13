@@ -51,7 +51,6 @@ fp.searchParams.viewerParams.onclickcontent = viewer => {
     thingDetail.innerHTML = ""
         
     if (!viewer.viewerURL) {
-        console.log(viewer.metaData)
         omg.loadSearchResult(viewer.metaData, {
             resultList: thingDetail, 
             viewerParams: {showComments: true},
