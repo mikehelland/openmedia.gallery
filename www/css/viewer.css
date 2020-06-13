@@ -156,6 +156,10 @@
    }
 }
 
+.tip-jar {
+   background-color: white;
+   padding:12px;
+}
 .tip-jar-canvas {
     width:100px;
     margin: 20px auto;
@@ -226,8 +230,14 @@
 
 .omg-viewer-attachment {
    border:1px solid #808080;
-   padding:3px;
+   padding:4px;
    margin:3px;
+   cursor: pointer;
+   display: block;
+}
+
+.omg-viewer-attachment:hover {
+   background-color: #aaaaaa;
 }
 
 .omg-viewer-attachment-image, .omg-viewer-attachment-audio, .omg-viewer-attachment-video {

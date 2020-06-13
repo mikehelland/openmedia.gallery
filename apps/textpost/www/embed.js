@@ -56,11 +56,13 @@ OMGEmbeddedViewerTEXTPOST.prototype.makeAttachments = function (data) {
                 attachmentDiv.controls = true
             }
             else {
-                attachmentDiv = document.createElement("div")
+                attachmentDiv = document.createElement("a")
                 attachmentDiv.innerHTML = attachment.name
                 attachmentDiv.className = "omg-viewer-attachment"
                 attachmentDiv.classList.add("omg-thing-p")
                 otherAttachments.appendChild(attachmentDiv)
+                attachmentDiv.target = "_out"
+                attachmentDiv.href = attachment.url
                 otherCount++
                 other = true
             }

@@ -120,6 +120,8 @@ OMGEmbeddedViewer.prototype.makeTipJar = function () {
     this.qr.element.onclick = function () {
         window.location = url;
     };
+
+    document.body.appendChild(this.tipJar)
     omg.ui.showDialog(this.tipJar)
 };
 
@@ -238,7 +240,7 @@ OMGEmbeddedViewer.prototype.showTipJar = function () {
     
     if (typeof QRious === "undefined") {
         var scriptTag = document.createElement("script");
-        scriptTag.onload = this.makeTipJar;
+        scriptTag.onload = () => this.makeTipJar();
         scriptTag.src = "https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js";
         scriptTag.async = true;
         document.body.appendChild(scriptTag);
@@ -274,7 +276,6 @@ OMGEmbeddedViewer.prototype.showComments = function () {
 }
 
 OMGEmbeddedViewer.prototype.loadScriptsForType = (scripts, type, callback) => {
-    console.log(type)
     var type = omg.types[type]
     if (this.scriptsLoaded) {
         callback()
