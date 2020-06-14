@@ -28,6 +28,8 @@ module.exports = (app) => {
                 delete req.body.uploaded_bytes;
                 delete req.body.upload_limit;
             }
+            // 10mb basic limit
+            req.body.upload_limit = 10000000
 
             //this is so postgres accepts it as json, needs to be a string
             if (req.body.sources) {
