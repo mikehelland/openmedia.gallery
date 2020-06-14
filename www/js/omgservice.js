@@ -84,12 +84,20 @@ omg.server.deleteId = function (id, callback) {
 omg.server.login = function (username, password, callback) {
     var data = {username: username, password: password};
     omg.server.http({method: "POST", data: data, url : this.url + "/api-login",
-            callback: callback});
+            callback: res => {
+                omg.user = res
+                if (callback) callback(res)
+            }
+    });
 };
 omg.server.signup = function (username, password, callback) {
     var data = {username: username, password: password};
     omg.server.http({method: "POST", data: data, url : this.url + "/api-signup",
-            callback: callback});
+            callback: res => {
+                omg.user = res
+                if (callback) callback(res)
+            }
+    });
 };
 
 omg.server.logout = function (callback) {
@@ -377,7 +385,7 @@ omg.ui.setupInputEvents = function (input, bindObject, bindProperty, onenter) {
     };
 };
 
-omg.ui.showDialog = function (dialog) {
+omg.ui.showDialog = function (dialog, cancelCallback) {
     var background = document.createElement("div")
     background.style.position = "fixed"
     background.style.left = "0px"
@@ -400,7 +408,10 @@ omg.ui.showDialog = function (dialog) {
         dialog.style.display = "none"
     }
 
-    background.onclick = clearDialog
+    background.onclick = e => {
+        clearDialog()
+        if (cancelCallback) cancelCallback()
+    } 
     return clearDialog
 }
 

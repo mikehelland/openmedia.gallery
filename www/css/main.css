@@ -75,7 +75,8 @@ header a {
 .dialog {
    background-color:white;
    padding: 20px;
-
+   color:black;
+   display:none;
 }
 
 .feed-options {

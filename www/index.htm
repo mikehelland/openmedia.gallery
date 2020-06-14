@@ -217,10 +217,35 @@
         <!-- FOUC on firefox <iframe id="gauntlet"></iframe>-->
     </div>
     </div>
+    <div class="dialog" id="login-area">
 
-
+        <h3>Login</h3>
+    
+        <p>If you have an account already, login here:</p>
+    
+        <div class="invalid-login">Username or password is wrong.</div>
+    
+        <input id="login-area-username" type="text" placeholder="username"/>
+        <input id="login-area-password" type="password" placeholder="password"/>
+        <button id="login-area-button">Login</button>
+        
+        <hr>
+          
+        <h3>Signup</h3>
+    
+        <p>Create a new account. Just a username and password, that's it!</p>
+    
+        <div class="invalid-signup">Username already exists.</div>
+    
+        <input id="signup-area-username" type="text" placeholder="username"/>
+        <input id="signup-area-password" type="password" placeholder="password"/>
+        <button id="signup-area-button">Signup</button>
+    
+    </div> <!--main-body-->
+    
     <div class="is-mobile"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
     <script src="js/omgservice.js"></script>
     <script src="js/embedded_viewer.js"></script>
     <script src="js/comments.js"></script>

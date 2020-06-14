@@ -43,10 +43,18 @@ function OMGComments(id) {
     this.div.appendChild(this.commentList)
 }
 
-OMGComments.prototype.postComment = function (text, parentId, afterDiv) {
+OMGComments.prototype.postComment = async function (text, parentId, afterDiv) {
     if (!omg.user) {
-        alert("login/signup to comment") //todo dialog
-        return
+        if (typeof loginRequired === "function") { //todo global function?
+            let ok = await loginRequired()
+            if (!ok) {
+                return
+            }
+        }
+        else {
+            alert("login/signup to comment") 
+            return    
+        }
     }
 
     if (text.trim().length === 0) {
