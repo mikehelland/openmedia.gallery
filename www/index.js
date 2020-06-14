@@ -107,7 +107,20 @@ omg.server.getTypes(types => {
 
 })
 
+var previewTextDiv = document.getElementById("post-preview-text")
+var previewArea = document.getElementById("post-preview-area")
+var textConverter
 var postInput = document.getElementById("post-text")
+postInput.onkeyup = e => {
+    previewArea.style.display = postInput.value.length ? "block" : "none"
+    if (!textConverter) {
+        textConverter = new showdown.Converter()
+        textConverter.setOption('simplifiedAutoLink', 'value');
+        textConverter.setOption('openLinksInNewWindow', true);
+    }
+    
+    previewTextDiv.innerHTML = textConverter.makeHtml(postInput.value)
+}
 document.getElementById("post-button").onclick = async e => {
     //are we logged in?
 

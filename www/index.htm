@@ -137,6 +137,10 @@
             color:white;
             font-size:12px;
         }
+
+        #post-preview-area {
+            display: none;
+        }
    </style>
 </head>
 
@@ -168,7 +172,11 @@
         <div id="post-attachments-list"></div>
         <button id="post-button">Post</button>
         <a id="formatting-guide-link" target="_out" href="https://guides.github.com/features/mastering-markdown/#syntax">Formatting Guide</a>
-        
+        <div id="post-preview-area">
+            <br>
+            Text Preview:
+            <div class="omg-viewer omg-viewer-thing omg-thing-p" id="post-preview-text"></div>    
+        </div>
         <hr>
 
         <div class="feed-options">
