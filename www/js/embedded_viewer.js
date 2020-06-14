@@ -28,6 +28,7 @@ function OMGEmbeddedViewer(params) {
             if (this.type.embed && !this.type.embedScriptTag) {
                 this.type.onready = []
                 this.type.embedScriptTag = document.createElement("script")
+                this.type.embedScriptTag.async = false
                 this.type.embedScriptTag.onload = e => {
                     this.type.onready.forEach(f => {
                         try {
