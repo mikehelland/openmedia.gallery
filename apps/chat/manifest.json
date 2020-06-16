@@ -1,0 +1,5 @@
+{
+    "activities": [
+		{"name": "Embedded Room Viewer", "url": "embed.js", "embeds": ["ROOM"]}
+	]
+}

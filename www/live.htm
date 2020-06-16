@@ -20,7 +20,7 @@
         .main-column {
             overflow-y: auto;
             padding:10px 15px 10px 15px;
-            flex-grow: 3;
+            flex-grow: 1;
             width:1px;
         }
         .now-playing {
@@ -30,11 +30,14 @@
             text-align:center;
             display:flex;
             flex-direction: column;
-            flex-grow: 2;
+            flex-grow: 1;
             width: 1px;
         }
         .now-playing-caption {
             padding-bottom: 1em;
+        }
+        .now-playing > iframe {
+            flex-grow: 1;
         }
         #welcome-panel {
             flex-grow: 1;
@@ -145,9 +148,7 @@
         </div>
 
         <hr>
-        <h2>
-            Users that are Live right now
-        </h2>
+        <h2>Live Rooms:</h2>
         
         <div class="search-things"></div>
 
@@ -156,25 +157,23 @@
 
     <div class="now-playing">
         <div class="now-playing-caption"><span id="now-playing-title">&nbsp;</span><br></div>
-        <div id="welcome-panel">
-            <p>Play something, and join in here.</p>
-
+        <div id="thing-detail-panel">
         </div>
         <!-- FOUC on firefox <iframe id="gauntlet"></iframe>-->
     </div>
     </div>
 
     <div class="is-mobile"></div>
-<script src="omg-music/omgclasses.js"></script>
 <script src="js/omgservice.js"></script>
 <script src="js/embedded_viewer.js"></script>
 
 
 <script src="js/usercontrols.js"></script>
-<script src="js/search.js"></script>
 <script>
 setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
-
+omg.server.getTypes(types => {
+    fp.search()
+})
 
 // fp is the front page 
 var fp = {};
@@ -192,7 +191,29 @@ fp.isMobileDiv = document.getElementsByClassName("is-mobile")[0]
 fp.nowPlayingTitle = document.getElementById("now-playing-title")
 fp.nowPlaying = document.getElementsByClassName("now-playing")[0]
 
+var thingDetail = document.getElementById("thing-detail-panel")
+
 fp.searchParams.viewerParams = {}
+fp.searchParams.viewerParams.onclickcontent = viewer => {
+
+    if (fp.iframe) {
+        fp.iframe.style.display = "none"
+    }
+    thingDetail.innerHTML = ""
+
+    if (!fp.iframe) {
+        fp.iframe = document.createElement("iframe")
+        fp.nowPlaying.appendChild(fp.iframe)
+        
+    }
+
+    fp.iframe.style.display = "block"
+    fp.iframe.src = viewer.data.url //viewer.viewerURL + "?id=" + viewer.data.id
+    fp.lastViewer = viewer
+
+}
+
+
 fp.searchParams.viewerParams.useExternalPlayer = true
 fp.searchParams.viewerParams.onplaybuttonclick = function (viewer) {
 
@@ -259,8 +280,7 @@ fp.searchParams.viewerParams.onplaybuttonclick = function (viewer) {
 }
 
 window.onload = function () {
-    fp.search()
-
+    
     fp.gauntlet = document.createElement("iframe")
     fp.gauntlet.id = "gauntlet"
     fp.nowPlaying.appendChild(fp.gauntlet)
@@ -284,6 +304,8 @@ document.getElementsByClassName("main-nav-drawer-icon")[0].onclick = function ()
             "" : "block";
     menuVisible = !menuVisible;
 };
+
+
 
 </script>
 </body>

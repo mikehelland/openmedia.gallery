@@ -1,6 +1,15 @@
 module.exports = function (app, httpsServer) {
 
-    // a route for an adminstrator to see how many are online
+    app.get('/rooms', function (req, res) {
+        var roomsArray = []
+        for (var room in rooms) {
+            //todo is public?
+            rooms[room].type = "ROOM"
+            rooms[room].url = room
+            roomsArray.push(rooms[room])
+        }
+        res.send(roomsArray);
+    })
     app.get('/admin/rooms', function (req, res) {
         res.send(rooms);
     })
@@ -18,11 +27,11 @@ module.exports = function (app, httpsServer) {
         sockets[id] = socket
         var name
         var room = {users:{}}
+        var roomName
 
         socket.on("close", (code, reason) => {
             if (name) {
-                delete room.users[name]
-                sendToRoom({msgtype: "userDisconnected", name: name})
+                leaveRoom("userDisconnected")
             }
             delete sockets[id]
         })
@@ -80,7 +89,11 @@ module.exports = function (app, httpsServer) {
             }
 
             if (!rooms[msg.room]) {
-                rooms[msg.room] = {users: {}}
+                rooms[msg.room] = {users: {}, 
+                                    created_at: Date.now(), 
+                                    username: msg.name,
+                                    thing: msg.thing
+                                }
             }
             room = rooms[msg.room]
             name = msg.name
@@ -99,9 +112,23 @@ module.exports = function (app, httpsServer) {
 
         var leave = () => {
             if (name) {
-                delete room.users[name]
+                leaveRoom("userLeft")
             }
-            sendToRoom({msgtype: "userLeft", name})
+        }
+
+        var leaveRoom = (reason) => {
+            delete room.users[name]
+            var lastRoom = room
+            if (Object.keys(room.users).length === 0) {
+                setTimeout(() => {
+                    if (Object.keys(lastRoom.users).length === 0) {
+                        delete rooms[roomName]
+                    }
+                }, 1000)
+            }
+            else {
+                sendToRoom({msgtype: reason, name: name})
+            }
         }
 
         var signal = signal => {

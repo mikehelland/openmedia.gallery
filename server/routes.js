@@ -7,6 +7,7 @@ module.exports = (app) => {
         if (req.user) {
             delete req.user.password;
             delete req.user.bpassword;
+            req.user.username = req.user.username.trim()
             res.send(req.user);
         } else {
             res.send(false);

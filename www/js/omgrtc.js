@@ -104,13 +104,15 @@ OMGRealTime.prototype.getUserMedia = function (callback) {
         this.localVideo.play()
     })
 }
-OMGRealTime.prototype.join = function (roomName, userName) {
+OMGRealTime.prototype.join = function (roomName, userName, thing) {
     this.userName = userName
     this.roomName = roomName
+    this.thing = thing
     this.log("Joining room.")
     this.emit("join", {
         name: userName,
-        room: roomName
+        room: roomName,
+        thing: thing
     })
 }
 

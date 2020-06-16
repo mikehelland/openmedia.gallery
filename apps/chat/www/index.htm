@@ -51,8 +51,8 @@
                 left: 25%;
             }
 
-            #user-name-input ,#join-button {
-                font-size:30px;
+            #room-name-input, #user-name-input ,#join-button {
+                font-size:28px;
                 width:100%;
                 box-sizing: border-box;
             }
@@ -165,13 +165,30 @@
             #apple-tip {
                 visibility:hidden;
             }
+
+            .readonly-text, .readonly-text-room {
+                padding:8px;
+                margin-top: 24px;
+                margin-bottom: 24px;
+                width:100%;
+                box-sizing: border-box;
+                border:1px solid white;
+            }
+            .readonly-text-room {
+                margin-top: 31px;
+            }
         </style>
     </head>
     <body>
         <div id="main-body">
         <div id="join-area">
-            <div>Name:</div> 
-            <p><input id="user-name-input"></p>
+            <div id="room-name-caption">Room: </div> 
+            <p id="room-name-area"><select id="room-name-input"> 
+                    <option>public</option>
+                </select>
+            </p>
+            <div id="user-name-caption">Username: </div> 
+            <p id="user-name-area"><input id="user-name-input"></p>
             <button id="join-button">Join</button>    
             <p>Tips:</p>
             <ul>
@@ -228,16 +245,52 @@
         <script src="/js/omgrtc.js"></script>
         <script>
 
-        var userNameInput = document.getElementById("user-name-input")    
-        var userName = window.location.search.slice(1) 
-        var roomName = "public"
-        if (userName.indexOf(":") > -1) {
-            roomName = userName.split(":")[0]
-            userName = userName.split(":")[1]
+        var roomName
+        window.location.search.substr(1).split("&").forEach(param => {
+            if (param.startsWith("room=")) {
+                roomName = param.split("=")[1]
+            }
+        })
+
+        var roomSelect = document.getElementById("room-name-input")
+        if (roomName) {
+            document.getElementById("room-name-area").innerHTML = 
+                "<div class='readonly-text-room'>" + roomName + "</div>"
         }
+        
+        var user
+        fetch("/user").then(data => data.json()).then(json => {
+            if (json) {
+                var userOption = document.createElement("option")
+                userOption.innerHTML = "My Room (" + json.username + ")"
+                roomSelect.appendChild(userOption)
+                userNameInput.value = json.username.trim()
+                userNameInput.readOnly = true
+                user = json
 
-        userNameInput.value = userName
+                document.getElementById("user-name-area").innerHTML = 
+                        "<div class='readonly-text'>" + json.username + "</div>"
+                
+            }
+            if (!roomName) {
+                fetch("/rooms").then(data => data.json()).then(json => {
+                    console.log(json)
+                    if (json) {
+                        json.forEach(room => {
+                            if (room.name !== "public" && room.thing && room.thing.type === "THING") {
+                                var option = document.createElement("option")
+                                option.innerHTML = room.name
+                                roomSelect.appendChild(option)
+                            }
+                        })
+                    }
+                }).catch(e => console.log(e))
+            }
+        })
 
+
+        var userNameInput = document.getElementById("user-name-input")    
+        var userName
         var userListEl = document.getElementById('user-list')
 
         var rt = new OMGRealTime() //"https://openmedia.gallery/")
@@ -259,13 +312,18 @@
         var joinButton = document.getElementById("join-button")
         var joinArea = document.getElementById("join-area")
         joinButton.onclick = () => {
+            roomName = roomSelect.value
+            if (roomSelect.selectedIndex === 1 && user) {
+                roomName = user.username
+            }
+            roomName = "/apps/chat/?room=" + roomName
             userName = userNameInput.value || (Math.round(Math.random() * 100000) + "")
 
             document.getElementById("your-name").innerHTML = userName
 
             rt.getUserMedia(video => {
                 you.appendChild(video)
-                rt.join(roomName, userName)
+                rt.join(roomName, userName, {type: "CHAT"})
             })
             joinArea.style.display = "none"
             controls.style.display = "block"

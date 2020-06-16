@@ -152,7 +152,8 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
     //date
     this.datetimeDiv = document.createElement("span");
     this.datetimeDiv.className = "omg-thing-created-at";
-    this.datetimeDiv.innerHTML = omg.util.getTimeCaption(parseInt(this.data.last_modified));
+    this.datetimeDiv.innerHTML = omg.util.getTimeCaption(
+                            parseInt(this.data.last_modified) || parseInt(this.data.created_at));
     this.rightData.appendChild(this.datetimeDiv);    
 
     //votes?
@@ -185,13 +186,14 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     };
     bottomRow.appendChild(this.commentButton)
 
-    if (this.data.id) {
+    if (this.data.id || this.data.url) {
         this.shareButton = document.createElement("a");
         this.shareButton.className = "omg-music-controls-button";
         this.shareButton.innerHTML = "Link";
-        this.shareButton.href = this.viewerURL ? 
-                this.viewerURL + "?id=" + this.data.id :
-                "/view/" + this.data.id
+        this.shareButton.href = this.data.url ||
+                (this.viewerURL ? 
+                    this.viewerURL + "?id=" + this.data.id :
+                    "/view/" + this.data.id)
         bottomRow.appendChild(this.shareButton)
     }
 
