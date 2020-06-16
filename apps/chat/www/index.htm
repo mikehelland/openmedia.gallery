@@ -340,11 +340,11 @@
         }
 
 
-        rt.onjoined = (users) => {
+        rt.onjoined = (room) => {
             console.log("onjoined!!!!!!")
             disconnectButton.innerHTML = "Disconnect"
-            for (var user in users) {
-                if (!users[user].peerConnection) {
+            for (var user in room.users) {
+                if (!room.users[user].peerConnection) {
                     rt.callUser(user)
                 }
             }
