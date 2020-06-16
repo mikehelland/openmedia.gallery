@@ -5,6 +5,8 @@ module.exports = function (expressApp, express) {
     var fs = require("fs");
 
     var types = {}
+
+    expressApp.set('types', types);
     
     fs.readdirSync("apps").forEach(app  => {
         if (app.startsWith(".")) {
@@ -53,6 +55,16 @@ module.exports = function (expressApp, express) {
                             types[type] = {editors: [], viewers: []}
                         } 
                         types[type].embed = "/apps/" + app + "/" + activity.url
+        
+                    })
+                }
+
+                if (activity.socketHandler) {
+                    activity.socketHandler.forEach(type => {
+                        if (!types[type]) {
+                            types[type] = {editors: [], viewers: []}
+                        } 
+                        types[type].socketHandler = "../apps/" + app + "/" + activity.url
         
                     })
                 }

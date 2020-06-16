@@ -17,6 +17,15 @@ module.exports = function (app, httpsServer) {
     var rooms = {}
     var sockets = {}
     var nextId = 1
+
+    var handlers = {}
+
+    var types = app.get("types")
+    for (var type in types) {
+        if (types[type].socketHandler) {
+            handlers[type] = require(types[type].socketHandler)
+        }
+    }
     
     const WebSocket = require('ws')
     const wss = new WebSocket.Server({server: httpsServer})
@@ -28,6 +37,7 @@ module.exports = function (app, httpsServer) {
         var name
         var room = {users:{}}
         var roomName
+        var typeHandler
 
         socket.on("close", (code, reason) => {
             if (name) {
@@ -55,14 +65,17 @@ module.exports = function (app, httpsServer) {
             }
             else if (msg.msgtype === "signaling") {
                 // webrtc offer/candidate stuff
-                signal(msg)
+                passOn(msg)
             }
             else if (msg.msgtype === "updateUserData") {
                 updateUserData(msg)
             }
+            else if (typeHandler && room) {
+                typeHandler(msg, room.thing, passOn)
+            }
             else {
                 // everything else
-                signal(msg) 
+                passOn(msg) 
             }
         })        
 
@@ -101,6 +114,10 @@ module.exports = function (app, httpsServer) {
             name = msg.name
             roomName = msg.room
 
+            if (room.thing && room.thing.type && handlers[room.thing.type]) {
+                typeHandler = handlers[room.thing.type]
+            }
+
             //todo what if this user already exists
             room.users[name] = {id, name, data: msg.data}
 
@@ -133,7 +150,7 @@ module.exports = function (app, httpsServer) {
             }
         }
 
-        var signal = signal => {
+        var passOn = signal => {
             signal.fromId = id
             signal.from = name
 
