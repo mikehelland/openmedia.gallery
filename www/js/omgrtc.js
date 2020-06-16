@@ -35,12 +35,12 @@ function OMGRealTime(signalingServer) {
     this.events = {}
     
     this.on("joined", msg => {
-        this.updateUserList(msg.data)
+        this.updateUserList(msg.room.users)
         this.isJoined = true
-        if (this.onjoined) this.onjoined(this.remoteUsers)
+        if (this.onjoined) this.onjoined(msg.room)
     })
     
-    this.on("update-user-list", msg => this.updateUserList(msg.data))
+    this.on("update-user-list", msg => this.updateUserList(msg.users))
     this.on("userLeft", msg => this.onUserLeft(msg.name))
     this.on("userDisconnected", msg => this.onUserDisconnected(msg.name))
 

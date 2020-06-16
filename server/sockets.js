@@ -1,119 +1,167 @@
 module.exports = function (app, httpsServer) {
-    
-    var rooms = {}
+
+    app.get('/rooms', function (req, res) {
+        var roomsArray = []
+        for (var room in rooms) {
+            //todo is public?
+            rooms[room].type = "ROOM"
+            rooms[room].url = room
+            roomsArray.push(rooms[room])
+        }
+        res.send(roomsArray);
+    })
     app.get('/admin/rooms', function (req, res) {
         res.send(rooms);
     })
 
-    var io = require('socket.io').listen(httpsServer);
+    var rooms = {}
+    var sockets = {}
+    var nextId = 1
+    
+    const WebSocket = require('ws')
+    const wss = new WebSocket.Server({server: httpsServer})
 
-    io.on("connection", socket => {
+    wss.on("connection", socket => {
+
+        var id = nextId++
+        sockets[id] = socket
         var name
+        var room = {users:{}}
         var roomName
-        var room = {users: {}}
 
-        socket.on("join", msg => {
+        socket.on("close", (code, reason) => {
+            if (name) {
+                leaveRoom("userDisconnected")
+            }
+            delete sockets[id]
+        })
 
-            if (!msg.name) {
+
+        socket.on('message', messageString => {
+            var msg
+            try {
+                msg = JSON.parse(messageString)
+            }
+            catch (e) {console.log()}
+
+            if (!msg || !msg.msgtype) {
+                console.log("socket.onmessage bad msg msgtype")
+            }
+            else if (msg.msgtype === "join") {
+                join(msg)
+            }
+            else if (msg.msgtype === "leave") {
+                leave()
+            }
+            else if (msg.msgtype === "signaling") {
+                // webrtc offer/candidate stuff
+                signal(msg)
+            }
+            else if (msg.msgtype === "updateUserData") {
+                updateUserData(msg)
+            }
+            else {
+                // everything else
+                signal(msg) 
+            }
+        })        
+
+        var send = msg => {
+            socket.send(JSON.stringify(msg))
+        }
+        var sendToRoom = msg => {
+            var str = JSON.stringify(msg)
+            for (var user in room.users) {
+                if (user !== name && sockets[room.users[user].id] &&
+                        sockets[room.users[user].id].readyState === WebSocket.OPEN) {
+                    sockets[room.users[user].id].send(str)
+                }
+            }
+        }
+        var sendToId = (id, msg) => {
+            if (sockets[id] && sockets[id].readyState === WebSocket.OPEN) {
+                sockets[id].send(JSON.stringify(msg))
+            }
+        }
+
+        var join = msg => {
+
+            if (!msg.name || !msg.room) {
                 return
             }
 
-            socket.join(msg.room)
-
             if (!rooms[msg.room]) {
-                rooms[msg.room] = {users: {}}
+                rooms[msg.room] = {users: {}, 
+                                    created_at: Date.now(), 
+                                    username: msg.name,
+                                    thing: msg.thing
+                                }
             }
             room = rooms[msg.room]
             name = msg.name
             roomName = msg.room
 
-            room.users[name] = {id: socket.id, data: msg.data, name: name}
+            //todo what if this user already exists
+            room.users[name] = {id, name, data: msg.data}
 
-            socket.to(msg.room).emit("update-user-list", room.users);
-            socket.emit("joined", room.users);
+            sendToRoom({msgtype: "update-user-list", users: room.users})
+            send({msgtype: "joined", room: room})
             if (room.data) {
-                socket.emit("signaling", {type:"command", command: room.data});
+                send({msgtype:"command", command: room.data});
+
             }
-        })
+        }
 
-
-        socket.on("leave", () => {
+        var leave = () => {
             if (name) {
-                delete room.users[name]
+                leaveRoom("userLeft")
             }
-            socket.leave(roomName)
-            io.in(roomName).emit("userLeft", name);
-        });
+        }
 
-        socket.on("disconnect", () => {
-            if (name) {
-                delete room.users[name]
+        var leaveRoom = (reason) => {
+            delete room.users[name]
+            var lastRoom = room
+            if (Object.keys(room.users).length === 0) {
+                setTimeout(() => {
+                    if (Object.keys(lastRoom.users).length === 0) {
+                        delete rooms[roomName]
+                    }
+                }, 1000)
             }
-            socket.leave(roomName)
-            io.in(roomName).emit("userDisconnected", name);
-        });
-
-        socket.on("call-user", data => {
-            io.to(data.to).emit("incoming-call", {
-            offer: data.offer,
-            callerName: name,
-            socket: socket.id
-            });
-        });
-
-        socket.on("make-answer", data => {
-            io.to(data.to).emit("answer-made", {
-            calleeName: name,
-            socket: socket.id,
-            answer: data.answer
-            });
-        });
-
-        socket.on("candidate", data => {
-            io.to(data.to).emit("candidate", {
-            caller: name,
-            socket: socket.id,
-            label: data.label,
-            id: data.id,
-            candidate: data.candidate
-            });
-        });
-
-        socket.on("updateLocalUserData", data => {
-            if (room.users[name]) {
-                room.users[name].data = data
+            else {
+                sendToRoom({msgtype: reason, name: name})
             }
-            socket.to(roomName).emit("updateRemoteUserData", {
-                name: name,
-                data, data
-            });
-        });
+        }
 
-        socket.on("updateRoomData", data => {
-            if (room) {
-                room.data = data
-            }
-            /*socket.to(roomName).emit("updateRemoteUserData", {
-                name: name,
-                data, data
-            });*/
-        });
+        var signal = signal => {
+            signal.fromId = id
+            signal.from = name
 
-        socket.on("signaling", signal => {
-            if (!signal.from) {
-                signal.from = name
-            }
             try {
-                if (signal.to && room.users[signal.to]) {
-                    io.to(room.users[signal.to].id).emit("signaling", signal)
+                if (signal.toId) {
+                    sendToId(signal.toId, signal)
                 }
                 else if (signal.room) {
-                    socket.to(roomName).emit("signaling", signal)
+                    sendToRoom(signal)
                 }
             }
             catch (e) {}
-        })
+        }
+
+        var updateUserData = msg => {
+            msg.name = name
+            if (room.users[name]) {
+                room.users[name].data = msg
+            }
+            sendToRoom(msg)
+        }
+
+        var updateRoomData = data => {
+            if (room) {
+                room.data = data
+            }
+        }
+
     })
 
-    return io
 }

@@ -15,7 +15,4 @@ app.use(express.static('www', {index: "index.htm"}));
 
 const httpsServer = listen()
 
-//require("./server/sockets")(app, httpsServer)
-require("./server/sockets2")(app, httpsServer)
-
-//var viewer = require("./viewer.js");
+require("./server/sockets")(app, httpsServer)
