@@ -43,6 +43,19 @@ fp.searchParams.viewerParams.useExternalPlayer = true
 
 var thingDetail = document.getElementById("thing-detail-panel")
         
+var formattingGuideLinks = document.getElementsByClassName("formatting-guide-link")
+for (var ifg = 0; ifg < formattingGuideLinks.length; ifg++) {
+    formattingGuideLinks[ifg].onclick = e => {
+        omg.server.getId(2, result => {
+            thingDetail.innerHTML = ""
+            omg.loadSearchResult(result, {
+                resultList: thingDetail, 
+                viewerParams: {showComments: true}
+            })  
+        })
+    }
+}
+
 fp.searchParams.viewerParams.onclickcontent = viewer => {
 
     if (fp.iframe) {
@@ -104,7 +117,13 @@ omg.server.getTypes(types => {
         }
     }
     fp.search()
-
+    omg.server.getId(1, result => {
+        omg.loadSearchResult(result, {
+            resultList: thingDetail, 
+            //viewerParams: {showComments: true}
+        })
+    })
+    
 })
 
 var previewTextDiv = document.getElementById("post-preview-text")
