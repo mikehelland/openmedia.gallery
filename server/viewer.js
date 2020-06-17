@@ -5,7 +5,7 @@ var viewer = function (result) {
 
         resultCaption = result.body.name || result.body.tags || "";
         if (resultCaption.length === 0) {
-            resultCaption = "a song";
+            resultCaption = (result.body.type || "").toLowerCase();
         }
         else {
             resultCaption = '&quot;' + resultCaption + '&quot;';
@@ -34,7 +34,7 @@ return `<!DOCTYPE html>
    <meta property="og:description" content="Find, create, and customize music for your project. For Free."/>
    <meta property="og:title" content="Listen to ${resultCaption}"/>
    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-   <title>Listen to ${resultCaption} - OpenMusic.Gallery</title>
+   <title>${resultCaption} - OpenMusic.Gallery</title>
     <style>
     header {display:flex;}
     </style>

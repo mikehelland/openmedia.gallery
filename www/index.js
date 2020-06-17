@@ -167,7 +167,8 @@ document.getElementById("post-button").onclick = async e => {
         postInput.value = ""
         draftPost = undefined
         attachmentsList.innerHTML = ""
-        
+        previewArea.style.display = "none"
+
         omg.loadSearchResult(result, {prepend: true, 
             resultList: fp.searchParams.resultList})
     })
