@@ -154,12 +154,20 @@ document.getElementById("post-button").onclick = async e => {
         }
     }
 
+    draftPost.text = postInput.value
+
     var newPost = {type: "TEXTPOST"}
     if (draftPost) {
         delete draftPost.draft
-        //todo look at the attachments, and see what type it should be
-        draftPost.type = "TEXTPOST"
-        newPost = draftPost
+        
+        var suggestedTypes = suggestTypes(draftPost.attachments)
+        if (suggestedTypes.length === 1) {
+            newPost = suggestedTypes[0].convert(draftPost)
+        }
+        else {
+            draftPost.type = "TEXTPOST"
+            newPost = draftPost
+        }
     }
     newPost.text = postInput.value
 
@@ -307,4 +315,35 @@ var loginRequired = () => {
     //document.getElementsByClassName("invalid-login")[0].style.display = "block";
     
     return promise
+}
+
+var suggestTypes = (attachments) => {
+    var suggestedTypes = []
+    var typeCount = {image: 0, video: 0, audio: 0, other: 0}
+
+    attachments.forEach(attachment => {
+        var type = attachment.mimeType.split("/")[0]
+        if (typeof typeCount[type] === "number") {
+            typeCount[type]++
+        }
+        else {
+            typeCount.other++
+        }
+    })
+
+    if (typeCount.audio && !typeCount.image && !typeCount.video && !typeCount.other) {
+        //todo put this in the music app
+        suggestedTypes.push({type: "SOUNDSET", convert: (draft) => {
+            newPost = {type: "SOUNDSET", 
+                            data: [],
+                            text: draft.text, 
+                            name: draft.text.split("\n")[0].substr(0, 20) || ""}
+            draft.attachments.forEach(attachment => {
+                console.log(attachment)
+                newPost.data.push(attachment)
+            })
+            return newPost
+        }})
+    }
+    return suggestedTypes
 }

@@ -5,6 +5,12 @@ module.exports = function (expressApp, express) {
     var fs = require("fs");
 
     var types = {}
+    var getType = type => {
+        if (!types[type]) {
+            types[type] = {editors: [], viewers: [], usedBy: []}
+        }
+        return types[type]
+    }
 
     expressApp.set('types', types);
     
@@ -29,43 +35,36 @@ module.exports = function (expressApp, express) {
 
                 if (activity.views) {
                     activity.views.forEach(type => {
-                        if (!types[type]) {
-                            types[type] = {editors: [], viewers: []}
-                        } 
-        
-                        types[type].viewers.push({name: activity.name, 
+                        getType(type).viewers.push({name: activity.name, 
                             url: "/apps/" + app + "/" + activity.url}) 
                     })    
                 }
 
                 if (activity.edits) {
                     activity.edits.forEach(type => {
-                        if (!types[type]) {
-                            types[type] = {editors: [], viewers: []}
-                        } 
-        
-                        types[type].editors.push({name: activity.name, 
+                        getType(type).editors.push({name: activity.name, 
                             url: "/apps/" + app + "/" + activity.url})     
                     })
                 }
 
                 if (activity.embeds) {
                     activity.embeds.forEach(type => {
-                        if (!types[type]) {
-                            types[type] = {editors: [], viewers: []}
-                        } 
-                        types[type].embed = "/apps/" + app + "/" + activity.url
+                        getType(type).embed = "/apps/" + app + "/" + activity.url
         
                     })
                 }
 
                 if (activity.socketHandler) {
                     activity.socketHandler.forEach(type => {
-                        if (!types[type]) {
-                            types[type] = {editors: [], viewers: []}
-                        } 
-                        types[type].socketHandler = "../apps/" + app + "/" + activity.url
+                        getType(type).socketHandler = "../apps/" + app + "/" + activity.url
         
+                    })
+                }
+
+                if (activity.uses) {
+                    activity.uses.forEach(type => {
+                        getType(type).usedBy.push({name: activity.name, 
+                                url: "/apps/" + app + "/" + activity.url})
                     })
                 }
 

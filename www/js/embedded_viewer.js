@@ -205,6 +205,15 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
         bottomRow.appendChild(this.editButton)
     }
 
+    if (this.data.id && this.type && this.type.usedBy && this.type.usedBy.length) {
+        this.editButton = document.createElement("a");
+        this.editButton.className = "omg-music-controls-button";
+        this.editButton.innerHTML = "Use";
+        //todo using the first one, should give options
+        this.editButton.href = this.type.usedBy[0].url + "?use=" + this.data.id;
+        bottomRow.appendChild(this.editButton)
+    }
+
     this.voteButton = document.createElement("div");
     this.voteButton.className = "omg-music-controls-button";
     this.voteButton.innerHTML = "&#x2B06";
