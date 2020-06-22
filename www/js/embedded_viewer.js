@@ -233,10 +233,32 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
         bottomRow.appendChild(resultData);
     }
 
-    if (false && params.result && params.result.playcount) {
+    if (this.metaData) {
+        if (this.params.result && this.params.result.playcount) {
+            resultData = document.createElement("span");
+            resultData.className = "omg-thing-playcount";
+            resultData.innerHTML = this.params.result.playcount + " &#9658;";
+            bottomRow.appendChild(resultData);        
+        }
+    
         resultData = document.createElement("span");
-        resultData.className = "omg-thing-playcount";
-        resultData.innerHTML = params.result.playcount + " &#9658;";
+        resultData.className = "omg-thing-vote";
+        resultData.innerHTML = this.metaData.downvotes + " &#9660;";
+        resultData.onclick = e => {
+            omg.server.postHTTP("vote/", {id_thing: this.data.id, vote: -1}, () => {
+                e.target.innerHTML = this.metaData.downvotes * 1 + 1 + " &#9660;"
+            })
+        }
+        bottomRow.appendChild(resultData);        
+
+        resultData = document.createElement("span");
+        resultData.className = "omg-thing-vote";
+        resultData.innerHTML = this.metaData.upvotes + " &#9650;";
+        resultData.onclick = e => {
+            omg.server.postHTTP("/vote/", {id_thing: this.data.id, vote: 1}, () => {
+                e.target.innerHTML = this.metaData.upvotes * 1 + 1 + " &#9650;"
+            })
+        }
         bottomRow.appendChild(resultData);        
     }
 

@@ -1,7 +1,7 @@
 module.exports = (app) => {
 
     var viewer = require("./viewer.js")
-    var findColumns = ["playcount", "commentcount", "id", "body"]
+    var findColumns = ["playcount", "commentcount", "id", "body", "upvotes", "downvotes"]
 
     app.get('/user', function (req, res) {
         if (req.user) {
@@ -172,22 +172,94 @@ module.exports = (app) => {
         });
     });
 
-    app.get('/star/', function (req, res) {
+    app.post('/vote/', function (req, res) {
         if (!req.user) {
             res.send("not logged in");
             return;
         }
 
         var db = app.get('db');
-        db.stars.findDoc({user_id: req.user.id, thing_id: req.body.id}, {}, function (err, docs) {
+        var id_thing = req.body.id_thing
+        var id_comment = req.body.id_comment || 0
+        var vote = req.body.vote
+        
+        if (vote > 1 || vote < -1) {
+            res.send("vote must be -1, 0, or 1");
+            return;
+        }
+        var find = {"id_user": req.user.id, 
+            "id_thing": id_thing, 
+            "id_comment": id_comment
+        }
+        var columns = ["id", "id_user", "id_thing", "id_comment", "vote"]
+
+        var updateThing = (oldVote) => {
+            if (oldVote === vote) {
+                return
+            }
+
+            var id = id_comment || id_thing
+            var table = id_comment ? "comments" : "things"
+
+            var updates = []
+            if (oldVote === 1) {
+                updates.push("upvotes=upvotes - 1")
+            }
+            else if (oldVote === -1) {
+                updates.push("downvotes=downvotes - 1")
+            }
+            if (vote === 1) {
+                updates.push("upvotes=upvotes + 1")
+            }
+            else if (vote === -1) {
+                updates.push("downvotes=downvotes + 1")
+            }
+            
+            var updateString = updates.join(", ")
+            
+            db.run(`UPDATE ${table} SET ${updateString} WHERE id=${id}`, (err,result) => {
+                        if (err) {
+                            console.log(err); 
+                        }
+                        else {
+                            console.log(result)
+                        }        
+                    })
+        }
+
+        db.votes.find(find, columns, (err, result) => {
             if (err) {
-                res.send(err);
+                return res.send(err); 
+            }
+
+            if (result.length === 0) {
+                console.log("votes, found none")
+                find.vote = vote
+                db.votes.save(find, (err, result) => {
+                    if (err) {
+                        res.send(err); 
+                    }
+                    else {
+                        res.send(result)
+                        updateThing(0)
+                    }
+                })
             }
             else {
-                res.send(docs);
+                result = result[0]
+                var oldVote = result.vote
+                result.vote = vote
+                db.votes.save(result, (err, result) => {
+                    if (err) {
+                        res.send(err); 
+                    }
+                    else {
+                        res.send(result)
+                        updateThing(oldVote)
+                    }
+                })
             }
-        });
-        
+        })        
     });
 
     app.post("/playcount", function (req, res) {

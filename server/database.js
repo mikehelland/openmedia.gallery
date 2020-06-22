@@ -39,8 +39,12 @@ module.exports = function (app) {
                 type: "TEXTPOST", text: "Welcome to your new OMG Server!",
                created_at: Date.now(), last_modified: Date.now() 
             }, (err,ress) => {
-                db.run("alter table things add column commentcount bigint default 0");
-                db.run("alter table things add column playcount bigint default 0");
+                db.run(`alter table things 
+                        add column commentcount bigint default 0,
+                        add column playcount bigint default 0,
+                        add column upvotes bigint default 0, 
+                        add column downvotes bigint default 0,
+                        add column deleted boolean default false`);
             })
         }
         if (!db.comments) {
@@ -53,6 +57,15 @@ module.exports = function (app) {
                 downvotes bigint default 0,
                 deleted boolean default false,
                 other jsonb)`, (err,res) => {
+                    // remake the db object so it has the new table
+                    connect()
+                })
+        }
+        if (!db.votes) {
+            db.run(`CREATE TABLE votes 
+                (id bigserial primary key,
+                id_thing bigint, id_comment bigint, id_user bigint,
+                vote int default 0)`, (err,res) => {
                     // remake the db object so it has the new table
                     connect()
                 })

@@ -112,7 +112,9 @@ omg.server.getTypes(types => {
         if (types[type].editors.length > 0) {
             var editorLink = document.createElement("li")
             editorLink.innerHTML = "<a href='" + types[type].editors[0].url + 
-                    "' class='create-link'>+ <span class='nav-text'>" + type + "</span></a>"
+                    "' class='create-link'>+ <span class='nav-text'>" + 
+                    type.substring(0, 1).toUpperCase() +
+                    type.substring(1).toLowerCase() + "</span></a>"
             listEl.appendChild(editorLink)
         }
     }
@@ -335,6 +337,7 @@ var suggestTypes = (attachments) => {
         //todo put this in the music app
         suggestedTypes.push({type: "SOUNDSET", convert: (draft) => {
             newPost = {type: "SOUNDSET", 
+                            defaultSurface: "PRESET_SEQUENCER",
                             data: [],
                             text: draft.text, 
                             name: draft.text.split("\n")[0].substr(0, 20) || ""}
