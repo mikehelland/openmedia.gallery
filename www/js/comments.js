@@ -44,17 +44,9 @@ function OMGComments(id) {
 }
 
 OMGComments.prototype.postComment = async function (text, parentId, afterDiv) {
-    if (!omg.user) {
-        if (typeof loginRequired === "function") { //todo global function?
-            let ok = await loginRequired()
-            if (!ok) {
-                return
-            }
-        }
-        else {
-            alert("login/signup to comment") 
-            return    
-        }
+    var ok = await omg.ui.loginRequired()
+    if (!ok) {
+        return
     }
 
     if (text.trim().length === 0) {

@@ -213,7 +213,7 @@ dropZone.ondrop = async (e) => {
 
     var items = e.dataTransfer.items
 
-    var ok = await loginRequired()
+    var ok = await omg.ui.loginRequired()
     if (!ok) {
         return
     }
@@ -277,46 +277,6 @@ var makeAttachmentEl = (attachment) => {
     div.appendChild(statusDiv)
     attachmentsList.appendChild(div)
     return statusDiv
-}
-
-var loginRequired = () => {
-    
-    if (omg.user) {
-        return true
-    }
-    
-    var loginUsername = document.getElementById("login-area-username")
-    var loginPassword = document.getElementById("login-area-password")
-    var loginButton = document.getElementById("login-area-button")
-    var signupUsername = document.getElementById("signup-area-username")
-    var signupPassword = document.getElementById("signup-area-password")
-    var signupButton = document.getElementById("signup-area-button")
-
-    var promise = new Promise((resolve, reject) => {
-        var login = () => omg.server.login(loginUsername.value, loginPassword.value, onlogin);
-        var signup = () => omg.server.signup(signupUsername.value, signupPassword.value, onlogin);
-        
-        loginButton.onclick = login
-        signupButton.onclick = signup
-
-        var onlogin =  (results) => {
-            if (results) {
-                clearDialog()
-                resolve(results)
-            }
-            else {
-                this.invalidMessage.style.display = "inline-block";
-            }        
-        };
-        
-        var clearDialog = omg.ui.showDialog(document.getElementById("login-area"), () => {
-            resolve(false)
-        })
-    });
-    
-    //document.getElementsByClassName("invalid-login")[0].style.display = "block";
-    
-    return promise
 }
 
 var suggestTypes = (attachments) => {
