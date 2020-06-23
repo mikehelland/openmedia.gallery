@@ -145,7 +145,7 @@ postInput.onkeyup = e => {
 document.getElementById("post-button").onclick = async e => {
     //are we logged in?
 
-    var ok = await loginRequired()
+    var ok = await omg.ui.loginRequired()
     if (!ok) {
         return
     }
@@ -156,10 +156,10 @@ document.getElementById("post-button").onclick = async e => {
         }
     }
 
-    draftPost.text = postInput.value
-
+    
     var newPost = {type: "TEXTPOST"}
     if (draftPost) {
+        draftPost.text = postInput.value
         delete draftPost.draft
         
         var suggestedTypes = suggestTypes(draftPost.attachments)

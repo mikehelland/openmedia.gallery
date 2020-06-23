@@ -415,6 +415,68 @@ omg.ui.showDialog = function (dialog, cancelCallback) {
     return clearDialog
 }
 
+omg.ui.loginRequired = () => { 
+    if (omg.user) {
+        return true
+    }
+    
+    var loginArea = omg.ui.loginArea || document.getElementById("login-area")
+    if (!loginArea) {
+        var loginArea = document.createElement("div")
+        omg.ui.loginArea = loginArea
+        loginArea.innerHTML = `
+        <b>Login</b>
+        <p>If you have an account already, login here:</p>
+        <div class="invalid-login">Username or password is wrong.</div>
+        <input id="login-area-username" type="text" placeholder="username"/>
+        <input id="login-area-password" type="password" placeholder="password"/>
+        <button id="login-area-button">Login</button>
+        <hr>
+        <b>Signup</b>
+        <p>Create a new account. Just a username and password, that's it!</p>
+        <div class="invalid-signup">Username already exists.</div>
+        <input id="signup-area-username" type="text" placeholder="username"/>
+        <input id="signup-area-password" type="password" placeholder="password"/>
+        <button id="signup-area-button">Signup</button>`
+        loginArea.className = "dialog"
+        document.body.appendChild(loginArea)    
+    }
+    var loginUsername = document.getElementById("login-area-username")
+    var loginPassword = document.getElementById("login-area-password")
+    var loginButton = document.getElementById("login-area-button")
+    var signupUsername = document.getElementById("signup-area-username")
+    var signupPassword = document.getElementById("signup-area-password")
+    var signupButton = document.getElementById("signup-area-button")
+
+    var promise = new Promise((resolve, reject) => {
+        loginButton.onclick = () => omg.server.login(loginUsername.value, loginPassword.value, onlogin);
+        signupButton.onclick = () => omg.server.signup(signupUsername.value, signupPassword.value, onlogin);
+        
+        var onlogin =  (results) => {
+            if (results) {
+                clearDialog()
+                resolve(results)
+            }
+            else {
+                this.invalidMessage.style.display = "inline-block";
+            }        
+        };
+        
+        var clearDialog = omg.ui.showDialog(loginArea, () => {
+            resolve(false)
+        })
+    });
+    
+    //todo show invalid login
+    //document.getElementsByClassName("invalid-login")[0].style.display = "block";
+    
+    return promise
+}
+
+
+//misc
+
+// polyfill for safari?
 if (!document.body.requestFullscreen && document.body.webkitRequestFullscreen) {
     document.body.requestFullscreen = document.body.webkitRequestFullscreen;
 }

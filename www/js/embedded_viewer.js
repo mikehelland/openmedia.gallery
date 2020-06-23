@@ -233,36 +233,52 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
         bottomRow.appendChild(resultData);
     }
 
+    this.bottomRow = bottomRow
+
     if (this.metaData) {
-        if (this.params.result && this.params.result.playcount) {
-            resultData = document.createElement("span");
-            resultData.className = "omg-thing-playcount";
-            resultData.innerHTML = this.params.result.playcount + " &#9658;";
-            bottomRow.appendChild(resultData);        
-        }
-    
-        resultData = document.createElement("span");
-        resultData.className = "omg-thing-vote";
-        resultData.innerHTML = this.metaData.downvotes + " &#9660;";
-        resultData.onclick = e => {
+        this.makeMetaData()
+    }
+
+    this.div.appendChild(bottomRow)
+}
+
+OMGEmbeddedViewer.prototype.makeMetaData = function () {
+    var dataDiv
+    var bottomRow = this.bottomRow
+    if (this.params.result && this.params.result.playcount) {
+        dataDiv = document.createElement("span");
+        dataDiv.className = "omg-thing-playcount";
+        dataDiv.innerHTML = this.params.result.playcount + " &#9658;";
+        bottomRow.appendChild(dataDiv);        
+    }
+
+    dataDiv = document.createElement("span");
+    dataDiv.className = "omg-thing-vote";
+    dataDiv.innerHTML = this.metaData.downvotes + " &#9660;";
+    dataDiv.onclick = async e => {
+        var ok = await omg.ui.loginRequired()
+        console.log(ok)
+        if (ok) {
             omg.server.postHTTP("vote/", {id_thing: this.data.id, vote: -1}, () => {
                 e.target.innerHTML = this.metaData.downvotes * 1 + 1 + " &#9660;"
             })
         }
-        bottomRow.appendChild(resultData);        
+    }
+    bottomRow.appendChild(dataDiv);        
 
-        resultData = document.createElement("span");
-        resultData.className = "omg-thing-vote";
-        resultData.innerHTML = this.metaData.upvotes + " &#9650;";
-        resultData.onclick = e => {
+    dataDiv = document.createElement("span");
+    dataDiv.className = "omg-thing-vote";
+    dataDiv.innerHTML = this.metaData.upvotes + " &#9650;";
+    dataDiv.onclick = async e => {
+        var ok = await omg.ui.loginRequired()
+        console.log(ok)
+        if (ok) {
             omg.server.postHTTP("/vote/", {id_thing: this.data.id, vote: 1}, () => {
                 e.target.innerHTML = this.metaData.upvotes * 1 + 1 + " &#9650;"
             })
         }
-        bottomRow.appendChild(resultData);        
     }
-
-    this.div.appendChild(bottomRow)
+    bottomRow.appendChild(dataDiv);        
 }
 
 OMGEmbeddedViewer.prototype.showTipJar = function () {
