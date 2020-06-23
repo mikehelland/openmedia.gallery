@@ -118,7 +118,15 @@
    cursor: pointer;
 }
 
-.omg-music-controls-button:hover, .omg-thing-vote:hover {
+.omg-thing-comment-vote {
+   margin-right:0.4em;
+   font-size: 0.8em;
+   font-family: Helvetica;
+   border:1px solid transparent;
+   cursor: pointer;
+}
+
+.omg-music-controls-button:hover, .omg-thing-vote:hover, .omg-thing-comment-vote:hover {
    border:1px solid #808080;
 }
 
@@ -182,7 +190,8 @@
    align-items: center;
    padding:3px;
    padding-top: 6px;
-   
+   width:100%;
+   box-sizing: border-box;   
 }
 .omg-viewer-comment-input {
    box-sizing: border-box;
@@ -235,6 +244,8 @@
 .omg-viewer-comment-reply-box {
    display: flex;
    flex-direction: row;
+   width:100%;
+   box-sizing: border-box;   
 }
 
 .omg-viewer-attachment {

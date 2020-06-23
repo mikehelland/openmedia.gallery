@@ -87,16 +87,43 @@ OMGComments.prototype.makeCommentDiv = function (comment, fresh, afterDiv) {
     
     var tools = document.createElement("div")
     tools.className = "omg-viewer-comment-tools"
+
     var commentReplyDiv = document.createElement("span")
     commentReplyDiv.innerHTML = "Reply"
     commentReplyDiv.className = "omg-viewer-comment-reply-to"
-
     commentReplyDiv.onclick = e => {
         if (!comment.isReplyShowing) {
             this.makeCommentReplyDiv(comment, tools)
             comment.isReplyShowing = true
         }
     }
+
+    var dataDiv = document.createElement("span");
+    dataDiv.className = "omg-thing-comment-vote";
+    dataDiv.innerHTML = comment.upvotes + " &#9650;";
+    dataDiv.onclick = async e => {
+        var ok = await omg.ui.loginRequired()
+        if (ok) {
+            omg.server.postHTTP("/vote/", {id_comment: comment.id, id_thing: comment.id_thing, vote: 1}, () => {
+                e.target.innerHTML = comment.upvotes * 1 + 1 + " &#9650;"
+            })
+        }
+    }
+    tools.appendChild(dataDiv);        
+
+    dataDiv = document.createElement("span");
+    dataDiv.className = "omg-thing-comment-vote";
+    dataDiv.innerHTML = comment.downvotes + " &#9660;";
+    dataDiv.onclick = async e => {
+        var ok = await omg.ui.loginRequired()
+        if (ok) {
+            omg.server.postHTTP("vote/", {id_comment: comment.id, id_thing: comment.id_thing, vote: -1}, () => {
+                e.target.innerHTML = comment.downvotes * 1 + 1 + " &#9660;"
+            })
+        }
+    }
+    tools.appendChild(dataDiv);        
+
     tools.appendChild(commentReplyDiv)
 
     commentDiv.appendChild(tools)
