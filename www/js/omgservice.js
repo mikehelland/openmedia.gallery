@@ -277,16 +277,16 @@ omg.util.getTimeCaption = function (timeMS) {
     }
 
     var seconds = Math.round((Date.now() - timeMS) / 1000);
-    if (seconds < 60) return seconds + " sec ago";
+    if (seconds < 60) return seconds + " sec";
 
     var minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return minutes + " min ago";    
+    if (minutes < 60) return minutes + " min";    
    
     var hours = Math.floor(minutes / 60);
-    if (hours < 24) return hours + " hr ago";    
+    if (hours < 24) return hours + " hr";    
 
     var days = Math.floor(hours / 24);
-    if (days < 7) return days + " days ago";
+    if (days < 7) return days + " days";
 
     var date  = new Date(timeMS);
     var months = ["Jan", "Feb", "Mar", "Apr", "May",

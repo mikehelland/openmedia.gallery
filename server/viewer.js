@@ -78,7 +78,7 @@ return `<!DOCTYPE html>
    <script>
    var viewer;
    window.onload = function () {
-        setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
+        omg.ui.setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
         omg.setupShareWindow();
         data.body.id = data.id
         omg.server.getTypes(() => {

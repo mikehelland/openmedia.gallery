@@ -165,7 +165,7 @@ document.getElementById("post-button").onclick = async e => {
     }
 
     
-    var newPost = {type: "TEXTPOST"}
+    var newPost = {type: "TEXT"}
     if (draftPost) {
         draftPost.text = postInput.value
         delete draftPost.draft
@@ -175,7 +175,7 @@ document.getElementById("post-button").onclick = async e => {
             newPost = suggestedTypes[0].convert(draftPost)
         }
         else {
-            draftPost.type = "TEXTPOST"
+            draftPost.type = "TEXT"
             newPost = draftPost
         }
     }
@@ -301,6 +301,30 @@ var suggestTypes = (attachments) => {
         }
     })
 
+    if (typeCount.image && !typeCount.audio && !typeCount.video && !typeCount.other) {
+        if (typeCount.image === 1) {
+            suggestedTypes.push({type: "IMAGE", convert: (draft) => {
+                newPost = {type: "IMAGE",
+                                url: draft.attachments[0].url,  
+                                text: draft.text, 
+                                name: draft.text.split("\n")[0].substr(0, 20) || ""}
+                return newPost
+            }})
+        }
+        else {
+            suggestedTypes.push({type: "IMAGESET", convert: (draft) => {
+                newPost = {type: "IMAGESET",
+                                set: [],  
+                                text: draft.text, 
+                                name: draft.text.split("\n")[0].substr(0, 20) || ""}
+                draft.attachments.forEach(attachment => {
+                    newPost.set.push(attachment)
+                })
+                return newPost
+            }})
+        }
+        
+    }
     if (typeCount.audio && !typeCount.image && !typeCount.video && !typeCount.other) {
         //todo put this in the music app
         suggestedTypes.push({type: "SOUNDSET", convert: (draft) => {

@@ -1,0 +1,8 @@
+{
+    "activities": [
+		{
+			"name": "Embedded Post Viewer", 
+			"url": "embed.js", 
+			"embeds": ["TEXTPOST","TEXT","IMAGE","IMAGESET"]}
+	]
+}

@@ -1,5 +1,0 @@
-{
-    "activities": [
-		{"name": "Embedded TextPost Viewer", "url": "embed.js", "embeds": ["TEXTPOST"]}
-	]
-}

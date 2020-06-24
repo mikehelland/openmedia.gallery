@@ -132,11 +132,9 @@ omg.ui.makeInboxItem = (item, dialog) => {
     itemEl.innerHTML = `<div class='inbox-item-datetime'>
                      ${omg.util.getTimeCaption(item.datetime)}</div>
                      ${item.type} from ${item.fromUsername}`
-    console.log(item)
     itemEl.onclick = () => {
 
         if (item.unread) {
-            console.log(item.id)
             omg.server.postHTTP("/inbox/read", { id: item.id })
             itemEl.className = "inbox-item"
             item.unread = false
