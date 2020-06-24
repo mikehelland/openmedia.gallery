@@ -1,82 +1,147 @@
 if (typeof omg == "undefined") {
    omg = {};
 }
+if (!omg.ui) {
+   omg.ui = {}
+}
 
-function setupUserControls(div, successCallback, failCallback) {
-   var loggedIn = false;
-   var user;
-
-   if (!div.omg) {
-      div.omg = {};
+omg.ui.loginRequired = () => { 
+   if (omg.user) {
+       return true
    }
+   
+   var loginArea = omg.ui.loginArea || document.getElementById("login-area")
+   if (!loginArea) {
+       var loginArea = document.createElement("div")
+       omg.ui.loginArea = loginArea
+       loginArea.innerHTML = `
+       <b>Login</b>
+       <p>If you have an account already, login here:</p>
+       <div class="invalid-login">Username or password is wrong.</div>
+       <input id="login-area-username" type="text" placeholder="username"/>
+       <input id="login-area-password" type="password" placeholder="password"/>
+       <button id="login-area-button">Login</button>
+       <hr>
+       <b>Signup</b>
+       <p>Create a new account. Just a username and password, that's it!</p>
+       <div class="invalid-signup">Username already exists.</div>
+       <input id="signup-area-username" type="text" placeholder="username"/>
+       <input id="signup-area-password" type="password" placeholder="password"/>
+       <button id="signup-area-button">Signup</button>`
+       loginArea.className = "dialog"
+       document.body.appendChild(loginArea)    
+   }
+   var loginUsername = document.getElementById("login-area-username")
+   var loginPassword = document.getElementById("login-area-password")
+   var loginButton = document.getElementById("login-area-button")
+   var signupUsername = document.getElementById("signup-area-username")
+   var signupPassword = document.getElementById("signup-area-password")
+   var signupButton = document.getElementById("signup-area-button")
 
-   var onNotLoggedIn = function () {
-      if (!div.omg.notLoggedIn) {
-         //div.omg.notLoggedIn = document.createElement("span");
-         //div.omg.notLoggedIn.className = "omg-user-controls-not-logged-in";
-         var httpsURL = "/";
-         if (window.location.protocol !== "https:") {
-             httpsURL = "https://" + window.location.host + "/";
+   var promise = new Promise((resolve, reject) => {
+       loginButton.onclick = () => omg.server.login(loginUsername.value, loginPassword.value, onlogin);
+       signupButton.onclick = () => omg.server.signup(signupUsername.value, signupPassword.value, onlogin);
+       
+       var onlogin =  (results) => {
+           if (results) {
+               clearDialog()
+               omg.ui.setupUserControls(omg.ui.userDiv)
+               resolve(results)
+           }
+           else {
+               this.invalidMessage.style.display = "inline-block";
+           }        
+       };
+       
+       var clearDialog = omg.ui.showDialog(loginArea, () => {
+           resolve(false)
+       })
+   });
+   
+   //todo show invalid login
+   //document.getElementsByClassName("invalid-login")[0].style.display = "block";
+   
+   return promise
+}
+
+omg.ui.setupUserControls = (div, successCallback, failCallback) => {
+
+   omg.ui.userDiv = div
+
+   omg.server.getUser(user => {
+       if (user) {
+           div.innerHTML = "<a href='/user.htm'>" + user.username + "</a> ";
+           omg.ui.makeInbox(div, user)
+       }
+       else {
+           div.innerHTML = "Login / Signup"
+           div.onclick = omg.ui.loginRequired
+       }
+   })
+}
+
+omg.ui.makeInbox = (parentDiv, user) => {
+   dialog = document.createElement("div")
+   dialog.className = "inbox-dialog"      
+   document.body.appendChild(dialog)
+
+   omg.ui.inbox = {unread: 0}
+
+   omg.server.getHTTP("/inbox", results => {
+      omg.ui.inbox.div = document.createElement("span")
+      results.forEach(item => {
+         if (item.unread) {
+            omg.ui.inbox.unread++
+         }
+      })
+      omg.ui.inbox.div.innerHTML = "(" + omg.ui.inbox.unread + ")"
+      omg.ui.inbox.div.className = "inbox-indicator"
+      parentDiv.appendChild(omg.ui.inbox.div)
+     
+      omg.ui.inbox.div.onclick = e => {
+
+         if (omg.ui.isShowingInbox) {
+            omg.ui.isShowingInbox = false
+            dialog.style.display = "none"
+            return
          }
 
-         var fwd = "?fwd=" + encodeURIComponent(window.location.pathname + window.location.search)
-         //div.omg.notLoggedIn.innerHTML = "<a href='" + httpsURL + 
-         div.innerHTML = "<a href='" + httpsURL +
-                 "signin.htm" + fwd + "'>Login / Signup</a>";
-         //div.appendChild(div.omg.notLoggedIn);
+         dialog.innerHTML = ""
+         results.forEach(item => {
+            dialog.appendChild(omg.ui.makeInboxItem(item, dialog))
+         })
+         omg.ui.isShowingInbox = true
+         dialog.style.display = "block"
       }
+   })
+   
+}
 
-      if (typeof failCallback == "function") {
-         failCallback(user);
+omg.ui.makeInboxItem = (item, dialog) => {
+   var itemEl = document.createElement("div")
+   itemEl.className = "inbox-item" + (item.unread ? "-unread" : "")
+   itemEl.innerHTML = `<div class='inbox-item-datetime'>
+                     ${omg.util.getTimeCaption(item.datetime)}</div>
+                     ${item.type} from ${item.fromUsername}`
+   console.log(item)
+   itemEl.onclick = () => {
+
+      if (item.unread) {
+         console.log(item.id)
+         omg.server.postHTTP("/inbox/read", {id: item.id})
+         itemEl.className = "inbox-item"
+         item.unread = false
+         omg.ui.inbox.div.innerHTML = "(" + --omg.ui.inbox.unread + ")"
       }
-
-   };
-
-   var onLoggedIn = function () {
-
-	  div.innerHTML = "<a href='/user.htm'>" + user.username + "</a>";
-
-      var el = document.createElement("div");
-      el.style.display = "none";
-      el.style.position = "relative";
-      //el.style.width = "2em";
-      div.appendChild(el);
-      div.omg.dropDownContainer = el;
-
-      var downEl = document.createElement("div");
-      downEl.style.display = "inline-block";
-      downEl.style.border = "4px solid black";
-      downEl.style.position = "relative";
-      downEl.style.borderLeftColor = "transparent";
-      downEl.style.borderRightColor = "transparent";
-      downEl.style.borderBottomColor = "transparent";
-      el.appendChild(downEl);
-      div.omg.dropDownContainer.style.display = "inline-block";
-
-      omg.user = user;
-
-      if (typeof successCallback == "function") {
-         successCallback(user);
+      
+      omg.ui.isShowingInbox = false
+      dialog.style.display = "none"
+      if (omg.ui.oninboxitemclick) {
+         omg.ui.oninboxitemclick(item, itemEl)
       }
-   };
-
-
-   //check to see if we're logged in
-   var xhr = new XMLHttpRequest();
-   xhr.open("GET", "/user");
-   xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4) {
-         
-         if (xhr.responseText === "false") {
-            onNotLoggedIn();
-            return;
-         }
-
-         user = JSON.parse(xhr.responseText);
-         onLoggedIn();
-
+      else {
+         window.location = item.url
       }
-   };
-   xhr.send();
-
+   }
+   return itemEl
 }

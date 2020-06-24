@@ -88,6 +88,11 @@ OMGComments.prototype.makeCommentDiv = function (comment, fresh, afterDiv) {
     var tools = document.createElement("div")
     tools.className = "omg-viewer-comment-tools"
 
+    var timeDiv = document.createElement("span")
+    timeDiv.className = "omg-thing-comment-datetime"
+    timeDiv.innerHTML = omg.util.getTimeCaption(new Date(comment.datetime))
+    tools.appendChild(timeDiv)
+
     var commentReplyDiv = document.createElement("span")
     commentReplyDiv.innerHTML = "Reply"
     commentReplyDiv.className = "omg-viewer-comment-reply-to"

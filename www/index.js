@@ -1,7 +1,15 @@
 document.getElementById("main-header-link").innerHTML = window.location.hostname
 document.title = window.location.hostname
-setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
-
+omg.ui.setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
+omg.ui.oninboxitemclick = (item) => {
+    omg.server.getId(item.thingId, result => {
+        thingDetail.innerHTML = ""
+        omg.loadSearchResult(result, {
+            resultList: thingDetail, 
+            viewerParams: {showComments: true}
+        })  
+    })    
+}
 
 
 

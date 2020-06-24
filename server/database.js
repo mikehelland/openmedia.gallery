@@ -56,6 +56,7 @@ module.exports = function (app) {
                 upvotes bigint default 0,
                 downvotes bigint default 0,
                 deleted boolean default false,
+                datetime timestamp not null default current_timestamp,
                 other jsonb)`, (err,res) => {
                     // remake the db object so it has the new table
                     connect()

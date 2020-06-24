@@ -218,13 +218,10 @@ module.exports = (app) => {
             var updateString = updates.join(", ")
             
             db.run(`UPDATE ${table} SET ${updateString} WHERE id=${id}`, (err,result) => {
-                        if (err) {
-                            console.log(err); 
-                        }
-                        else {
-                            console.log(result)
-                        }        
-                    })
+                if (err) {
+                    console.log(err); 
+                }
+            })
         }
 
         db.votes.find(find, columns, (err, result) => {
@@ -233,7 +230,6 @@ module.exports = (app) => {
             }
 
             if (result.length === 0) {
-                console.log("votes, found none")
                 find.vote = vote
                 db.votes.save(find, (err, result) => {
                     if (err) {
@@ -470,21 +466,67 @@ module.exports = (app) => {
         req.body.username = req.user.username
 
         var db = app.get('db')
-        db.query("update things set commentcount = commentcount + 1 where id=" + req.body.id_thing, function(err, docs){
-            if (err) {
-                console.log(err);
-                res.send(err)
-                return
-            }
+        db.things.findDoc(req.body.id_thing, (err, thing) => {
+            if (err) return res.send(err)
+    
             db.comments.save(req.body, function(err, docs){
                 res.send(err || docs)
+                if (err) {
+                    return 
+                }
+
+                postToInbox({
+                    url: "/view/" + thing.id,
+                    thingId: thing.id,
+                    type: "comment",
+                    to: thing.user_id,
+                    fromUserId: req.user.id,
+                    fromUsername: req.user.username,
+                    datetime: Date.now()
+                })
+
+                var updateSql = "update things set commentcount = commentcount + 1 where id=" + req.body.id_thing 
+                db.query(updateSql, (err, docs) => console.log(err));
+    
             });
-        });
+        })
     });
 
     app.get('/comments/:id', (req, res) => {
         app.get('db').comments.find({id_thing: req.params.id}, function(err, docs){
             res.send(err || docs)
+        });
+    });
+
+    var postToInbox = obj => {
+        var db = app.get('db')
+        obj.unread = true
+        db.saveDoc("inbox", obj, (err, result) => {
+            if (err) console.log(err)
+        })
+    }
+
+    app.get('/inbox', (req, res) => {
+        var options = {limit : 8, order : "body ->> 'datetime' desc"}
+        app.get('db').inbox.findDoc({to: req.user.id}, options, function(err, docs){
+            res.send(err || docs)
+        });
+    });
+
+    app.post('/inbox/read', (req, res) => {
+        var db = app.get('db')
+        db.inbox.findDoc(req.body.id, function(err, doc){
+            if (err) return res.send(err)
+
+            if (doc && doc.to === req.user.id) {
+                doc.unread = false
+                db.inbox.saveDoc(doc, (err, result) => {
+                    res.send(err || result)
+                })
+            }
+            else {
+                res.send("invalid")
+            }
         });
     });
 
