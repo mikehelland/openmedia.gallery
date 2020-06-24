@@ -1,7 +1,4 @@
 if (typeof omg === "object" && omg.types) {
-    if (omg.types["TEXTPOST"]) {
-        omg.types["TEXTPOST"].embedClass = OMGEmbeddedViewerPOST
-    }
     if (omg.types["TEXT"]) {
         omg.types["TEXT"].embedClass = OMGEmbeddedViewerPOST
     }

@@ -36,7 +36,7 @@ module.exports = function (app) {
     if (connect()) {
         if (!db.things) {
             db.saveDoc("things", {
-                type: "TEXTPOST", text: "Welcome to your new OMG Server!",
+                type: "TEXT", text: "Welcome to your new OMG Server!",
                created_at: Date.now(), last_modified: Date.now() 
             }, (err,ress) => {
                 db.run(`alter table things 

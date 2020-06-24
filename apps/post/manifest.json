@@ -3,6 +3,6 @@
 		{
 			"name": "Embedded Post Viewer", 
 			"url": "embed.js", 
-			"embeds": ["TEXTPOST","TEXT","IMAGE","IMAGESET"]}
+			"embeds": ["TEXT","IMAGE","IMAGESET"]}
 	]
 }
