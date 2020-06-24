@@ -486,7 +486,9 @@ module.exports = (app) => {
                 })
 
                 var updateSql = "update things set commentcount = commentcount + 1 where id=" + req.body.id_thing 
-                db.query(updateSql, (err, docs) => console.log(err));
+                db.query(updateSql, (err, docs) => {
+                    if (err) console.log(err)
+                });
     
             });
         })
