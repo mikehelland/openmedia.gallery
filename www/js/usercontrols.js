@@ -74,7 +74,7 @@ omg.ui.setupUserControls = (div, successCallback, failCallback) => {
            omg.ui.makeInbox(div, user)
        }
        else {
-           div.innerHTML = "Login / Signup"
+           div.innerHTML = "<span style='cursor:pointer;'>Login / Signup</span>"
            div.onclick = omg.ui.loginRequired
        }
    })

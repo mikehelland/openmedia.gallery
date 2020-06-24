@@ -28,7 +28,7 @@ OMG can use audio samples from anywhere on the Internet. You can:
    <script src="/js/omgservice.js"></script>
    <script>
    var userControls = document.getElementsByClassName("title-bar-user-controls")[0]
-   setupUserControls(userControls, (user) => {
+   omg.ui.setupUserControls(userControls, (user) => {
          document.getElementById("not-logged-in").style.display = "none"
          document.getElementById("upload-usage-stats").innerHTML = 
                "<b>" + omg.util.getFileSizeCaption(user.uploaded_bytes) + "</b> of <b>" +
