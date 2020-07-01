@@ -3,6 +3,15 @@
     <head>
         <title>omg admin</title>
         <style>
+            body {
+                background-color: black;
+                color:white;
+            }
+
+            #post-raw-input {
+                width: 400px;
+                height:300px
+            }
         </style>
     </head>
     <body>
@@ -18,6 +27,7 @@
         <br>
         <p>Post Raw:</p>
         <textarea id="post-raw-input"></textarea>
+        <br>
         <button id="post-raw-button">Post</button>
         <script src="/js/omgservice.js"></script>
         <script>
@@ -25,7 +35,7 @@
             var text = document.getElementById("post-raw-input").value
             try {
                 var json = JSON.parse(text)
-                omg.server.post(json, data => {
+                omg.server.postHTTP("/admin/data/", json, data => {
                     window.location = "/data/" + data.id
                 })
             } catch (e) {console.log(e)}

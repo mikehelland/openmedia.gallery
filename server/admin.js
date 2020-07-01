@@ -66,6 +66,25 @@ module.exports = (app, express) => {
         })
     })
 
+    app.post('/admin/data/', function (req, res) {
+
+        if (!req.user || !req.user.admin) {
+            return res.send({})
+        }
+
+        req.body.last_modified = Date.now();
+    
+        app.get("db").saveDoc("things", req.body, function (err, result) {
+            if (!err) {
+                res.send(result);
+            }
+            else {
+                res.send(err);
+                console.log(err);
+            }
+        }); 
+    })
+
     app.use("/admin", express.static('admin', {index: "index.htm"}));
 
 }
