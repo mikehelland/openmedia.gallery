@@ -15,6 +15,10 @@ module.exports = (app, express) => {
 
 
     app.get('/admin/users', function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send({})
+        }
+
         var options = {}
         var find = {}
 
@@ -33,6 +37,9 @@ module.exports = (app, express) => {
     })
 
     app.get('/admin/gallery-stats', function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send({})
+        }
 
         var callback = function (err, docs) {
             if (err) {
@@ -48,6 +55,10 @@ module.exports = (app, express) => {
     })
 
     app.get('/admin/uploads', function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send({})
+        }
+        
         var uploads = []
         var dir = "www/uploads/" + (req.query.dir || "")
         fs.readdir(dir, (err, contents)=>{
@@ -67,22 +78,31 @@ module.exports = (app, express) => {
     })
 
     app.post('/admin/data/', function (req, res) {
-
         if (!req.user || !req.user.admin) {
             return res.send({})
         }
 
+        var db = app.get("db")
+        var post = () => db.saveDoc("things", req.body, (err, result) => res.send(err || result))
         req.body.last_modified = Date.now();
     
-        app.get("db").saveDoc("things", req.body, function (err, result) {
-            if (!err) {
-                res.send(result);
-            }
-            else {
-                res.send(err);
-                console.log(err);
-            }
-        }); 
+        if (!req.body.id) {
+            post()
+        }
+        else {
+            // if the record doesn't exist, we have to make it
+            db.things.findDoc(req.body.id, (err, result) => {
+                if (!result) {
+                    db.run(`insert into things (id, body) values (${req.body.id}, '{}')`, (err, result) => {
+                        post()            
+                    })
+                }
+                else {
+                    post()
+                }
+            })
+        }
+        
     })
 
     app.use("/admin", express.static('admin', {index: "index.htm"}));
