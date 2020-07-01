@@ -284,3 +284,8 @@
    margin-right:0.4em;
    font-style: italic;
 }
+
+.omg-thing-top-row-overlay {
+   position:absolute;
+   width: 100%;
+}

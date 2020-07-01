@@ -9,6 +9,9 @@ function OMGEmbeddedViewer(params) {
     this.params = params
     this.data = params.data
     this.metaData = params.metaData
+
+    this.viewMode = params.viewMode || ""
+
     this.parentDiv = params.div
     this.div = document.createElement("div")
     this.div.className = "omg-viewer-thing"
@@ -81,7 +84,7 @@ OMGEmbeddedViewer.prototype.setupControls = function (params) {
         this.embedDiv.style.maxHeight = params.maxHeight + "px";
     }
     this.embedDiv.className = "omg-viewer-embed"
-    
+
     if (this.params.onclickcontent) {
         this.embedDiv.style.cursor = "pointer"
         this.embedDiv.onclick = e => {
@@ -127,6 +130,10 @@ OMGEmbeddedViewer.prototype.makeTipJar = function () {
 };
 
 OMGEmbeddedViewer.prototype.makeTopRow = function () {
+    this.topRow = document.createElement("div")
+    this.topRow.className = "omg-thing-top-row" + (this.viewMode === "MICRO" ? "-overlay" : "")
+    this.div.appendChild(this.topRow)
+
     //caption
     this.captionDiv = document.createElement("div");
     this.caption = this.data.name || this.data.tags || "";
@@ -137,17 +144,17 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
     }
     this.captionDiv.innerHTML = this.caption
     this.captionDiv.className = "omg-thing-title";
-    this.div.appendChild(this.captionDiv)
+    this.topRow.appendChild(this.captionDiv)
     
     //user
     this.userDiv = document.createElement("div");
     this.userDiv.className = "omg-thing-user";
     this.userDiv.innerHTML = this.data.username ? "by " + this.data.username : "";
-    this.div.appendChild(this.userDiv);    
+    this.topRow.appendChild(this.userDiv);    
         
     this.rightData = document.createElement("div");
     this.rightData.className = "omg-thing-right-data";
-    this.div.appendChild(this.rightData);
+    this.topRow.appendChild(this.rightData);
 
     //date
     this.datetimeDiv = document.createElement("span");
@@ -164,6 +171,11 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
 }
 
 OMGEmbeddedViewer.prototype.makeBottomRow = function () {
+
+    if (this.viewMode === "MICRO") {
+        return
+    }
+
     var bottomRow = document.createElement("div")
     bottomRow.className = "omg-viewer-bottom-row"
 
