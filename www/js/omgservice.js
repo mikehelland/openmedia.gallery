@@ -143,6 +143,12 @@ omg.server.getUser = function (callback) {
     })
 }
 
+omg.registerEmbeddedViewer = (type, viewerClass) => {
+    if (omg.types && omg.types[type]) {
+        omg.types[type].embedClass = viewerClass
+    }
+}
+
 /***
  *  Handy search helper
  */

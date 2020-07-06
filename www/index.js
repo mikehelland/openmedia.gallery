@@ -332,7 +332,7 @@ var suggestTypes = (attachments) => {
                             defaultSurface: "PRESET_SEQUENCER",
                             data: [],
                             text: draft.text, 
-                            name: draft.text.split("\n")[0].substr(0, 20) || ""}
+                            name: draft.text.split("\n")[0].substr(0, 20) || draft.attachments[0].name}
             draft.attachments.forEach(attachment => {
                 console.log(attachment)
                 newPost.data.push(attachment)
