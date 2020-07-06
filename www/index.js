@@ -3,6 +3,7 @@ document.title = window.location.hostname
 omg.ui.setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0]);
 omg.ui.oninboxitemclick = (item) => {
     omg.server.getId(item.thingId, result => {
+        fp.nowPlaying.style.display = "block"
         thingDetail.innerHTML = ""
         omg.loadSearchResult(result, {
             resultList: thingDetail, 
