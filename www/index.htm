@@ -36,6 +36,16 @@
         .now-playing-caption {
             padding-bottom: 1em;
         }
+
+        #now-playing-back {
+            display:none;
+            margin: 16px;
+            text-align: center;
+            cursor: pointer;
+        }
+        #now-playing-back:hover {
+            text-decoration: underline;
+        }
         #welcome-panel {
             flex-grow: 1;
             /*background-color:black;*/
@@ -72,12 +82,13 @@
                 z-index: 1;
             }
             .now-playing {
+                display:none;
                 position:fixed;
                 bottom:0px;
                 padding:0px;
                 width:100%;
-                min-width: 0px;
-                height:42px;
+                top:38px;
+                
             }
             .now-playing-caption {
                 display:none;
@@ -92,7 +103,9 @@
             .header-shadow {
                 display:block;
             }
-
+            #now-playing-back {
+                display: block;
+            }
         }
 
        .main-nav-ul > li:first-child {
@@ -147,6 +160,8 @@
         .post-browse-separator {
             margin:15px;
         }
+
+    
    </style>
 </head>
 
@@ -208,6 +223,7 @@
     </div>
 
     <div class="now-playing">
+        <div id="now-playing-back">&lt; Back To Gallery</div>
         <div id="thing-detail-panel"></div>
         <!-- FOUC (flickers) on firefox <iframe id="gauntlet"></iframe>-->
     </div>

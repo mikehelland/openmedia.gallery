@@ -66,6 +66,10 @@ for (var ifg = 0; ifg < formattingGuideLinks.length; ifg++) {
 
 fp.searchParams.viewerParams.onclickcontent = viewer => {
 
+    if (fp.isMobileDiv.clientWidth) {
+        fp.nowPlaying.style.display = "block"
+    }
+
     if (fp.iframe) {
         fp.iframe.style.display = "none"
     }
@@ -341,4 +345,8 @@ var suggestTypes = (attachments) => {
         }})
     }
     return suggestedTypes
+}
+
+document.getElementById("now-playing-back").onclick = e => {
+    fp.nowPlaying.style.display = "none"
 }
