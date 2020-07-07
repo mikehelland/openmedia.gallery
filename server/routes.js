@@ -119,8 +119,8 @@ module.exports = (app) => {
                     else if (docs.editableBy === "allUsers") {
                         // make sure other users don't change ownership 
                         req.body.editableBy = "allUsers"
-                        req.body.user_id = docs.body.user_id
-                        req.body.username = docs.body.username;
+                        req.body.user_id = docs.user_id
+                        req.body.username = docs.username;
                         postData(req, res, db)
                     }
                     else {
