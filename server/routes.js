@@ -116,15 +116,29 @@ module.exports = (app) => {
                     if (docs.user_id === req.user.id) {
                         postData(req, res, db)
                     }
+                    else if (docs.editableBy === "allUsers") {
+                        // make sure other users don't change ownership 
+                        req.body.editableBy = "allUsers"
+                        req.body.user_id = docs.body.user_id
+                        req.body.username = docs.body.username;
+                        postData(req, res, db)
+                    }
                     else {
                         res.send({});
-                        console.log(docs.user_id, req.user.id)
-                        console.log("tried to overwrite someone elses file")
+                        //("tried to overwrite someone elses file")
                     }
                 }
             });
         }
         else {
+            if (req.user) {
+                req.body.user_id = req.user.id;
+                req.body.username = req.user.username;
+            }
+            else {
+                delete req.body.user_id
+                delete req.body.username
+            }
             postData(req, res, db)
         }
     });
@@ -427,14 +441,6 @@ module.exports = (app) => {
     };
     
     var postData = function (req, res, db) {
-        if (req.user) {
-            req.body.user_id = req.user.id;
-            req.body.username = req.user.username;
-        }
-        else {
-            delete req.body.user_id
-            delete req.body.username
-        }
         if (req.body.approved && (!req.user || !req.user.admin)) {
             delete req.body.approved;
         }
