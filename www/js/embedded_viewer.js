@@ -172,7 +172,7 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
 
 OMGEmbeddedViewer.prototype.makeBottomRow = function () {
 
-    if (this.viewMode === "MICRO") {
+    if (this.viewMode === "MICRO" || this.params.noBottomRow) {
         return
     }
 
@@ -350,7 +350,7 @@ OMGEmbeddedViewer.prototype.loadScriptsForType = (scripts, type, callback) => {
         type.onembedready = [callback]
         scripts.forEach(script => {
             var scriptEl = document.createElement("script")
-            //scriptEl.async = true
+            scriptEl.async = false
             scriptEl.onload = e => {
                 loadedScripts++
                 if (loadedScripts === scripts.length) {

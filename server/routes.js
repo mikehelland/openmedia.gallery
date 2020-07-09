@@ -398,7 +398,9 @@ module.exports = (app) => {
         }
         options.columns = findColumns
         if (req.query.q) {
-            find = {keys:["body ->> 'tags'", "body ->> 'name'"], term: req.query.q};
+            //find = {keys:["body ->> 'tags'", "body ->> 'name'"], term: req.query.q};
+            find["body ->> 'name'"] = req.query.q
+            find["body ->> 'tags'"] = req.query.q
         }
         db.things.find(find, options, callback)
     };
@@ -429,8 +431,9 @@ module.exports = (app) => {
         }
     
         if (req.query.q) {
-            find = {keys:["tags", "name"], term: req.query.q};
-            db.things.searchDoc(find, options, callback);
+            let search = {keys: ["tags", "name"], term: req.query.q};
+            search.where = find
+            db.things.searchDoc(search, options, callback);
         }
         else {
             if (JSON.stringify(find) == "{}") {
