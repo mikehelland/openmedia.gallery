@@ -156,13 +156,12 @@
 }
 
 .loader {
-   -webkit-animation: spin 1s linear infinite;
    animation: spin 1s linear infinite;
+   /*
+   -webkit-animation: spin 1s linear infinite;
    border: 2px solid #ddd;
    border-top: 2px solid #42a5f5;
-   border-radius: 50%;
-   height: 38px;
-   width: 38px;
+   border-radius: 50%;*/
 }
   
 @keyframes spin {
