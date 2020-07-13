@@ -20,9 +20,9 @@ function OMGEmbeddedViewerPOST(viewer) {
     this.div.appendChild(this.textDiv)
     parentDiv.appendChild(this.div)
 
-    viewer.loadScriptsForType(
+    omg.util.loadScripts(
             ["https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"],
-            data.type, () => {
+            () => {
                 this.markdown(data.text)
             }
     )

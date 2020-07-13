@@ -338,34 +338,6 @@ OMGEmbeddedViewer.prototype.showComments = function () {
 }
 
 OMGEmbeddedViewer.prototype.loadScriptsForType = (scripts, type, callback) => {
-    var type = omg.types[type]
-    if (this.scriptsLoaded) {
-        callback()
-    }
-    else if (type.onembedready) {
-        type.onembedready.push(callback)
-    }
-    else {
-        var loadedScripts = 0
-        type.onembedready = [callback]
-        scripts.forEach(script => {
-            var scriptEl = document.createElement("script")
-            scriptEl.async = false
-            scriptEl.onload = e => {
-                loadedScripts++
-                if (loadedScripts === scripts.length) {
-                    this.scriptsLoaded = true
-                    type.onembedready.forEach(f => {
-                        try {
-                            f()
-                        } catch (e) {console.log(e)}
-                    })
-                    type.onembedready = []
-                }
-            }
-            scriptEl.src = script
-            document.body.appendChild(scriptEl)
-            
-        })
-    }
+    console.log("deprecaed loadscripts for types", scripts, type)
+    omg.util.loadScripts(scripts, callback)
 }

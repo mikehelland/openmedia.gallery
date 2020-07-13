@@ -16,13 +16,6 @@ function OMGEmbeddedViewerROOM(viewer) {
         URL: <a href='${data.url}' target='_blank'>${data.url}</a>
         <br><br>`
     parentDiv.appendChild(this.div)
-    
-    /*viewer.loadScriptsForType(
-            ["https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"],
-            data.type, () => {
-                this.markdown(data.text)
-            }
-    )*/
 
 }
 

@@ -349,6 +349,44 @@ omg.util.getUniqueName = function (name, names) {
     return omg.util.getUniqueName(name + " 2", names);
 };
 
+omg.util.loadScripts = function (scripts, callback) {
+
+    if (!omg.util.loadedScripts) {
+        omg.util.loadedScripts = {}
+    }
+
+    let scriptCount = scripts.length
+    let scriptsLoaded = 0
+
+    let onload = (script) => {
+        omg.util.loadedScripts[script] = "loaded"
+        scriptsLoaded++
+        if (scriptsLoaded === scriptCount) {
+            if (callback) callback()
+        }
+    }
+
+    scripts.forEach(script => {
+        if (omg.util.loadedScripts[script]) {
+            let scriptStatus = omg.util.loadedScripts[script]
+            if (scriptStatus === "loaded") {
+                onload(script)
+            }
+            else {
+                scriptStatus.addEventListener("load", ()=> onload(script))
+            }
+        }
+        else {
+            var scriptEl = document.createElement("script")
+            scriptEl.async = false
+            scriptEl.addEventListener("load", ()=> onload(script))
+            scriptEl.src = script
+            document.body.appendChild(scriptEl)
+    
+            omg.util.loadedScripts[script] = scriptEl
+        }
+    })
+}
 
 /*
  * UI stuff
