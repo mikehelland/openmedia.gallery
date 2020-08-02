@@ -88,7 +88,7 @@ OMGEmbeddedViewer.prototype.setupControls = function (params) {
     if (this.params.onclickcontent) {
         this.embedDiv.style.cursor = "pointer"
         this.embedDiv.onclick = e => {
-            this.params.onclickcontent(this)
+            this.params.onclickcontent(this, e)
         }    
     }
     this.div.appendChild(this.embedDiv);
@@ -131,7 +131,7 @@ OMGEmbeddedViewer.prototype.makeTipJar = function () {
 
 OMGEmbeddedViewer.prototype.makeTopRow = function () {
     this.topRow = document.createElement("div")
-    this.topRow.className = "omg-thing-top-row" + (this.viewMode === "MICRO" ? "-overlay" : "")
+    this.topRow.className = "omg-thing-top-row" //+ (this.viewMode === "MICRO" ? "-overlay" : "")
     this.div.appendChild(this.topRow)
 
     //caption
