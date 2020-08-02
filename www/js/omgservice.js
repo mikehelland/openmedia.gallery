@@ -444,13 +444,18 @@ omg.ui.setupInputEvents = function (input, bindObject, bindProperty, onenter) {
     };
 };
 
-omg.ui.showDialog = function (dialog, cancelCallback) {
-    var background = document.createElement("div")
+omg.ui.makefullScreenDiv = function () {
+    let background = document.createElement("div")
     background.style.position = "fixed"
     background.style.left = "0px"
     background.style.top = "0px"
     background.style.width = "100%"
     background.style.height = "100%"
+    return background
+}
+
+omg.ui.showDialog = function (dialog, cancelCallback) {
+    var background = omg.ui.makefullScreenDiv()
     background.style.backgroundColor = "#808080"
     background.style.opacity = 0.5
 
@@ -473,6 +478,86 @@ omg.ui.showDialog = function (dialog, cancelCallback) {
     } 
     return clearDialog
 }
+
+omg.ui.makeDraggable = function (div, data, events)  {
+    
+    let context = {div, data, events}
+    
+    //?
+    //div.style.pointerEvents = "initial"    
+
+    div.onmousedown = e => {
+        e.preventDefault()
+        omg.ui.dragDropStart(e.pageX, e.pageY, context)
+    }
+
+    div.addEventListener("touchstart", e => {
+        e.preventDefault()
+        omg.ui.dragDropStart(e.targetTouches[0].pageX, e.targetTouches[0].pageY, context)
+    })
+}
+
+
+omg.ui.dragDropStart = function (x, y, context) {
+    var background = omg.ui.makefullScreenDiv()
+    document.body.appendChild(background)
+    context.background = background
+
+    let now = Date.now()
+    context.startedAt = now
+    context.startedX = x
+    context.startedY = y
+    context.dX = 0
+    context.dY = 0
+    setTimeout(() => {
+        if (context.startedAt !== now) {
+            return // context has moved on
+        }
+
+        if (context.dX < 10 && context.dY < 10) {
+            // todo long hold event
+            // remove events
+            console.log("long hollddd")
+            document.body.removeChild(background)
+            context.startedAt = 0
+        }
+
+    }, 1000)
+    
+
+    background.onmousemove = e => omg.ui.dragDropMove(e.pageX, e.pageY, context)
+    document.body.addEventListener("touchmove", e => omg.ui.dragDropMove(e.targetTouches[0].pageX, e.targetTouches[0].pageY, context))
+    
+    background.onmouseup = e => omg.ui.dragDropEnd(context) //e.pageX, e.pageY)
+    document.body.addEventListener("touchend", e => omg.ui.dragDropEnd(context))
+    
+    if (context.events.onstart) {
+        context.events.onstart(x, y, context)
+    }
+    
+}
+
+omg.ui.dragDropMove = function (x, y, context) {
+
+    if (Math.abs(x - context.startedX) > context.dX) {
+        context.dX = Math.abs(x - context.startedX)
+    }
+    if (Math.abs(y - context.startedY) > context.dY) {
+        context.dY = Math.abs(y - context.startedY)
+    }
+
+    if (context.events.onmove) {
+        context.events.onmove(x, y, context)
+    }
+
+}
+
+omg.ui.dragDropEnd = function (context) {
+    //remove events
+    console.log("on enddddd")
+    document.body.removeChild(context.background)
+}
+
 
 
 //misc
