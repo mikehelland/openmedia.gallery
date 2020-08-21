@@ -86,7 +86,7 @@ OMGRealTime.prototype.getUserMedia = function (callback) {
     this.localVideo.controls = true
 
     navigator.mediaDevices.getUserMedia({
-        video: {facingMode: { exact: "user" }},
+        video: {facingMode: "user" },
         audio: true
     }).then((stream) => {
         this.log("Got camera and microphone.")
