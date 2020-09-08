@@ -118,13 +118,11 @@ module.exports = (app, express) => {
             }
             if (stderr) {
                 res.send(`
-                <pre>stderr: 
-                ${stderr}</pre>`);
+                <pre>stderr: \n${stderr}</pre>`);
             }
             if (stdout) {
                 res.send(`
-                <pre>stdout: 
-                ${stdout}</pre>`);
+                <pre>stdout: \n${stdout}</pre>`);
             }
         });
     })
