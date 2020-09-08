@@ -115,13 +115,17 @@ module.exports = (app, express) => {
         exec("./update.sh", (error, stdout, stderr) => {
             if (error) {
                 res.send(`<pre>error: ${error.message}</pre>`);
-                return;
             }
             if (stderr) {
-                res.send(`<pre>stderr: ${stderr}</pre>`);
-                return;
+                res.send(`
+                <pre>stderr: 
+                ${stderr}</pre>`);
             }
-            res.send(`<pre>stdout: ${stdout}</pre>`);
+            if (stdout) {
+                res.send(`
+                <pre>stdout: 
+                ${stdout}</pre>`);
+            }
         });
     })
 
