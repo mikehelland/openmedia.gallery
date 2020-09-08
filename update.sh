@@ -7,11 +7,11 @@ git pull
 
 for dir in apps/*/    
 do
-    echo $dir
     cd $dir
    
     if [ -d .git ]; then
-        echo "has git"
+        echo "----"
+        echo $dir
         git pull
     fi
    
