@@ -125,6 +125,14 @@ module.exports = (app, express) => {
         });
     })
 
+    app.get('/admin/stop_server', function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send({})
+        }
+
+        process.exit(1)
+    })
+
     app.use("/admin", express.static('admin', {index: "index.htm"}));
 
 }
