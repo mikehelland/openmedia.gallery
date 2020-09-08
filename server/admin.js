@@ -113,17 +113,18 @@ module.exports = (app, express) => {
         const { exec } = require("child_process");
 
         exec("./update.sh", (error, stdout, stderr) => {
+            let output = ""
             if (error) {
-                res.send(`<pre>error: ${error.message}</pre>`);
+                output += `<pre>error: ${error.message}</pre>`
             }
             if (stderr) {
-                res.send(`
-                <pre>stderr: \n${stderr}</pre>`);
+                output += `\n<pre>stderr: \n${stderr}</pre>`
             }
             if (stdout) {
-                res.send(`
-                <pre>stdout: \n${stdout}</pre>`);
+                output += `\n<pre>stdout: \n${stdout}</pre>`
             }
+
+            res.send(output)
         });
     })
 
