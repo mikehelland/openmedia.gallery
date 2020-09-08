@@ -105,6 +105,26 @@ module.exports = (app, express) => {
         
     })
 
+    app.get('/admin/update', function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send({})
+        }
+
+        const { exec } = require("child_process");
+
+        exec("./update.sh", (error, stdout, stderr) => {
+            if (error) {
+                res.send(`<pre>error: ${error.message}</pre>`);
+                return;
+            }
+            if (stderr) {
+                res.send(`<pre>stderr: ${stderr}</pre>`);
+                return;
+            }
+            res.send(`<pre>stdout: ${stdout}</pre>`);
+        });
+    })
+
     app.use("/admin", express.static('admin', {index: "index.htm"}));
 
 }
