@@ -1,15 +1,13 @@
 # OpenMedia.Gallery
 
-OMG is a web server that stores "things".  
+OMG is a file-sharing social-network with an emphasis on composability.
 
-Different types of things can be added together to make bigger things.
-
-All of the content can be remixed and rearranged.
-
-See OMG and its apps in action: https://openmedia.gallery
+OMG stores *things* that can be combined together to make bigger *things*. All of the content can be remixed and rearranged.
 
 Watch: Composable Media on OMG  
 https://www.youtube.com/watch?v=6bfpxGNvDHQ
+
+See OMG and its apps in action: https://openmedia.gallery
 
 ----
 
