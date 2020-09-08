@@ -1,29 +1,15 @@
 # OpenMedia.Gallery
 
-OMG stores "things". A thing needs:
-
-* a type
-* a name
-
-And that's it. You can add whatever else youd want to it.
-
-Different applications can be added to OMG just adding a folder to the www/apps/ folder.
+OMG is a web server that stores "things".  
 
 Different types of things can be added together to make bigger things.
 
-* a few pictures can be added to the gallery
-* those pictures can be used to make a map for a game
+All of the content can be remixed and rearranged.
 
-And:
+See OMG and its apps in action: https://openmedia.gallery
 
-* a few sounds can be added to the gallery
-* the sounds can be arranged to make a song
-
-Then:
-
-* the song can used as the soundtrack for the game
-
-All of the content can be remixed and rearranged. 
+Watch: Composable Media on OMG  
+https://www.youtube.com/watch?v=6bfpxGNvDHQ
 
 ----
 
@@ -31,29 +17,55 @@ All of the content can be remixed and rearranged.
 
 * node.js
 * express.js
-* socket.io
+* PostGreSQL 
 * massive.js (postgres client)
-
-Prerequisites:
-
-* PostGreSQL 9.5 or later
 
 ----
 
 ## Collaboration
 
-OMG servers include WebSocket and WebRTC functions so your media apps can include video chat, 
+OMG servers include **WebSockets** and **WebRTC** functions so your media apps can include video chat, 
 and remote collaboration out of the box.
 
 ----
 
-## Examples
+## Install and Run
 
-Here's an example of an OMG server that features the music apps:
+Git, Node and NPM should be installed:
 
-https://openmusic.gallery
+    git clone https://github.com/mikehelland/openmedia.gallery.git
+    cd openmedia.gallery
+    npm install
+    ./create_database.sh
 
-And the editor is here:
+The `create_database` script will install PostGreSQL if needed, 
+then ask for a DB name and password, create the database, and create a `runomg.sh` script used to start the server.
 
-https://openmusic.gallery/create
+    ./runomg.sh
+
+----
+
+## Apps
+
+To install an app, clone its repo into the `apps/` folder:
+
+* OMG Music - https://github.com/mikehelland/omg-music
+
+A music player and remixer. This app is a requirement of most of other apps.
+
+* OMG Meme - https://github.com/mikehelland/omg-meme
+
+Create memes and multimedia presentations, including animation and music.
+
+* OMG Band - https://github.com/mikehelland/omg-band
+
+Tool for a working cover band, managing set lists, and promo materials.
+
+* RTC RPG - https://github.com/mikehelland/rtcrpg
+
+A clone of an 8-bit Role Playing Game and map editor with built in video conferencing
+
+* Song Processor - https://github.com/mikehelland/omg-song-processor
+
+An app for alternative and unusual musical interfaces.
 
