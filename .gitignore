@@ -9,4 +9,3 @@ www/preview/*
 *.pem
 runomg.sh
 NOUPDATE
-sessions/*

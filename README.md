@@ -15,7 +15,7 @@ See OMG and its apps in action: https://openmedia.gallery
 
 * node.js
 * express.js
-* PostGreSQL 
+* PostgreSQL 
 * massive.js (postgres client)
 
 ----
@@ -36,7 +36,7 @@ Git, Node and NPM should be installed:
     npm install
     ./create_database.sh
 
-The `create_database` script will install PostGreSQL if needed, 
+The `create_database` script will install PostgreSQL if needed, 
 then ask for a DB name and password, create the database, and create a `runomg.sh` script used to start the server.
 
     ./runomg.sh
