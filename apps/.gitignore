@@ -1,5 +1,5 @@
 *
 */
 !.gitignore
-!chat
-!post
+!chat/
+!post/
