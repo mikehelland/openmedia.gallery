@@ -2,4 +2,8 @@
 */
 !.gitignore
 !chat/
+!chat/*
+!chat/www/*
 !post/
+!post/*
+!post/www/*
