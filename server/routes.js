@@ -124,7 +124,7 @@ module.exports = (app) => {
                         postData(req, res, db)
                     }
                     else {
-                        res.send({});
+                        res.send({err: "not your data"});
                         //("tried to overwrite someone elses file")
                     }
                 }
