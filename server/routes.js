@@ -453,6 +453,7 @@ module.exports = (app) => {
         }
         req.body.last_modified = Date.now();
     
+        console.log(req.body)
         db.saveDoc("things", req.body, function (err, result) {
             if (!err) {
                 res.send(result);
