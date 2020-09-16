@@ -124,7 +124,7 @@ module.exports = (app) => {
                         postData(req, res, db)
                     }
                     else {
-                        res.send({err: "not your data"});
+                        res.send({error: "not your data"});
                         //("tried to overwrite someone elses file")
                     }
                 }
@@ -231,7 +231,7 @@ module.exports = (app) => {
             
             db.run(`UPDATE ${table} SET ${updateString} WHERE id=${id}`, (err,result) => {
                 if (err) {
-                    console.log(err); 
+                    console.error(err); 
                 }
             })
         }
@@ -275,7 +275,7 @@ module.exports = (app) => {
         var db = app.get('db');
         db.run("update things set playcount = playcount + 1 where id=" + req.body.id, function(err, docs){
             if (err) {
-                console.log(err);
+                console.error(err);
             }
             res.send(err || docs)
         });
@@ -306,7 +306,7 @@ module.exports = (app) => {
     app.post('/preview', upload.any(), (req, res) => {
         fs.writeFile("www/preview/" + req.body.id + ".png", req.files[0].buffer, (err) => {
             if (err) {
-                console.log('Error: ', err);
+                console.error('Error: ', err);
                 res.status(500).send({"error": err.message});
             } else {
                 res.status(200).send({});
@@ -350,7 +350,7 @@ module.exports = (app) => {
             filename = filename + "/" + req.body.filename
             fs.writeFile(filename, req.files[0].buffer, (err) => {
                 if (err) {
-                    console.log('Error: ', err);
+                    console.error('Error: ', err);
                     res.status(500).send({"error": err.message});
                 } else {
                     res.status(200).send({success: true});
@@ -453,14 +453,13 @@ module.exports = (app) => {
         }
         req.body.last_modified = Date.now();
     
-        console.log(req.body)
         db.saveDoc("things", req.body, function (err, result) {
             if (!err) {
                 res.send(result);
             }
             else {
                 res.send(err);
-                console.log(err);
+                console.error(err);
             }
         }); 
     };
@@ -495,7 +494,7 @@ module.exports = (app) => {
 
                 var updateSql = "update things set commentcount = commentcount + 1 where id=" + req.body.id_thing 
                 db.query(updateSql, (err, docs) => {
-                    if (err) console.log(err)
+                    if (err) console.error(err)
                 });
     
             });
@@ -512,7 +511,7 @@ module.exports = (app) => {
         var db = app.get('db')
         obj.unread = true
         db.saveDoc("inbox", obj, (err, result) => {
-            if (err) console.log(err)
+            if (err) console.error(err)
         })
     }
 
