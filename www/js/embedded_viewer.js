@@ -163,11 +163,6 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
                             parseInt(this.data.last_modified) || parseInt(this.data.created_at));
     this.rightData.appendChild(this.datetimeDiv);    
 
-    //votes?
-    var resultData = document.createElement("span");
-    resultData.className = "omg-thing-votes";
-    resultData.innerHTML = (this.data.votes || "0") + " votes";
-
 }
 
 OMGEmbeddedViewer.prototype.makeBottomRow = function () {
@@ -226,12 +221,6 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
         bottomRow.appendChild(this.editButton)
     }
 
-    this.voteButton = document.createElement("div");
-    this.voteButton.className = "omg-music-controls-button";
-    this.voteButton.innerHTML = "&#x2B06";
-    this.voteButton.title = "Upvote";
-
-    
     if (this.params.deleteButton) {
         var resultData = document.createElement("span");
         resultData.className = "omg-music-controls-button";
@@ -257,12 +246,12 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
 OMGEmbeddedViewer.prototype.makeMetaData = function () {
     var dataDiv
     var bottomRow = this.bottomRow
-    if (this.params.result && this.params.result.playcount) {
-        dataDiv = document.createElement("span");
-        dataDiv.className = "omg-thing-playcount";
-        dataDiv.innerHTML = this.params.result.playcount + " &#9658;";
-        bottomRow.appendChild(dataDiv);        
-    }
+    
+    dataDiv = document.createElement("span");
+    dataDiv.className = "omg-thing-vote";
+    dataDiv.style.border = "none"
+    dataDiv.innerHTML = this.metaData.playcount + " views"//" &#9658;";
+    bottomRow.appendChild(dataDiv);        
 
     dataDiv = document.createElement("span");
     dataDiv.className = "omg-thing-vote";
