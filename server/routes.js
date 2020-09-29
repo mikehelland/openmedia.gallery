@@ -330,7 +330,7 @@ module.exports = (app) => {
             if (typeof user.upload_limit === "string") {
                 user.upload_limit = parseInt(user.upload_limit)
             }
-            if (user.upload_limit !== -1 && user.uploaded_bytes + req.files[0].buffer.length >= user.upload_limit) {
+            if (user.upload_limit !== -1 && user.uploaded_bytes + req.files[0].buffer.length < user.upload_limit) {
                 return res.status(500).send({"error": "upload limit reached"});
             }
 
@@ -353,7 +353,7 @@ module.exports = (app) => {
                     console.error('Error: ', err);
                     res.status(500).send({"error": err.message});
                 } else {
-                    res.status(200).send({success: true});
+                    res.status(200).send({success: true, filename: filename.substr(3)});
                     db.run("update users set uploaded_bytes = uploaded_bytes + " + req.files[0].buffer.length +
                         "where id = " + req.user.id)
                 }
