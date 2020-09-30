@@ -17,11 +17,10 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(cookieParser());
 
 var session = require('express-session')
-//var FileStore = require('session-file-store')(session);
-//var fileStoreOptions = {};
+var FileStore = require('session-file-store')(session);
 
 app.use(session({
-    //store: new FileStore(fileStoreOptions),
+    store: new FileStore({ttl: 60 * 60 * 24 * 90}),
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false
