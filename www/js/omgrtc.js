@@ -2,17 +2,60 @@ function OMGRealTime(signalingServer) {
     this.userName = Math.round(Math.random() * 100000) + ""
     this.remoteUsers = {}
 
+    //reconnect to the web socket server
+    this.autoReconnect = true
+    //rejoin the room on the server
     this.autoRejoin = true
+
     var url = signalingServer || location.origin
     url = url.replace("https://", "wss://")
-    this.socket = new WebSocket(url)
+    this.socketUrl = url
+    
+    this.events = {}
+    
+    this.on("joined", msg => {
+        this.updateUserList(msg.room.users)
+        this.isJoined = true
+        if (this.isRejoining) {
+            this.isRejoining = false
+            //onreconnect hook?
+        }
+        if (this.onjoined) this.onjoined(msg.room)
+    })
+
+    this.on("update-user-list", msg => this.updateUserList(msg.users))
+    this.on("userLeft", msg => this.onUserLeft(msg.name))
+    this.on("userDisconnected", msg => this.onUserDisconnected(msg.name))
+
+    this.on("signaling", data => this.onSignal(data))
+
+    this.on("updateUserData", msg => this.updateRemoteUserData(msg))
+
+    window.addEventListener("beforeunload", e => {
+        this.unloading = true
+    })
+
+    this.setupSocket()
+}
+
+OMGRealTime.prototype.setupSocket = function () {
+
+    let isConnected = false
+    this.socket = new WebSocket(this.socketUrl)
 
     this.socket.onopen = (e) => {
-        if (this.onready) this.onready()
-    }
-
-    this.socket.onclose = () => {
-        if (this.ondisconnect) this.ondisconnect()
+        isConnected = true
+        
+        if (this.isReconnecting) {
+            this.isReconnecting  = false
+            if (this.isJoined && this.autoRejoin) {
+                this.isRejoining = true
+                this.join(this.roomName, this.userName, this.thing)
+            }
+        }
+        else {
+            if (this.onready) this.onready()
+        }
     }
 
     this.socket.onmessage = e => {
@@ -32,28 +75,19 @@ function OMGRealTime(signalingServer) {
         }
     }
 
-    this.events = {}
-    
-    this.on("joined", msg => {
-        this.updateUserList(msg.room.users)
-        this.isJoined = true
-        if (this.onjoined) this.onjoined(msg.room)
-    })
-    
-    this.on("update-user-list", msg => this.updateUserList(msg.users))
-    this.on("userLeft", msg => this.onUserLeft(msg.name))
-    this.on("userDisconnected", msg => this.onUserDisconnected(msg.name))
-
-    this.on("signaling", data => this.onSignal(data))
-
-    this.on("updateUserData", msg => this.updateRemoteUserData(msg))
-
-    this.on("reconnect", () => {
-        if (this.autoRejoin && this.isJoined) {
-            this.isRejoining = true
-            this.join(this.roomName, this.userName)
+    this.socket.onclose = () => {
+        if (isConnected) {
+            isConnected = false
+            if (this.ondisconnect) this.ondisconnect()
+            if (!this.unloading && this.autoReconnect) {
+                this.isReconnecting = true
+                this.reconnect()
+            }
         }
-    })
+        else if (this.isReconnecting) {
+            this.reconnect()
+        }
+    }
 }
 
 OMGRealTime.prototype.log = function (message) {
@@ -72,38 +106,12 @@ OMGRealTime.prototype.emit = function (type, data) {
     this.socket.send(JSON.stringify(data))
 }
 
-
-OMGRealTime.prototype.getUserMedia = function (callback) {
-    if (this.localStream) {
-        if (callback) callback(this.localVideo)
-        return
-    }
-    this.log("Getting camera and microphone")
-
-    this.localVideo = document.createElement("video")
-    this.localVideo.allowfullscreen = false
-    this.localVideo.playsinline = true
-    this.localVideo.controls = true
-
-    navigator.mediaDevices.getUserMedia({
-        video: {facingMode: "user" },
-        audio: true
-    }).then((stream) => {
-        this.log("Got camera and microphone.")
-
-        this.localStream = stream
-        this.localVideo.srcObject = stream
-        this.localVideo.muted = true
-        
-        this.localVideo.onplaying = () => {
-            if (this.localVideo.clientWidth < this.localVideo.clientHeight) {
-                this.localVideo.style.height  = this.localVideo.clientWidth / (4/3) + "px"
-            }
-            if (callback) callback(this.localVideo)
-        }
-        this.localVideo.play()
-    })
+OMGRealTime.prototype.reconnect = function () {
+    setTimeout(() => {
+        this.setupSocket()
+    }, 1000)
 }
+
 OMGRealTime.prototype.join = function (roomName, userName, thing) {
     this.userName = userName
     this.roomName = roomName
@@ -167,6 +175,39 @@ OMGRealTime.prototype.setupNewUser = function (name, data) {
     this.remoteUsers[name].video.controls = true
     this.remoteUsers[name].video.allowFullScreen = false
     if (this.onnewuser) this.onnewuser(name, this.remoteUsers[name])
+}
+
+
+OMGRealTime.prototype.getUserMedia = function (callback) {
+    if (this.localStream) {
+        if (callback) callback(this.localVideo)
+        return
+    }
+    this.log("Getting camera and microphone")
+
+    this.localVideo = document.createElement("video")
+    this.localVideo.allowfullscreen = false
+    this.localVideo.playsinline = true
+    this.localVideo.controls = true
+
+    navigator.mediaDevices.getUserMedia({
+        video: {facingMode: "user" },
+        audio: true
+    }).then((stream) => {
+        this.log("Got camera and microphone.")
+
+        this.localStream = stream
+        this.localVideo.srcObject = stream
+        this.localVideo.muted = true
+        
+        this.localVideo.onplaying = () => {
+            if (this.localVideo.clientWidth < this.localVideo.clientHeight) {
+                this.localVideo.style.height  = this.localVideo.clientWidth / (4/3) + "px"
+            }
+            if (callback) callback(this.localVideo)
+        }
+        this.localVideo.play()
+    })
 }
 
 OMGRealTime.prototype.onIncomingCall = async function(data) {
