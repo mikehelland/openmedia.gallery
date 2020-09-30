@@ -20,10 +20,11 @@ var session = require('express-session')
 var FileStore = require('session-file-store')(session);
 
 app.use(session({
-    store: new FileStore({ttl: 60 * 60 * 24 * 90}),
+    store: new FileStore({ttl: 60 * 60 * 24 * 30}),
     secret: 'keyboard cat',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {secure: true, maxAge: 60 * 60 * 24 * 30 * 1000}
 }));
 
 var fs = require("fs");

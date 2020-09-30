@@ -93,8 +93,10 @@ module.exports = function (app) {
     });
     
     app.get("/logout", function (req, res) {
-          req.logout();
-          res.redirect("/");
+            req.logout();
+            req.session.destroy()
+            res.clearCookie("connect.sid")
+            res.redirect("/");
        }
     );
     app.post('/signup', (req, res, next) => {
