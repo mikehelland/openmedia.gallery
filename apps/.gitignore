@@ -1,6 +1,7 @@
 *
 */
 !.gitignore
+!update.sh
 !chat/
 !chat/*
 !chat/www/*
