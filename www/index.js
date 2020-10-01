@@ -247,12 +247,15 @@ dropZone.ondrop = async (e) => {
 var handleDroppedItems = (items) => {
     for (var i = 0; i < items.length; i++) {
         if (items[i].kind === "file") {
-            handleDroppedItem(items[i])
+            handleDroppedFile(items[i])
+        }
+        else if (items[i].type === "text/uri-list") {
+            items[i].getAsString(s => handleDroppedURI(s))
         }
     }
 }
 
-var handleDroppedItem = (item) => {
+var handleDroppedFile = (item) => {
     var file = item.getAsFile()
     var media = {
         mimeType: item.type, //.startsWith("image/")
@@ -278,6 +281,21 @@ var handleDroppedItem = (item) => {
 var makeMediaName = (filename) => {
     // just the stem of the filename, no path, no extension, underscores a& dashes to space 
     return filename.split("/").pop().split(".")[0].replace("_", " ").replace("-", " ")
+}
+
+var handleDroppedURI = (uri) => {
+
+    console.log("/util/mime-type?uri=" + encodeURIComponent(uri))
+    omg.server.getHTTP("/util/mime-type?uri=" + encodeURIComponent(uri), res => {
+        var media = {
+            mimeType: res.mimeType, 
+            url: uri, 
+            name: makeMediaName(uri)
+        }
+        draftPost.attachments.push(media)
+    
+        var statusDiv = makeAttachmentEl(media)
+    })    
 }
 
 var attachmentsList = document.getElementById("post-attachments-list")

@@ -539,4 +539,17 @@ module.exports = (app) => {
         });
     });
 
+    app.get('/util/mime-type', (req, res) => {
+        if (!req.query.uri) {
+            res.send({})
+            return
+        }
+
+        require(req.query.uri.startsWith("https") ? "https" : "http").get(req.query.uri, (res2) => {
+            var mimeType = res2.headers['content-type'];
+            res.send({mimeType})
+        });
+        
+    });
+
 }
