@@ -85,6 +85,7 @@
 .omg-thing-p {
    padding-left:8px;
    padding-right:8px;
+   position: relative;
 }
 
 
@@ -259,7 +260,7 @@
    background-color: #aaaaaa;
 }
 
-.omg-viewer-attachment-image, .omg-viewer-attachment-audio, .omg-viewer-attachment-video {
+.omg-viewer-attachment-audio, .omg-viewer-attachment-video {
    width: 100%;
 }
 

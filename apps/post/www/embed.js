@@ -11,11 +11,15 @@ if (typeof omg === "object" && omg.types) {
 }
 
 function OMGEmbeddedViewerPOST(viewer) {
+    this.viewer = viewer
     var data = viewer.data
     var parentDiv = viewer.embedDiv
     this.viewMode = viewer.params.viewMode || "full"
     this.div = document.createElement("div")
     this.div.className = "omg-thing-p"
+    if (viewer.params.maxHeight) {
+        this.div.style.maxHeight = viewer.params.maxHeight + "px"
+    }
     this.textDiv = document.createElement("div")
     this.div.appendChild(this.textDiv)
     parentDiv.appendChild(this.div)
@@ -76,6 +80,9 @@ OMGEmbeddedViewerPOST.prototype.makeAttachment = function(attachment, type) {
     var other = false
     if (type === "image") {
         attachmentDiv = document.createElement("img")
+        if (this.viewer.params.maxHeight) {
+            attachmentDiv.style.maxHeight = this.viewer.params.maxHeight + "px"
+        }
     }
     else if (type === "audio") {
         var link = document.createElement("a")

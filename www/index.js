@@ -47,7 +47,7 @@ fp.nowPlayingTitle = document.getElementById("now-playing-title")
 fp.nowPlaying = document.getElementsByClassName("now-playing")[0]
 
 fp.searchParams.viewerParams = {}
-fp.searchParams.viewerParams.height = 90
+fp.searchParams.viewerParams.maxHeight = 320
 fp.searchParams.viewerParams.useExternalPlayer = true
 
 var thingDetail = document.getElementById("thing-detail-panel")
