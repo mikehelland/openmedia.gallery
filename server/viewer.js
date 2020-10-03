@@ -87,6 +87,7 @@ return `<!DOCTYPE html>
                 data: data.body,
                 metaData: data,
                 showComments: true,
+                autoPlay: true,
                 maxHeight: window.innerHeight - 44 - 250
             });
         })

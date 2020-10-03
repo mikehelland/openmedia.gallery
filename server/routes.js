@@ -3,6 +3,13 @@ module.exports = (app) => {
     var viewer = require("./viewer.js")
     var findColumns = ["playcount", "commentcount", "id", "body", "upvotes", "downvotes"]
 
+    let fs = require("fs")
+    let http = require("http")
+    let https = require("https")
+    
+    let multer = require('multer');
+    const upload = multer();
+
     app.get('/user', function (req, res) {
         if (req.user) {
             delete req.user.password;
@@ -300,9 +307,6 @@ module.exports = (app) => {
         });
     });
 
-    var multer = require('multer');
-    const upload = multer();
-
     app.post('/preview', upload.any(), (req, res) => {
         fs.writeFile("www/preview/" + req.body.id + ".png", req.files[0].buffer, (err) => {
             if (err) {
@@ -335,7 +339,6 @@ module.exports = (app) => {
             }
 
             var filename = "www/uploads/" + req.user.id
-            var fs = require("fs")
             if (!fs.existsSync(filename)){
                 fs.mkdirSync(filename);
             }
@@ -545,7 +548,7 @@ module.exports = (app) => {
             return
         }
 
-        require(req.query.uri.startsWith("https") ? "https" : "http").get(req.query.uri, (res2) => {
+        (req.query.uri.startsWith("https") ? https : http).get(req.query.uri, (res2) => {
             var mimeType = res2.headers['content-type'];
             res.send({mimeType})
         });
