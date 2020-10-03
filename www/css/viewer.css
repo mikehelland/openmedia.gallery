@@ -264,6 +264,12 @@
    width: 100%;
 }
 
+.omg-viewer-attachment-image {
+   margin:auto;
+   display: block;
+   max-width: 100%;
+}
+
 .omg-viewer-embed {
    position:relative;
    width: 100%;
