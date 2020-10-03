@@ -88,7 +88,7 @@ return `<!DOCTYPE html>
                 metaData: data,
                 showComments: true,
                 autoPlay: true,
-                maxHeight: window.innerHeight - 44 - 250
+                maxHeight: 480 //window.innerHeight - 44 - 250
             });
         })
     }
