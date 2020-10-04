@@ -178,6 +178,9 @@ omg.search = function (params, loadSearchResults) {
         url = url + "&sort=" + params.sort;
     }
 
+    params.perPage = params.perPage || 20
+    url = url + "&perPage=" + params.perPage
+
     omg.server.getHTTP(url, function (results) {
         if (loadSearchResults === true) {
             omg.loadSearchResults(params, results)
@@ -208,7 +211,7 @@ omg.loadSearchResults = function (params, results) {
         omg.loadSearchResult(result, params)
     });
 
-    if (!params.noNextPrev) {
+    if (!params.noNextPrev && results.length === params.perPage) {
         var nextButton = document.createElement("button")
         nextButton.innerHTML = "Next >"
         params.resultList.appendChild(nextButton)

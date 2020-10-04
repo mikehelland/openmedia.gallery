@@ -21,6 +21,7 @@ fp.searchParams.resultList = document.getElementsByClassName("search-things")[0]
 fp.searchParams.metaData = true
 
 fp.search = function () {
+    fp.searchParams.page = 1
     fp.searchParams.type = fp.searchType.value
     fp.searchParams.sort = fp.searchSort.value
     fp.searchParams.users = fp.searchUser.value
