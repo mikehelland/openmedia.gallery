@@ -356,6 +356,11 @@ omg.util.loadScripts = function (scripts, callback) {
 
     if (!omg.util.loadedScripts) {
         omg.util.loadedScripts = {}
+
+        let docScripts = document.getElementsByTagName("script")
+        for (let i = 0; i < docScripts.length; i++) {
+            omg.util.loadedScripts[docScripts[i].src] = "loaded"
+        }
     }
 
     let scriptCount = scripts.length
@@ -370,6 +375,9 @@ omg.util.loadScripts = function (scripts, callback) {
     }
 
     scripts.forEach(script => {
+        if (script.startsWith("/")) {
+            script = window.location.origin + script
+        }
         if (omg.util.loadedScripts[script]) {
             let scriptStatus = omg.util.loadedScripts[script]
             if (scriptStatus === "loaded") {
