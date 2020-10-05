@@ -151,7 +151,14 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
     this.userDiv.className = "omg-thing-user";
     this.userDiv.innerHTML = this.data.username ? "by " + this.data.username : "";
     this.topRow.appendChild(this.userDiv);    
-        
+    
+    if (this.data.draft) {
+        let draftDiv = document.createElement("span")
+        draftDiv.innerHTML = " - DRAFT"
+        draftDiv.className = "omg-thing-type";
+        this.topRow.appendChild(draftDiv)
+    }
+
     this.rightData = document.createElement("div");
     this.rightData.className = "omg-thing-right-data";
     this.topRow.appendChild(this.rightData);

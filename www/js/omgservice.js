@@ -169,7 +169,7 @@ omg.search = function (params, loadSearchResults) {
         url = url + "&page=" + params.page;
     }
     if (params.user_id) {
-        url = url + "&user_id=" + params.user.id;
+        url = url + "&user_id=" + params.user_id;
     }
     if (params.users) {
         url = url + "&users=" + params.users;

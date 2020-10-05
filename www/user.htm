@@ -12,6 +12,7 @@
       }
       .main-column {
          flex-grow: 1;
+         max-width: 800px;
       }
       .left-or-top-column {
          margin-right: 20px;
@@ -117,7 +118,7 @@
          var filterTypeInput = document.getElementById("filter-type")
          searchForm.onsubmit = () => {
             omg.search({
-               user:  user,
+               users:  "me",
                resultList: document.getElementsByClassName("search-things")[0],
                metaData: true,
                viewerParams: {deleteButton: true},
@@ -137,10 +138,10 @@
             }
 
             omg.search({
-               user:  user,
+               users:  "me",
                resultList: document.getElementsByClassName("search-things")[0],
                metaData: true,
-               viewerParams: {deleteButton: true}
+               viewerParams: {deleteButton: true, maxHeight: 320}               
             }, true)
 
          })
