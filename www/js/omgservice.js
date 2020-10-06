@@ -143,9 +143,10 @@ omg.server.getUser = function (callback) {
     })
 }
 
-omg.registerEmbeddedViewer = (type, viewerClass) => {
+omg.registerEmbeddedViewer = (type, viewerClass, script) => {
     if (omg.types && omg.types[type]) {
         omg.types[type].embedClass = viewerClass
+        omg.types[type].script = script
     }
 }
 
