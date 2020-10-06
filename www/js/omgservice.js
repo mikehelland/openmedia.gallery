@@ -147,6 +147,7 @@ omg.registerEmbeddedViewer = (type, viewerClass, script) => {
     if (omg.types && omg.types[type]) {
         omg.types[type].embedClass = viewerClass
         omg.types[type].script = script
+        omg.types[type].path = script.substr(0, script.lastIndexOf("/") + 1)
     }
 }
 
