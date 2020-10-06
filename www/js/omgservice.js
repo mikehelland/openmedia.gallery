@@ -183,7 +183,10 @@ omg.search = function (params, loadSearchResults) {
     url = url + "&perPage=" + params.perPage
 
     omg.server.getHTTP(url, function (results) {
-        if (loadSearchResults === true) {
+        if (typeof loadSearchResults === "function") {
+            loadSearchResults(results)
+        }
+        else if (loadSearchResults === true) {
             omg.loadSearchResults(params, results)
         }
     });
