@@ -55,10 +55,8 @@ function OMGEmbeddedViewer(params) {
         this.embedDiv.innerHTML = JSON.stringify(this.data).substr(0,64) + "..."
     }
     else if (!window[this.type.embedClassName]) {
-        console.log(this.type.embedClassName, window[this.type.embedClassName])
         if (this.type.onready) {
             this.type.onready.push(() => {
-                console.log(this.type.embedClassName, window[this.type.embedClassName])
                 this.embedViewer = new (window[this.type.embedClassName])(this) //this.type.embedClass(this)
             })    
         }
@@ -67,7 +65,6 @@ function OMGEmbeddedViewer(params) {
         }
     }
     else {
-        console.log(this.type.embedClassName, window[this.type.embedClassName])
         this.embedViewer = new window[this.type.embedClassName](this) //this.type.embedClass(this)
     }
 
@@ -268,7 +265,7 @@ OMGEmbeddedViewer.prototype.makeMetaData = function () {
     dataDiv.innerHTML = this.metaData.downvotes + " &#9660;";
     dataDiv.onclick = async e => {
         var ok = await omg.ui.loginRequired()
-        console.log(ok)
+        
         if (ok) {
             omg.server.postHTTP("vote/", {id_thing: this.data.id, vote: -1}, () => {
                 e.target.innerHTML = this.metaData.downvotes * 1 + 1 + " &#9660;"
@@ -282,7 +279,7 @@ OMGEmbeddedViewer.prototype.makeMetaData = function () {
     dataDiv.innerHTML = this.metaData.upvotes + " &#9650;";
     dataDiv.onclick = async e => {
         var ok = await omg.ui.loginRequired()
-        console.log(ok)
+        
         if (ok) {
             omg.server.postHTTP("/vote/", {id_thing: this.data.id, vote: 1}, () => {
                 e.target.innerHTML = this.metaData.upvotes * 1 + 1 + " &#9650;"
