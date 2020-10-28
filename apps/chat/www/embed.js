@@ -18,6 +18,3 @@ function OMGEmbeddedViewerROOM(viewer) {
     parentDiv.appendChild(this.div)
 
 }
-
-if (typeof omg === "object" && omg.types && omg.types["ROOM"])
-    omg.types["ROOM"].embedClass = OMGEmbeddedViewerROOM

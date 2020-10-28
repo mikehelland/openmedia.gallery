@@ -1,5 +1,5 @@
 {
     "activities": [
-		{"name": "Embedded Room Viewer", "url": "embed.js", "embeds": ["ROOM"]}
+		{"name": "Embedded Room Viewer", "url": "embed.js", "className": "OMGEmbeddedViewerROOM", "embeds": ["ROOM"]}
 	]
 }

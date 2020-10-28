@@ -3,6 +3,8 @@
 		{
 			"name": "Embedded Post Viewer", 
 			"url": "embed.js", 
-			"embeds": ["TEXT","IMAGE","IMAGESET"]}
+			"embeds": ["TEXT","IMAGE","IMAGESET"],
+			"className": "OMGEmbeddedViewerPOST"
+		}
 	]
 }

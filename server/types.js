@@ -5,6 +5,7 @@ module.exports = function (expressApp, express) {
     var fs = require("fs");
 
     var types = {}
+    var apps = {}
     var getType = type => {
         if (!types[type]) {
             types[type] = {editors: [], viewers: [], usedBy: []}
@@ -13,13 +14,13 @@ module.exports = function (expressApp, express) {
     }
 
     expressApp.set('types', types);
-    
+
     fs.readdirSync("apps").forEach(app  => {
         if (app.startsWith(".")) {
             return
         }
         var path = "apps/" + app + "/"
-
+        
         if (fs.existsSync(path + "www")) {
             expressApp.use("/" + path, express.static(path + "www/", {index: "index.htm"}));
         }
@@ -27,6 +28,11 @@ module.exports = function (expressApp, express) {
         if (fs.existsSync(path + "manifest.json")) {
 
             var manifest = JSON.parse(fs.readFileSync(path + "manifest.json"))
+
+            if (manifest.name) {
+                apps[app] = {name: manifest.name, path: "/" + path} 
+            }
+
             if (!manifest.activities) {
                 return
             }
@@ -50,6 +56,7 @@ module.exports = function (expressApp, express) {
                 if (activity.embeds) {
                     activity.embeds.forEach(type => {
                         getType(type).embed = "/apps/" + app + "/" + activity.url
+                        getType(type).embedClassName = activity.className
         
                     })
                 }
@@ -75,7 +82,7 @@ module.exports = function (expressApp, express) {
     })
 
     expressApp.get('/types', function (req, res) {
-        res.send(types);
+        res.send({types, apps});
     });
 
     return types    

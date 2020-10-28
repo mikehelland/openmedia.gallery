@@ -51,13 +51,15 @@ function OMGEmbeddedViewer(params) {
 
     this.setupControls(params);
     
-    if (!this.data.type) {
+    if (!this.data.type || !this.type.embedClassName) {
         this.embedDiv.innerHTML = JSON.stringify(this.data).substr(0,64) + "..."
     }
-    else if (!this.type.embedClass) {
+    else if (!window[this.type.embedClassName]) {
+        console.log(this.type.embedClassName, window[this.type.embedClassName])
         if (this.type.onready) {
             this.type.onready.push(() => {
-                this.embedViewer = new this.type.embedClass(this)
+                console.log(this.type.embedClassName, window[this.type.embedClassName])
+                this.embedViewer = new (window[this.type.embedClassName])(this) //this.type.embedClass(this)
             })    
         }
         else {
@@ -65,7 +67,8 @@ function OMGEmbeddedViewer(params) {
         }
     }
     else {
-        this.embedViewer = new this.type.embedClass(this)
+        console.log(this.type.embedClassName, window[this.type.embedClassName])
+        this.embedViewer = new window[this.type.embedClassName](this) //this.type.embedClass(this)
     }
 
     if (this.params.showComments) {

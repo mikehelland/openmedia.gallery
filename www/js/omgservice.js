@@ -106,8 +106,9 @@ omg.server.logout = function (callback) {
 
 omg.server.getTypes = function (callback) {
     omg.server.getHTTP("/types", data => {
-        omg.types = data
-        if (callback) callback(data)
+        omg.types = data.types
+        omg.apps = data.apps
+        if (callback) callback(data.types, data.apps)
     });
 };
 

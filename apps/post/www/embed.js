@@ -1,14 +1,3 @@
-if (typeof omg === "object" && omg.types) {
-    if (omg.types["TEXT"]) {
-        omg.types["TEXT"].embedClass = OMGEmbeddedViewerPOST
-    }
-    if (omg.types["IMAGE"]) {
-        omg.types["IMAGE"].embedClass = OMGEmbeddedViewerPOST
-    }
-    if (omg.types["IMAGESET"]) {
-        omg.types["IMAGESET"].embedClass = OMGEmbeddedViewerPOST
-    }
-}
 
 function OMGEmbeddedViewerPOST(viewer) {
     this.viewer = viewer
