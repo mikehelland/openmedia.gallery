@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>omg admin</title>
+        <link rel="stylesheet" type="text/css" href="/css/viewer.css"/>
+    
         <style>
             body {
                 background-color: black;
@@ -9,16 +11,21 @@
             }
 
             #post-raw-input {
-                width: 400px;
-                height:300px
+                width: 600px;
+                height: 250px
             }
 
             li {
+                display: inline list-item;
                 padding:10px;
             }
-            a {
+            li a {
                 font-size: 20px;
                 color:white;
+            }
+
+            .search-box-results {
+                max-width: 800px;
             }
 
         </style>
@@ -27,25 +34,49 @@
         OMG Admin
         <ul>
             <li><a href="/">Home</a></li>
+            <li><a href="update">Update</a></li>
+            <li><a href="stop_server">Restart</a></li>
+
             <hr>
             <li><a href="users.htm">Users</a></li>
             <li><a href="rooms.htm">Live Rooms</a></li>
             <li><a href="uploads.htm">Uploads</a></li>
-            <li><a href="gallery-stats">Gallery Statistics</a></li>
-
-            <hr>
-
-            <li><a href="update">Update (git pull)</a></li>
-            <li><a href="stop_server">Stop (should restart auto if you're using forever.js)</a></li>
-            
+            <li><a href="gallery-stats">Gallery Statistics</a></li>            
         </ul>
 
-        <br>
+        <hr>
         <p>Post Raw:</p>
         <textarea id="post-raw-input"></textarea>
         <br>
         <button id="post-raw-button">Post</button>
+
+
+        <hr>
+
+        <div id="search-area">
+            <div class="feed-options">
+                <select class="search-user">
+                    <option value="">All Users</option>
+                    <!--todo <option value="following">Following</option>-->
+                    <option value="me">Me</option>
+                </select>
+                <select class="search-type">
+                    <option selected="" value="">All Types</option>
+                </select>
+                <select class="search-sort">
+                    <option value="">Most Recent</option>
+                    <option value="most-plays">Most Plays</option>
+                    <!--<option value="most-remixes">Most Remixes</option>-->
+                </select>
+                <input class="search-terms" placeholder="Search">
+            </div>
+            <hr>
+            <div class="search-box-results"></div>
+
+        </div>
+
         <script src="/js/omgservice.js"></script>
+        <script src="/js/embedded_viewer.js"></script>
         <script>
         document.getElementById("post-raw-button").onclick = e => {
             var text = document.getElementById("post-raw-input").value
@@ -56,5 +87,30 @@
                 })
             } catch (e) {console.log(e)}
         }
+
+
+        var searchBox = {}
+        searchBox.div = document.getElementById("search-area")
+        var searchUser = searchBox.div.getElementsByClassName("search-user")[0]
+        var searchType = searchBox.div.getElementsByClassName("search-type")[0]
+        var resultList = searchBox.div.getElementsByClassName("search-box-results")[0]
+
+        searchType.onchange = () => searchBox.search()
+        searchBox.search = () => {
+            let params = {type: searchType.value, resultList, 
+                viewerParams: {maxHeight:60, deleteButton: true}}
+
+            omg.search(params, true)
+        }
+
+        omg.server.getTypes(types => {
+            console.log(types)
+            for (let type in types) {
+                var typeOption = document.createElement("option")
+                typeOption.innerHTML = type
+                searchType.appendChild(typeOption)
+            }
+            searchBox.search()
+        })
         </script>
     </body>
