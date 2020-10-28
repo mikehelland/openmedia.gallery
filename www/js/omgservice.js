@@ -213,6 +213,7 @@ omg.loadSearchResults = function (params, results) {
     if (!params.noNextPrev && results.length === params.perPage) {
         var nextButton = document.createElement("button")
         nextButton.innerHTML = "Next >"
+        nextButton.style.float = "right"
         params.resultList.appendChild(nextButton)
         nextButton.onclick = () => {
             params.page = (params.page || 1) + 1
