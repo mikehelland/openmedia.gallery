@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/viewer.css"/>
+    </head>
+
+    <body>
+        <div class="feed-options">
+            <select class="search-user">
+                <option value="">All Users</option>
+                <!--todo <option value="following">Following</option>-->
+                <option value="me">Me</option>
+            </select>
+            <select class="search-type">
+				<!--<option selected="" value="">All Types</option>-->
+			</select>
+            <select class="search-sort">
+                <option value="">Most Recent</option>
+                <option value="most-plays">Most Plays</option>
+                <!--<option value="most-remixes">Most Remixes</option>-->
+            </select>
+            <input class="search-terms" placeholder="Search">
+		</div>
+		<hr>
+		<div class="search-box-results"></div>
+
+        <script src="/js/omgservice.js"></script>
+        <script src="/js/embedded_viewer.js"></script>
+        
+        <script>    
+
+            var searchBox = {}
+            searchBox.div = document.getElementsByClassName("feed-options")[0]
+            var searchUser = searchBox.div.getElementsByClassName("search-user")[0]
+            var searchType = searchBox.div.getElementsByClassName("search-type")[0]
+            var resultList = document.getElementsByClassName("search-box-results")[0]
+
+            var types = ["SONG"]
+            types.forEach(type => {
+                var typeOption = document.createElement("option")
+                typeOption.innerHTML = type
+                searchType.appendChild(typeOption)
+            })
+
+            var onclickcontent = () => {
+                console.log("click!")
+            }
+
+            searchType.onchange = () => searchBox.search()
+            searchBox.search = () => {
+                let params = {type: searchType.value, resultList, 
+                    viewerParams: {maxHeight:60, viewMode: "MICRO", onclickcontent}}
+
+                omg.search(params, true)
+            }
+
+            omg.server.getTypes(() => searchBox.search())
+
+        </script>
+    </body>
+</html>
