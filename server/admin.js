@@ -128,12 +128,47 @@ module.exports = (app, express) => {
         });
     })
 
+    app.post('/admin/install_app', function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send({})
+        }
+
+        var folder = req.body.folder
+        var git = req.body.git
+
+        if (!folder || !git) {
+            return res.send({error: "missing params"})
+        }
+
+        // simple security for now, only get my repos, make sure no spaces
+        if (!git.startsWith("https://github.com/mikehelland") || (folder + git).indexOf(" ") > -1) {
+            return res.send({error: "unknown git"})
+        }
+
+        // todo check to see if folder exists!
+        // and make sure there's no other funny stuff in the names!
+
+        folder = "apps/" + folder
+        
+        const { exec } = require("child_process");
+
+        var cmd = "git clone " + git + " " + folder
+
+        console.log(new Date(), "Installing App!", cmd)
+
+        exec(cmd, (error, stdout, stderr) => {
+            res.send({error, stdout, stderr})
+        });
+    })
+
     app.get('/admin/stop_server', function (req, res) {
         if (!req.user || !req.user.admin) {
             return res.send({})
         }
 
-        process.exit(1)
+        console.log(new Date(), "STOPPING server through admin route!")
+        res.send({msg: "stopping server"})
+        setTimeout(() => process.exit(1), 1000)
     })
 
     app.use("/admin", express.static('admin', {index: "index.htm"}));

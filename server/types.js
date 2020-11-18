@@ -29,9 +29,7 @@ module.exports = function (expressApp, express) {
 
             var manifest = JSON.parse(fs.readFileSync(path + "manifest.json"))
 
-            if (manifest.name) {
-                apps[app] = {name: manifest.name, path: "/" + path} 
-            }
+            apps[app] = {name: manifest.name || app, path: "/" + path} 
 
             if (!manifest.activities) {
                 return

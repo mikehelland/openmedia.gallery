@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>omg admin apps</title>
+        <style>
+            #list-fragment {
+                border:1px solid black;
+                position:fixed;
+                left:0px;
+                top:0px;
+                height:99%;
+                width:50%;
+                overflow: scroll;
+            }
+
+            #detail-fragment {
+                position:absolute;
+                left:50%;
+                top:0px;
+                margin:20px;
+            }
+
+            table {
+                border-collapse: collapse;
+                width:100%;
+            }
+            thead {
+                background-color:#707070;
+                font-size:0.7em;
+                text-align: center;
+            }
+            td {
+                border:1px solid #444444;
+                padding:14px;
+                font-size:0.85em;
+                font-family: 'helvetica neue', helvetica, arial, sans-serif;
+
+            }
+            tbody tr:nth-child(even) {
+                background-color: #303030;
+            }
+            tbody tr:hover {
+                background-color:#404040;
+                cursor:pointer;
+            }
+
+            .install-caption {
+                display:inline-block;
+                width:90px;
+                text-align: right;
+            }
+
+            #install-git {
+                width: 400px;
+            }
+        </style>
+
+        <link rel="stylesheet" href="/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="/css/search.css" type="text/css" />
+        <link rel="stylesheet" href="/css/viewer.css" type="text/css" />
+
+    </head>
+    <body>
+        <div id="list-fragment">
+                <a href="/admin">Admin</a> > Apps
+            <table>
+                    <colgroup>
+                        <col width="25%" />
+                        <col width="25%" />
+                        <col width="50%" />
+                    </colgroup>
+                <thead>
+                <tr>
+                    <td>
+                        key
+                    </td>
+                    <td>
+                        name
+                    </td>
+                    <td>
+                        path
+                    </td>
+                </tr>
+                </thead>
+                <tbody id="table"></tbody>
+            </table>
+        </div>
+        <div id="detail-fragment">
+
+            <h2>Install App</h2>
+            <p><i>Restart OMG to take effect.</i></p>
+            <div>
+                <div class="install-caption">Folder:</div> <input id="install-folder" placeholder="folder to clone app to">
+                <br>
+                <div class="install-caption">Git:</div> <input id="install-git" placeholder="url to git repo"> 
+                <br>
+                <br>
+                <div class="install-caption"></div><button id="install-button">Install</button>
+                <br>
+                <br>
+                <pre id="install-output"></pre>
+            </div>
+            
+        </div>
+        
+        <script src="/js/omgservice.js"></script>
+        
+        <script>
+
+var output = document.getElementById("install-output")
+
+document.getElementById("install-button").onclick = e => {
+
+    e.target.innerHTML = "Installing..."
+    e.target.disabled = true
+
+    var folder = document.getElementById("install-folder").value
+    var git = document.getElementById("install-git").value
+
+    if (!folder || !git) {
+        output.innerHTML ="Error: need a folder and git url."
+    }
+    else {
+        output.innerHTML = ""
+        omg.server.postHTTP("/admin/install_app", {folder, git}, res => {
+            console.log(res)
+            if (res.error) {
+                output.innerHTML += `error\n\n${res.error}\n\n`
+                e.target.disabled = false
+            }
+            if (res.stderr) {
+                output.innerHTML += `stdnerr\n\n${res.stderr}\n\n`
+            }
+            if (res.stdout) {
+                output.innerHTML += `stdout\n\n${res.stdout}`
+            }
+        })
+    }
+}
+
+var table = document.getElementById("table")
+omg.server.getHTTP("/types", (response) => {
+    
+    for (var appName in response.apps) {
+        var app = response.apps[appName]
+
+        var tr = document.createElement("tr")
+        var td = document.createElement("td")
+        td.innerHTML = appName
+        tr.appendChild(td)
+        td = document.createElement("td")
+        td.innerHTML = app.name
+        tr.appendChild(td)
+        td = document.createElement("td")
+        td.innerHTML = app.path
+        tr.appendChild(td)
+        table.appendChild(tr)
+
+        tr.onclick = () => {
+            //loadDetail(app)
+        }
+    }
+})
+
+var loadDetail = (user) => {
+    detailInputs.username.innerHTML = user.username
+    detailInputs.created_at.innerHTML = omg.util.getTimeCaption(user.created_at)
+    detailInputs.last_login.innerHTML = omg.util.getTimeCaption(user.last_login)
+    detailInputs.btc_address.innerHTML = user.btc_address
+    detailInputs.uploaded_bytes.innerHTML = user.uploaded_bytes
+    detailInputs.upload_limit.value = user.upload_limit
+    omg.search({
+        user:  user,
+        resultList: document.getElementsByClassName("search-things")[0],
+        metaData: true,
+        viewerParams: {deleteButton: true}
+    })
+
+
+    omg.ui.setupInputEvents(detailInputs.upload_limit, user, "upload_limit", function () {
+        omg.server.postHTTP("/user", user, function (e) {
+            console.log(e)
+        });
+    });
+}
+        
+        
+        
+        </script>
+    </body>
