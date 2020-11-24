@@ -29,18 +29,23 @@ app.use(session({
 
 var fs = require("fs");
 
-app.use(function(request, response, next){
-    if(!request.secure){
-        var host = request.headers.host
-        if (host === "localhost:8080") {
-            host = "localhost:8081"
+// if we're running behind nginx, it will handle https, and we only want http in node
+// otherwise, we're handling https ourselves, so enforce it
+if (!process.env.OMG_HTTP_ONLY) {
+    app.use(function(request, response, next){
+        if(!request.secure){
+            var host = request.headers.host
+            if (host === "localhost:8080") {
+                host = "localhost:8081"
+            }
+            response.redirect("https://" + host + request.url);
         }
-        response.redirect("https://" + host + request.url);
-    }
-    else {
-        next()
-    }
-});
+        else {
+            next()
+        }
+    });
+}
+
 
 module.exports.app = app
 module.exports.express = express
@@ -50,24 +55,29 @@ module.exports.listen = function () {
         console.log(`port ${httpPort} yo`);
     });
 
-    if (!fs.existsSync("privkey.pem") || !fs.existsSync("fullchain.pem")) {
-        console.log("did not create https server: missing ./fullchain.pem && ./privkey.pem");
-        return
+    if (process.env.OMG_HTTP_ONLY) {
+        return http
     }
+    else {
+        if (!fs.existsSync("privkey.pem") || !fs.existsSync("fullchain.pem")) {
+            console.log("did not create https server: missing ./fullchain.pem && ./privkey.pem");
+            return
+        }
 
-    try {
-        var options = {
-            key: fs.readFileSync('privkey.pem'),
-            cert: fs.readFileSync('fullchain.pem')
-        };
-        var httpsServer = https.createServer(options, app);
-        httpsServer.listen(8081, function () {
-            console.log("https port 8081");
-        });
+        try {
+            var options = {
+                key: fs.readFileSync('privkey.pem'),
+                cert: fs.readFileSync('fullchain.pem')
+            };
+            var httpsServer = https.createServer(options, app);
+            httpsServer.listen(8081, function () {
+                console.log("https port 8081");
+            });
+        }
+        catch (excp) {
+            console.log(excp);
+            console.log("did not create https server");
+        }
+        return httpsServer
     }
-    catch (excp) {
-        console.log(excp);
-        console.log("did not create https server");
-    }
-    return httpsServer
 }
