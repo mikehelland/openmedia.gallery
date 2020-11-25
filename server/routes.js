@@ -520,9 +520,15 @@ module.exports = (app) => {
 
     app.get('/inbox', (req, res) => {
         var options = {limit : 8, order : "body ->> 'datetime' desc"}
-        app.get('db').inbox.findDoc({to: req.user.id}, options, function(err, docs){
-            res.send(err || docs)
-        });
+        var db = app.get('db')
+        if (db.inbox) {
+            db.inbox.findDoc({to: req.user.id}, options, function(err, docs){
+                res.send(err || docs)
+            });
+        }
+        else {
+            res.send([])
+        }
     });
 
     app.post('/inbox/read', (req, res) => {
