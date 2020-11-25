@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+app.set('trust proxy', 1)
 
 var compression = require('compression');
 app.use(compression());
