@@ -56,6 +56,8 @@ OMGRealTime.prototype.setupSocket = function () {
         else {
             if (this.onready) this.onready()
         }
+
+        this.heartbeatHandle = setInterval(() => this.emit("heartbeat", {}), 30000)
     }
 
     this.socket.onmessage = e => {
@@ -76,6 +78,7 @@ OMGRealTime.prototype.setupSocket = function () {
     }
 
     this.socket.onclose = () => {
+        clearInterval(this.heartbeatHandle)
         if (isConnected) {
             isConnected = false
             if (this.ondisconnect) this.ondisconnect()
@@ -91,7 +94,6 @@ OMGRealTime.prototype.setupSocket = function () {
 }
 
 OMGRealTime.prototype.log = function (message) {
-    console.log(message)
     if (this.onlog) {
         this.onlog(message)
     }
@@ -314,13 +316,17 @@ OMGRealTime.prototype.callUser = async function(name, callback) {
 
 OMGRealTime.prototype.createPeerConnection = function (user) {
     this.log("creating peer connection")
+    var origin = window.location.host
+    if (origin.startsWith("localhost")) {
+        origin = "openmedia.gallery"
+    }
     var peerConnection = new RTCPeerConnection({
         iceServers: [     // Information about ICE servers - Use your own! 
             {
-                urls: ["stun:stun.openmedia.gallery:3478"]
+                urls: ["stun:stun." + origin + ":3478"]
             },
             {
-                urls: ["turn:turn.openmedia.gallery:3478"],
+                urls: ["turn:turn." + origin + ":3478"],
                 credential: "12345",
                 username: "omgrtc"
             },
