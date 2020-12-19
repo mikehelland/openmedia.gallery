@@ -101,7 +101,7 @@ OMGEmbeddedViewer.prototype.setupControls = function (params) {
 OMGEmbeddedViewer.prototype.onclickcontent = function () {}
 
 OMGEmbeddedViewer.prototype.makeTipJar = function () {
-    var url = 'bitcoin:' + (this.data.btc_address || '37WEyjvqgY6mEZDMiSTN11YWy5BYP8rP6e') + '?amount=0.00100000&label=OMG%20Tip%20Jar';
+    var url = 'bitcoin:' + (this.data.btc_address || '15NcvAoRwnt7eRRe87QpnHHLXGFoHjrJYV') + '?amount=0.00100000&label=OMG%20Tip%20Jar';
     this.tipJar = document.createElement("div");
     this.tipJar.className = "tip-jar";
 
