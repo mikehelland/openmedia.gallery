@@ -134,14 +134,18 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
     this.topRow.className = "omg-thing-top-row" //+ (this.viewMode === "MICRO" ? "-overlay" : "")
     this.div.appendChild(this.topRow)
 
+    //type 
+    if (this.data.type)
+    this.typeDiv = document.createElement("span");
+    this.typeDiv.className = "omg-thing-type"
+    this.typeDiv.innerHTML = this.data.type.substring(0, 1).toUpperCase() +
+                             this.data.type.substring(1).toLowerCase()
+    this.topRow.appendChild(this.typeDiv)
+    
+    
     //caption
     this.captionDiv = document.createElement("div");
     this.caption = this.data.name || this.data.tags || "";
-    if (this.caption.length === 0 && this.data.type) {
-        // show (type) as caption if there isn't one
-        this.caption = "<span class='omg-thing-type'>" + this.data.type.substring(0, 1).toUpperCase() +
-            this.data.type.substring(1).toLowerCase() + "</span>";
-    }
     this.captionDiv.innerHTML = this.caption
     this.captionDiv.className = "omg-thing-title";
     this.topRow.appendChild(this.captionDiv)
