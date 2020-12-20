@@ -135,13 +135,12 @@ OMGEmbeddedViewer.prototype.makeTopRow = function () {
     this.div.appendChild(this.topRow)
 
     //type 
-    if (this.data.type)
-    this.typeDiv = document.createElement("span");
-    this.typeDiv.className = "omg-thing-type"
-    this.typeDiv.innerHTML = this.data.type.substring(0, 1).toUpperCase() +
-                             this.data.type.substring(1).toLowerCase()
-    this.topRow.appendChild(this.typeDiv)
-    
+    if (this.data.type) {
+        this.typeDiv = document.createElement("span");
+        this.typeDiv.className = "omg-thing-type"
+        this.typeDiv.innerHTML = this.data.type
+        this.topRow.appendChild(this.typeDiv)
+    }
     
     //caption
     this.captionDiv = document.createElement("div");
