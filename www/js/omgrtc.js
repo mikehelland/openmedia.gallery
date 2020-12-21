@@ -192,24 +192,30 @@ OMGRealTime.prototype.getUserMedia = function (callback) {
     this.localVideo.playsinline = true
     this.localVideo.controls = true
 
-    navigator.mediaDevices.getUserMedia({
-        video: {facingMode: "user" },
-        //video: true,
-        audio: true
-    }).then((stream) => {
-        this.log("Got camera and microphone.")
+    navigator.mediaDevices.enumerateDevices()
+    .then((devices) => {
+        var hasCam = devices.some((d) => { return d.kind == "videoinput"; });
+        var hasMic = devices.some((d) => { return d.kind == "audioinput"; });
 
-        this.localStream = stream
-        this.localVideo.srcObject = stream
-        this.localVideo.muted = true
-        
-        this.localVideo.onplaying = () => {
-            if (this.localVideo.clientWidth < this.localVideo.clientHeight) {
-                this.localVideo.style.height  = this.localVideo.clientWidth / (4/3) + "px"
+        navigator.mediaDevices.getUserMedia({
+            video: hasCam ? {facingMode: "user" } : false,
+            //video: true,
+            audio: hasMic
+        }).then((stream) => {
+            this.log("Got camera and microphone.")
+    
+            this.localStream = stream
+            this.localVideo.srcObject = stream
+            this.localVideo.muted = true
+            
+            this.localVideo.onplaying = () => {
+                if (this.localVideo.clientWidth < this.localVideo.clientHeight) {
+                    this.localVideo.style.height  = this.localVideo.clientWidth / (4/3) + "px"
+                }
+                if (callback) callback(this.localVideo)
             }
-            if (callback) callback(this.localVideo)
-        }
-        this.localVideo.play()
+            this.localVideo.play()
+        })    
     })
 }
 
@@ -363,7 +369,7 @@ OMGRealTime.prototype.createPeerConnection = function (user) {
         }
 
         this.log("negotiating connection...")
-        peerConnection.createOffer().then(function(offer) {
+        peerConnection.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true }).then(function(offer) {
             return peerConnection.setLocalDescription(offer);
         })
         .then(() => {
