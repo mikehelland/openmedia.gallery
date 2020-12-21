@@ -75,6 +75,8 @@
             <div id="detail-name"></div>
             <div id="detail-user-list"></div>
 
+            <pre id="live-output"></pre>
+
         </div>
         
         <script src="/js/omgservice.js"></script>
@@ -87,9 +89,51 @@ var detailInputs = {
 }
 var table = document.getElementById("table")
 
+var output = document.getElementById("live-output")
+
+var rooms = {}
+
 var load = () => {
 
-    omg.server.getHTTP("/admin/rooms", (response) => {
+    var url = location.origin
+    url = url.replace("https://", "wss://")
+    var socket = new WebSocket(url)
+    socket.onopen = e => {
+        output.append("open\n")
+        socket.send(JSON.stringify({msgtype: "registerAdmin"}))
+    }
+
+    socket.onmessage = e => {
+        try {
+            var data = JSON.parse(e.data)
+            output.append(`${data.user||""} ${data.action} ${data.room||""} \n`)
+
+            if (data.action === "join") {
+                if (!rooms[data.room]) {
+                    rooms[data.room] = {users: {}}
+                }
+                rooms[data.room].users[data.user] = Date.now()
+            }
+            else if (data.action === "left") {
+                delete rooms[data.room].users[data.user]
+            }
+            else if (data.action === "room deleted") {
+                delete rooms[data.room]
+            }
+            else if (data.action === "list") {
+                rooms = data.rooms
+            }
+
+            updateTable(rooms)
+        }
+        catch (e) {console.error("problem in socket.onmessage", e)}
+    }
+    
+
+
+
+
+    updateTable = (response) => {
         table.innerHTML = ""
         for (let room in response) {
 
@@ -109,7 +153,7 @@ var load = () => {
                 loadDetail(room, response[room])
             }
         }
-    })
+    }
 }
 
 var loadDetail = (roomName, room) => {
@@ -124,7 +168,7 @@ var loadDetail = (roomName, room) => {
     
 }
         load()
-        setInterval(load, 1000 * 30)
+        //setInterval(load, 1000 * 30)
         
         </script>
     </body>

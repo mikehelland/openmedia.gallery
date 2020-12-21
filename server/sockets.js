@@ -14,6 +14,15 @@ module.exports = function (app, httpsServer) {
         res.send(rooms);
     })
 
+    var admin
+    var adminLog = data => {
+        if (!admin) {
+            return
+        }
+
+        admin.send(JSON.stringify(data))
+    }
+
     var rooms = {}
     var sockets = {}
     var nextId = 1
@@ -31,7 +40,7 @@ module.exports = function (app, httpsServer) {
     const wss = new WebSocket.Server({server: httpsServer})
 
     wss.on("connection", socket => {
-
+        var isAdmin = false
         var id = nextId++
         sockets[id] = socket
         var name
@@ -44,6 +53,9 @@ module.exports = function (app, httpsServer) {
                 leaveRoom("userDisconnected")
             }
             delete sockets[id]
+            if (isAdmin) {
+                admin = null
+            }
         })
 
 
@@ -69,6 +81,11 @@ module.exports = function (app, httpsServer) {
             }
             else if (msg.msgtype === "updateUserData") {
                 updateUserData(msg)
+            }
+            else if (msg.msgtype === "registerAdmin") {
+                isAdmin = true
+                admin = socket
+                socket.send(JSON.stringify({action: "list", rooms: rooms}))
             }
             else if (typeHandler && room) {
                 typeHandler(msg, room.thing, passOn)
@@ -127,11 +144,14 @@ module.exports = function (app, httpsServer) {
                 send({msgtype:"command", command: room.data});
 
             }
+
+            adminLog({action: "join", user: name, room: roomName})
         }
 
         var leave = () => {
             if (name) {
                 leaveRoom("userLeft")
+                name = null
             }
         }
 
@@ -142,12 +162,14 @@ module.exports = function (app, httpsServer) {
                 setTimeout(() => {
                     if (Object.keys(lastRoom.users).length === 0) {
                         delete rooms[roomName]
+                        adminLog({action: "room deleted", room: roomName})
                     }
                 }, 1000)
             }
             else {
                 sendToRoom({msgtype: reason, name: name})
             }
+            adminLog({action: "left", user: name, room: roomName})
         }
 
         var passOn = signal => {
