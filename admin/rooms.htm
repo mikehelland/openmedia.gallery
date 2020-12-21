@@ -93,14 +93,21 @@ var output = document.getElementById("live-output")
 
 var rooms = {}
 
+var unloading
+window.addEventListener("beforeunload", e => {
+    unloading = true
+})
+
 var load = () => {
 
+    var heartbeatHandle
     var url = location.origin
     url = url.replace("https://", "wss://")
     var socket = new WebSocket(url)
     socket.onopen = e => {
         output.append("open\n")
         socket.send(JSON.stringify({msgtype: "registerAdmin"}))
+        heartbeatHandle = setInterval(() => socket.send(JSON.stringify({msgtype:"heartbeat"})), 30000)
     }
 
     socket.onmessage = e => {
@@ -129,6 +136,13 @@ var load = () => {
         catch (e) {console.error("problem in socket.onmessage", e)}
     }
     
+    socket.onclose = e => {
+        clearInterval(heartbeatHandle)
+        output.append("close\n")
+        if (!unloading) {
+            load()
+        }
+    }
 
 
 
