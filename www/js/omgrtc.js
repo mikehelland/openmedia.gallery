@@ -9,6 +9,7 @@ function OMGRealTime(signalingServer) {
 
     var url = signalingServer || location.origin
     url = url.replace("https://", "wss://")
+    url = url.replace("http://", "ws://")
     this.socketUrl = url
     
     this.events = {}
