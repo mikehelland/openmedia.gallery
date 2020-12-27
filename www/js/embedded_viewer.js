@@ -102,6 +102,7 @@ OMGEmbeddedViewer.prototype.onclickcontent = function () {}
 
 OMGEmbeddedViewer.prototype.makeTipJar = function () {
 
+    //todo get data or user's tipjar links
     var squareTipJarHTML = `
   <div style="overflow: auto;">
   

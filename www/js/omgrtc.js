@@ -9,7 +9,6 @@ function OMGRealTime(signalingServer) {
 
     var url = signalingServer || location.origin
     url = url.replace("https://", "wss://")
-    url = url.replace("http://", "ws://")
     this.socketUrl = url
     
     this.events = {}
@@ -195,7 +194,7 @@ OMGRealTime.prototype.getUserMedia = function (callback) {
 
     navigator.mediaDevices.enumerateDevices()
     .then((devices) => {
-        var hasCam = devices.some((d) => { return d.kind == "videoinput"; });
+        var hasCam = !this.suppressLocalVideo && devices.some((d) => { return d.kind == "videoinput"; });
         var hasMic = devices.some((d) => { return d.kind == "audioinput"; });
 
         navigator.mediaDevices.getUserMedia({
