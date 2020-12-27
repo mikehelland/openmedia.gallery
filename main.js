@@ -11,6 +11,7 @@ require("./server/types")(app, express)
 
 require("./server/admin")(app, express)
 
+app.use(express.static('custom/www', {index: "index.htm"}));
 app.use(express.static('www', {index: "index.htm"}));
 
 const httpsServer = listen()

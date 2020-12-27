@@ -101,6 +101,28 @@ OMGEmbeddedViewer.prototype.setupControls = function (params) {
 OMGEmbeddedViewer.prototype.onclickcontent = function () {}
 
 OMGEmbeddedViewer.prototype.makeTipJar = function () {
+
+    var squareTipJarHTML = `
+  <div style="overflow: auto;">
+  
+  <a target="_blank" href="https://checkout.square.site/merchant/4W0D38NGJ7DGP/checkout/P3UWGHPUMAWSC7IMDDROMRWY" style="
+    display: inline-block;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    line-height: 48px;
+    height: 48px;
+    padding-left: 48px;
+    padding-right: 48px;
+    color: #ffffff;
+    min-width: 165px;
+    background-color: #000000;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset;
+  ">Tip Through Square</a>
+</div>`
+
+
     var url = 'bitcoin:' + (this.data.btc_address || '15NcvAoRwnt7eRRe87QpnHHLXGFoHjrJYV') + '?amount=0.00100000&label=OMG%20Tip%20Jar';
     this.tipJar = document.createElement("div");
     this.tipJar.className = "tip-jar";
@@ -118,6 +140,8 @@ OMGEmbeddedViewer.prototype.makeTipJar = function () {
     });
     
     canvasDiv.appendChild(this.qrCanvas);
+
+    this.tipJar.innerHTML = squareTipJarHTML + "<hr><div>Or Bitcoin:</div>"
     this.tipJar.appendChild(canvasDiv)
     this.tipJar.appendChild(this.tipJarLink)
 
