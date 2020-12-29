@@ -287,7 +287,7 @@ omg.util.getPageParams = function () {
     if (rawParams.length > 1) {
         rawParams.slice(1).split("&").forEach(function (param) {
             nvp = param.split("=");
-            params[nvp[0]] = nvp[1];
+            params[nvp[0]] = decodeURIComponent(nvp[1]);
         });
     }
     return params;
