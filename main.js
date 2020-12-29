@@ -3,11 +3,11 @@ const {app, express, listen} = require("./server/setup")
 // connect to the database
 require("./server/database")(app)
 
-require("./server/authentication")(app)
-require("./server/routes")(app)
-
 // the server can support different types by adding to www/apps/
 require("./server/types")(app, express)
+
+require("./server/authentication")(app)
+require("./server/routes")(app)
 
 require("./server/admin")(app, express)
 

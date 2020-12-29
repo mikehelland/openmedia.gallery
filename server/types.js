@@ -14,6 +14,7 @@ module.exports = function (expressApp, express) {
     }
 
     expressApp.set('types', types);
+    expressApp.set('apps', apps);
 
     fs.readdirSync("apps").forEach(app  => {
         if (app.startsWith(".")) {

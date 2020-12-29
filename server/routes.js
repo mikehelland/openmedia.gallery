@@ -10,6 +10,20 @@ module.exports = (app) => {
     let multer = require('multer');
     const upload = multer();
 
+    var types = app.get("types")
+    var apps = app.get("apps")
+    
+    app.get('/context', function (req, res) {
+        var output = {types: types, apps: apps}
+        if (req.user) {
+            delete req.user.password;
+            delete req.user.bpassword;
+            req.user.username = req.user.username.trim()
+            output.user = req.user;
+        }
+        res.send(output);
+    });    
+
     app.get('/user', function (req, res) {
         if (req.user) {
             delete req.user.password;

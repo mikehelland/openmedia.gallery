@@ -12,6 +12,22 @@ if (!omg.server)
 if (!omg.util)
     omg.util = {};
 
+omg.getContext = function () {
+    return new Promise((resolve, reject) => {
+        // we want to know if there's a user, the types, and apps
+        fetch("/context").then(res=>res.json()).then(data => {
+            omg.types = data.types
+            omg.apps = data.apps
+            omg.user = data.user
+            resolve(data)
+        })
+        .catch(e => reject(e))
+    })
+}
+
+// server stuff
+// not sure how much of this should exist, since fetch() is a thing now
+
 omg.server.url = "";
 omg.server.dev = window.location.href.indexOf("localhost") > 0;
 
