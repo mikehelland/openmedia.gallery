@@ -19,6 +19,12 @@ omg.getContext = function () {
             omg.types = data.types
             omg.apps = data.apps
             omg.user = data.user
+
+            // we could store the page params on the omg object here
+            // but iframes and stuff
+
+            data.pageParams = omg.util.getPageParams()
+
             resolve(data)
         })
         .catch(e => reject(e))
