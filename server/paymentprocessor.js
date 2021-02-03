@@ -10,7 +10,7 @@ module.exports = (app) => {
     //   Set sandbox environment for testing purpose
     //   Set access token
     const client = new Client({
-        environment: Environment.Sandbox,
+        //environment: Environment.Sandbox,
         accessToken: accessToken,
     });
 
