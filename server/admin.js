@@ -113,7 +113,7 @@ module.exports = (app, express) => {
         const { exec } = require("child_process");
 
         exec("./apps/update.sh", (error, stdout, stderr) => {
-            let output = "<a href='stop_server'>Restart OMG</a>"
+            let output = "<a href='stop_server'>Restart OMG</a><hr>"
             if (error) {
                 output += `<pre>error: ${error.message}</pre>`
             }
