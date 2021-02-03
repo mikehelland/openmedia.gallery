@@ -17,12 +17,17 @@ module.exports = (app) => {
     app.post('/process-payment', async (req, res) => {
         const requestParams = req.body;
 
+        if (typeof requestParams.amount !== "number" || requestParams.amount < 0) {
+            return res.send({"error": "Invalid amount"})
+        }
+        const amount = requestParams.amount * 100 // in cents
+
         // Charge the customer's card
         const paymentsApi = client.paymentsApi;
         const requestBody = {
             sourceId: requestParams.nonce,
             amountMoney: {
-                amount: 100, // $1.00 charge
+                amount: amount,
                 currency: 'USD'
             },
             locationId: requestParams.location_id,
