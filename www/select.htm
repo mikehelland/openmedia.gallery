@@ -2,17 +2,21 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="/css/viewer.css"/>
+        <style>
+            .search-server {display:none; max-width: 80px;}
+        </style>
     </head>
 
     <body>
         <div class="feed-options">
+            <select class="search-server">
+            </select>
             <select class="search-user">
                 <option value="">All Users</option>
                 <!--todo <option value="following">Following</option>-->
                 <option value="me">Me</option>
             </select>
             <select class="search-type">
-				<!--<option selected="" value="">All Types</option>-->
 			</select>
             <select class="search-sort">
                 <option value="">Most Recent</option>
@@ -27,34 +31,67 @@
         <script src="/js/omgservice.js"></script>
         <script src="/js/embedded_viewer.js"></script>
         
-        <script>    
-
-            var searchBox = {}
-            searchBox.div = document.getElementsByClassName("feed-options")[0]
-            var searchUser = searchBox.div.getElementsByClassName("search-user")[0]
-            var searchType = searchBox.div.getElementsByClassName("search-type")[0]
+        <script>
+        
+            // these are for access by an iframe  
+            var onclickcontent = () => {console.log("click!")}  
             var resultList = document.getElementsByClassName("search-box-results")[0]
+            var loadSearchResults = true
+            var searchBox = {}
+            var onready = () => {}
 
-            var types = ["SONG"]
-            types.forEach(type => {
-                var typeOption = document.createElement("option")
-                typeOption.innerHTML = type
-                searchType.appendChild(typeOption)
+            omg.getContext().then(context => {
+                var listMode = context.pageParams.listMode || "EMBEDDEDVIEWER"
+
+                searchBox.div = document.getElementsByClassName("feed-options")[0]
+                var searchUser = searchBox.div.getElementsByClassName("search-user")[0]
+                var searchType = searchBox.div.getElementsByClassName("search-type")[0]
+                
+                var searchServer = searchBox.div.getElementsByClassName("search-server")[0]
+                var serverString = "<option value='" + window.location.origin + "'>Local</option>"
+
+                if (context.user && context.user.sources) {
+                    context.user.sources.forEach(source => {
+                        serverString += "<option value='" + source.url + "'>" + source.url.replace("https://", "") + "</option>"
+                    })
+                    searchServer.style.display = "inline"
+                }
+                searchServer.innerHTML = serverString + "<option value='ALL'>All Servers</option>"
+                searchServer.onchange = e => {
+                    searchBox.search()
+                }
+
+                if (context.pageParams.types) {
+                    var types = context.pageParams.types.split(",")
+                    types.forEach(type => {
+                    var typeOption = document.createElement("option")
+                    typeOption.innerHTML = type
+                    searchType.appendChild(typeOption)
+                })
+
+                }
+                else {
+                    searchType.innerHTML = '<option selected="" value="">All Types</option>'
+                }
+
+                searchType.onchange = () => searchBox.search()
+                searchBox.search = () => {
+                    let params = {type: searchType.value, resultList, 
+                        server: searchServer.value, 
+                        listMode,
+                        viewerParams: {maxHeight:60, viewMode: "MICRO", onclickcontent}}
+
+                    omg.search(params, loadSearchResults)
+                }
+
+                if (context.pageParams.auto !== "false") {
+                    searchBox.search()
+                }
+                else {
+                    onready()
+                }
             })
 
-            var onclickcontent = () => {
-                console.log("click!")
-            }
-
-            searchType.onchange = () => searchBox.search()
-            searchBox.search = () => {
-                let params = {type: searchType.value, resultList, 
-                    viewerParams: {maxHeight:60, viewMode: "MICRO", onclickcontent}}
-
-                omg.search(params, true)
-            }
-
-            omg.server.getTypes(() => searchBox.search())
 
         </script>
     </body>

@@ -9,6 +9,11 @@ require("./server/types")(app, express)
 require("./server/authentication")(app)
 require("./server/routes")(app)
 
+//setup a route for payments
+if (process.env.OMG_SQUARE) {
+    require("./server/paymentprocessor")(app)
+}
+
 require("./server/admin")(app, express)
 
 app.use(express.static('custom/www', {index: "index.htm"}));

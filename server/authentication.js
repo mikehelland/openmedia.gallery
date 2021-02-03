@@ -96,7 +96,8 @@ module.exports = function (app) {
             req.logout();
             req.session.destroy()
             res.clearCookie("connect.sid")
-            res.redirect("/");
+            var fwd = req.query.fwd ? decodeURIComponent(req.query.fwd) : "/"
+            res.redirect(fwd);
        }
     );
     app.post('/signup', (req, res, next) => {
@@ -113,29 +114,46 @@ module.exports = function (app) {
         })(req, res, next);
     });
     
-    app.post("/api-login",
-       passport.authenticate("login"),
-       function (req, res) {
-            if (req.user) {
-                res.send(req.user);
-            } else {
-                res.send(false);
-            }       
-       });
+    app.post('/api-login', (req, res) => {
+        passport.authenticate('login', (err, user, info) => {
+            if (err || !user) {
+                return res.send({ success: false });
+            }
+            
+            req.logIn(user, function(err) {
+                if (err) {
+                    res.send({ success: false })
+                }
+                else {
+                    res.send({ success: true, user: user });
+                }
+            });
+
+        })(req, res);
+    });
     
     app.get("/api-logout", function (req, res) {
           req.logout();
-          res.send({});
+          res.send({success: true});
        }
     );
-    app.post('/api-signup', 
-       passport.authenticate("signup"), 
-          function (req, res) {
-            if (req.user) {
-                res.send(req.user);
-            } else {
-                res.send(false);
-            }       
-       });
     
+    app.post('/api-signup', (req, res) => {
+        passport.authenticate('signup', (err, user, info) => {
+            if (err || !user) {
+                return res.send({ success: false });
+            }
+            
+            req.logIn(user, function(err) {
+                if (err) {
+                    res.send({ success: false })
+                }
+                else {
+                    res.send({ success: true, user: user });
+                }
+            });
+
+        })(req, res);
+    });
+
 }

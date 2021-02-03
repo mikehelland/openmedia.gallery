@@ -47,6 +47,16 @@
       <hr>
 
       <div class="user-info">
+         OMG Servers:
+         <br>
+         <textarea id="omg-servers"></textarea>
+           <br>
+           Learn more
+     </div>
+
+     <hr>
+
+      <div class="user-info">
          Upload Usage:
          <span id="upload-usage"></span>
          <a href="docs/uploading.htm"><br>(About uploading)</a>
@@ -112,6 +122,28 @@
                console.log(e)
             });
          });
+
+         var serversInput = document.getElementById("omg-servers")
+         if (user.sources) {
+            let servers = ""
+            user.sources.forEach(server => servers += server.url + "\n")
+            serversInput.value = servers
+         }
+         serversInput.onkeypress = e => {
+            serversInput.style.borderColor = "#FF8888"
+            if (e.key === "Enter") {
+               let servers = []
+               console.log(serversInput.value)
+               serversInput.value.split("\n").forEach(server => {
+                  if (server) servers.push({"url": server})
+               })
+               user.sources = servers
+               omg.server.postHTTP("/user", user, res => {
+                  console.log(res)
+                  serversInput.style.borderColor = "initial"
+               })
+            }
+         } 
 
          var searchForm = document.getElementById("search-form")
          var queryInput = document.getElementById("query")

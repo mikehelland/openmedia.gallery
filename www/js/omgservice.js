@@ -14,8 +14,15 @@ if (!omg.util)
 
 omg.getContext = function () {
     return new Promise((resolve, reject) => {
+        if (omg.context) {
+            resolve(omg.context)
+            return
+        }
+
         // we want to know if there's a user, the types, and apps
         fetch("/context").then(res=>res.json()).then(data => {
+            omg.context = data
+            
             omg.types = data.types
             omg.apps = data.apps
             omg.user = data.user
@@ -103,22 +110,32 @@ omg.server.deleteId = function (id, callback) {
     omg.server.http({method: "DELETE", url: url, callback: callback});
 };
 
-omg.server.login = function (username, password, callback) {
+omg.server.login = function (username, password, callback, errCallback) {
     var data = {username: username, password: password};
     omg.server.http({method: "POST", data: data, url : this.url + "/api-login",
             callback: res => {
-                omg.user = res
-                if (callback) callback(res)
+                if (res.success) {
+                    omg.user = res.user
+                    if (callback) callback(res.user)
+                }
+                else {
+                    if (errCallback) errCallback(res)
+                }
             }
     });
 };
-omg.server.signup = function (username, password, callback) {
+omg.server.signup = function (username, password, callback, errCallback) {
     var data = {username: username, password: password};
     omg.server.http({method: "POST", data: data, url : this.url + "/api-signup",
             callback: res => {
-                omg.user = res
-                if (callback) callback(res)
-            }
+                if (res.success) {
+                    omg.user = res.user
+                    if (callback) callback(res.user)
+                }
+                else {
+                    if (errCallback) errCallback(res)
+                }
+            }            
     });
 };
 
@@ -173,6 +190,10 @@ omg.server.getUser = function (callback) {
 
 omg.search = function (params, loadSearchResults) {
     var url = "/data/?"
+
+    if (params.server) {
+        url = params.server + url
+    }
     if (params.q) {
         url = url + "&q=" + params.q;
         params.metaData = false //meta data doesn't come with text search
@@ -201,7 +222,7 @@ omg.search = function (params, loadSearchResults) {
 
     omg.server.getHTTP(url, function (results) {
         if (typeof loadSearchResults === "function") {
-            loadSearchResults(results)
+            omg.loadSearchResults(params, results, loadSearchResults)
         }
         else if (loadSearchResults === true) {
             omg.loadSearchResults(params, results)
@@ -210,7 +231,7 @@ omg.search = function (params, loadSearchResults) {
     
 };
 
-omg.loadSearchResults = function (params, results) {
+omg.loadSearchResults = function (params, results, callback) {
 
     params.resultList.innerHTML = ""
 
@@ -220,7 +241,7 @@ omg.loadSearchResults = function (params, results) {
         params.resultList.appendChild(prevButton)
         prevButton.onclick = () => {
             params.page -= 1
-            omg.search(params, true)
+            omg.search(params, callback || true)
         }
     }
 
@@ -228,9 +249,14 @@ omg.loadSearchResults = function (params, results) {
         return
     }
 
-    results.forEach(function (result) {
-        omg.loadSearchResult(result, params)
-    });
+    if (callback) {
+        callback(results)
+    }
+    else {
+        results.forEach(function (result) {
+           omg.loadSearchResult(result, params)
+        })
+    }
 
     if (!params.noNextPrev && results.length === params.perPage) {
         var nextButton = document.createElement("button")
@@ -239,7 +265,7 @@ omg.loadSearchResults = function (params, results) {
         params.resultList.appendChild(nextButton)
         nextButton.onclick = () => {
             params.page = (params.page || 1) + 1
-            omg.search(params, true)
+            omg.search(params, callback || true)
         }    
     }
 };
@@ -270,7 +296,14 @@ omg.loadSearchResult = function (result, params) {
     else {
         viewerParams.data = result;
     }
-    new OMGEmbeddedViewer(viewerParams);
+
+    if (params.listMode === "SIMPLE") {
+        resultDiv.innerHTML = viewerParams.data.name
+        resultDiv.className = "omg-viewer-simple-list"
+    }
+    else {
+        new OMGEmbeddedViewer(viewerParams);
+    }
 }
 
 /** 

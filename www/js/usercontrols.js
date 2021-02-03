@@ -17,14 +17,14 @@ omg.ui.loginRequired = () => {
         loginArea.innerHTML = `
        <b>Login</b>
        <p>If you have an account already, login here:</p>
-       <div class="invalid-login">Username or password is wrong.</div>
+       <div class="invalid-login" style="display:none;color:red;">Username or password is wrong.</div>
        <input id="login-area-username" type="text" placeholder="username"/>
        <input id="login-area-password" type="password" placeholder="password"/>
        <button id="login-area-button">Login</button>
        <hr>
        <b>Signup</b>
        <p>Create a new account. Just a username and password, that's it!</p>
-       <div class="invalid-signup">Username already exists.</div>
+       <div class="invalid-signup" style="display:none;color:red;">Username already exists.</div>
        <input id="signup-area-username" type="text" placeholder="username"/>
        <input id="signup-area-password" type="password" placeholder="password"/>
        <button id="signup-area-button">Signup</button>`
@@ -39,8 +39,12 @@ omg.ui.loginRequired = () => {
     var signupButton = document.getElementById("signup-area-button")
 
     var promise = new Promise((resolve, reject) => {
-        loginButton.onclick = () => omg.server.login(loginUsername.value, loginPassword.value, onlogin);
-        signupButton.onclick = () => omg.server.signup(signupUsername.value, signupPassword.value, onlogin);
+        loginButton.onclick = () => omg.server.login(loginUsername.value, loginPassword.value, onlogin, err => {
+            loginArea.getElementsByClassName("invalid-login")[0].style.display = "block";
+        });
+        signupButton.onclick = () => omg.server.signup(signupUsername.value, signupPassword.value, onlogin, err=> {
+            loginArea.getElementsByClassName("invalid-signup")[0].style.display = "block";
+        });
 
         var onlogin = (results) => {
             if (results) {
