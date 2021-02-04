@@ -55,7 +55,8 @@
                 <a href="/admin">Admin</a> > Users
             <table>
                     <colgroup>
-                        <col width="50%" />
+                        <col width="25%" />
+                        <col width="25%" />
                         <col width="25%" />
                         <col width="25%" />
                     </colgroup>
@@ -70,6 +71,9 @@
                     <td>
                         Last Login
                     </td>
+                    <td>
+                        Created
+                    </td>
                 </tr>
                 </thead>
                 <tbody id="table"></tbody>
@@ -77,7 +81,9 @@
         </div>
         <div id="detail-fragment">
             <div id="detail-username"></div>
-            <br>
+            <hr>
+            <button id="detail-make-admin">Toggle Admin</button>
+            <hr>
             created: <span id="detail-created_at"></span>
             <br>
             last login: <span id="detail-last_login"></span>
@@ -88,7 +94,8 @@
             uploaded bytes: <span id="detail-uploaded_bytes"></span>
             <br>
             upload limit: <input id="detail-upload_limit"></input>
-
+            <hr>
+            <button id="detail-delete-button">Delete User</button>
             <hr>
             <div class="search-things"></div>
         </div>
@@ -110,6 +117,8 @@ var detailInputs = {
     btc_address: document.getElementById("detail-btc_address"),
     uploaded_bytes: document.getElementById("detail-uploaded_bytes"),
     upload_limit: document.getElementById("detail-upload_limit"),
+    deleteButton: document.getElementById("detail-delete-button"),
+    makeAdminButton: document.getElementById("detail-make-admin"),
 }
 
 
@@ -128,16 +137,19 @@ omg.server.getHTTP("/admin/users", (response) => {
         td = document.createElement("td")
         td.innerHTML = omg.util.getTimeCaption(user.last_login)
         tr.appendChild(td)
+        td = document.createElement("td")
+        td.innerHTML = omg.util.getTimeCaption(user.created_at)
+        tr.appendChild(td)
         table.appendChild(tr)
 
         tr.onclick = () => {
-            loadDetail(user)
+            loadDetail(user, tr)
         }
     })
 })
 
-var loadDetail = (user) => {
-    detailInputs.username.innerHTML = user.username
+var loadDetail = (user, tr) => {
+    detailInputs.username.innerHTML = user.username + (user.admin ? " (Admin)" : "")
     detailInputs.created_at.innerHTML = omg.util.getTimeCaption(user.created_at)
     detailInputs.last_login.innerHTML = omg.util.getTimeCaption(user.last_login)
     detailInputs.btc_address.innerHTML = user.btc_address
@@ -156,6 +168,32 @@ var loadDetail = (user) => {
             console.log(e)
         });
     });
+
+    detailInputs.deleteButton.onclick = e => {
+        fetch('/admin/user/' + user.id, {
+            method: 'DELETE',
+        })
+        .then(res => res.json()) 
+        .then(res => {
+            if (res.length === 1) {
+                table.removeChild(tr)
+            }   
+        })
+    }
+
+    detailInputs.makeAdminButton.onclick = e => {
+        user.admin = !user.admin
+        fetch('/user/', {
+            method: 'POST',
+            headers: {'Content-type': 'application/json; charset=UTF-8'},
+            body: JSON.stringify(user)
+        })
+        .then(res => res.json()) 
+        .then(res => {
+            console.log(res)
+            detailInputs.username.innerHTML = user.username + (user.admin ? " (Admin)" : "")
+        })
+    }
 }
         
         

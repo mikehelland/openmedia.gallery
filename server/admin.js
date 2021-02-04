@@ -187,6 +187,26 @@ module.exports = (app, express) => {
         });
     })
 
+    app.delete('/admin/user/:id', function (req, res) {
+
+        if (!req.params.id || !req.user || !req.user.admin) {
+            res.send({"error": "access denied"});
+            return;
+        }
+
+        var db = app.get('db');
+        db.users.destroy({id: req.params.id}, function (err, result) {
+            if (!err) {
+                console.log(result)
+                res.send(result);
+            }
+            else {
+                console.log(err)
+                res.send(err);
+            }
+        });
+    });
+
     app.use("/admin", express.static('admin', {index: "index.htm"}));
 
 }
