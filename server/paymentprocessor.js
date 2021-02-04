@@ -45,8 +45,8 @@ module.exports = (app) => {
         try {
             const response = await paymentsApi.createPayment(requestBody);
 
-            if (response.payment) {
-                delete response.payment.cardDetails
+            if (response.result.payment) {
+                delete response.result.payment.cardDetails
             }
             res.status(200).json({
                 'result': response.result
