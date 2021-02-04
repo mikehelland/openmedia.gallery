@@ -171,6 +171,22 @@ module.exports = (app, express) => {
         setTimeout(() => process.exit(1), 1000)
     })
 
+    app.get("/admin/payments", function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send([])
+        }
+
+        var db = app.get('db');
+        if (!db.payments) {
+            return res.send([])
+        }
+
+        var options = {order : "body ->> 'datetime' desc"}
+        db.payments.findDoc("*", options, (err, results) => {
+            res.send(results)
+        });
+    })
+
     app.use("/admin", express.static('admin', {index: "index.htm"}));
 
 }

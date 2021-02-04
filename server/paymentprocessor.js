@@ -34,14 +34,24 @@ module.exports = (app) => {
             idempotencyKey: requestParams.idempotency_key,
         };
         
-        var user_id = req.user ? req.user.id : undefined
+        var user_id 
+        var username 
+        var datetime = new Date()
+        if (req.user) {
+            user_id = req.user.id 
+            username = req.user.username
+        }
         var db = app.get('db');
         try {
             const response = await paymentsApi.createPayment(requestBody);
+
+            if (response.payment) {
+                delete response.payment.cardDetails
+            }
             res.status(200).json({
                 'result': response.result
             });
-            db.saveDoc("payments", {processor: "Square", success: true, result: response.result, user_id}, (err, result) => {})
+            db.saveDoc("payments", {processor: "Square", success: true, result: response.result, user_id, username, datetime}, (err, result) => {})
         } catch(error) {
             let errorResult = null;
             if (error instanceof ApiError) {
@@ -52,7 +62,7 @@ module.exports = (app) => {
             res.status(500).json({
                 'error': errorResult
             });
-            db.saveDoc("payments", {processor: "Square", success: false, result: errorResult, user_id}, (err, result) => {})
+            db.saveDoc("payments", {processor: "Square", success: false, result: errorResult, user_id, username, datetime}, (err, result) => {})
         }
     });
 
