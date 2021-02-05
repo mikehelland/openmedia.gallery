@@ -20,7 +20,10 @@ OMGWindowManager.prototype.newWindow = function (options) {
         height: options.height || 80,
         x: typeof options.x === "number" ? options.x : (this.windows.length * 20),
         y: typeof options.y === "number" ? options.y : (this.windows.length * 20),
-        visible: true,
+        hidden: options.hidden,
+        closeable: typeof options.closeable === "boolean" ? options.closeable : true,
+        moveable: typeof options.moveable === "boolean" ? options.moveable : true,
+        resizeable: typeof options.resizeable === "boolean" ? options.resizeable : true,
     }
 
     win.contentDiv.className = "omgwm-content"
@@ -31,9 +34,15 @@ OMGWindowManager.prototype.newWindow = function (options) {
     win.resizeDiv.innerHTML = "&nbsp;"
     win.closeDiv.innerHTML = "&nbsp;"
 
-    win.div.insertBefore(win.moveDiv, win.div.children[0])
-    win.div.appendChild(win.resizeDiv)
-    win.div.appendChild(win.closeDiv)
+    if (win.moveable) {
+        win.div.insertBefore(win.moveDiv, win.div.children[0])
+    }
+    if (win.resizeable) {
+        win.div.appendChild(win.resizeDiv)
+    }
+    if (win.closeable) {
+        win.div.appendChild(win.closeDiv)
+    }
 
     if (options.div) {
         options.div.parentElement.removeChild(options.div)
@@ -53,17 +62,18 @@ OMGWindowManager.prototype.newWindow = function (options) {
     if (options.overflowY) {
         win.contentDiv.style.overflowY = options.overflowY
     }
-    this.div.appendChild(win.div)
-
-    this.windows.push(win)
-
+    
     this.makeDraggable(win.moveDiv, win, "MOVE")
     this.makeDraggable(win.resizeDiv, win, "RESIZE")
     win.closeDiv.onclick = e => {
         this.close(win)
     }
 
-    this.show(win)
+    if (!win.hidden) {
+        this.div.appendChild(win.div)
+        this.windows.push(win)
+        this.show(win)
+    }
     return win
 }
 
