@@ -65,3 +65,32 @@
 .omgwm-fragment {
     height: 100%
 }
+
+.omgwm-main-menu {
+    background-color: #101010;
+    border-bottom: 1px solid #404040;
+}
+
+.omgwm-menu {
+    padding: 0 0 4px;
+    position: absolute;
+    background-color: #101010;
+    border-bottom: 1px solid #404040;
+    box-sizing: border-box;
+}
+.omgwm-main-menu-item {
+    display: inline-block;
+    margin: 0 0;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.omgwm-menu-item {
+    padding: 14px 14px;
+    cursor: pointer;
+    min-width: 180px;
+}
+.omgwm-main-menu-item:hover, .omgwm-menu-item:hover {
+    background-color: #303030;
+}

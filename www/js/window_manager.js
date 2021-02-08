@@ -6,6 +6,8 @@ function OMGWindowManager(config) {
 
     this.windowPadding = 0
     this.nextZ = 1
+
+    this.offsetTop = 0
 }
 
 OMGWindowManager.prototype.newWindow = function (options) {
@@ -54,7 +56,7 @@ OMGWindowManager.prototype.newWindow = function (options) {
     win.div.style.width = this.windowPadding * 2 + win.width + "px"
     win.div.style.height = this.windowPadding * 2 + win.height + "px"
     win.div.style.left = win.x + "px"
-    win.div.style.top = win.y + "px"
+    win.div.style.top = this.offsetTop + win.y + "px"
     
     if (options.overflowX) {
         win.contentDiv.style.overflowX = options.overflowX
@@ -79,7 +81,7 @@ OMGWindowManager.prototype.newWindow = function (options) {
 
 OMGWindowManager.prototype.move = function (win, x, y) {
     win.div.style.left = x + "px"
-    win.div.style.top = y + "px"
+    win.div.style.top = this.offsetTop + y + "px"
     win.x = x
     win.y = y
 
@@ -189,7 +191,72 @@ OMGWindowManager.prototype.showFragment = function (fragment, winOptions) {
     }
     fragment.div.classList.add("omgwm-fragment")
     fragment.window.contentDiv.appendChild(fragment.div)
-    fragment.window.onshow = () => {fragment.onshow()}
+    if (fragment.onshow) {
+        fragment.window.onshow = () => {fragment.onshow()}
+    }
 
     this.show(fragment.window)
+    return fragment.window
+}
+
+OMGWindowManager.prototype.showMainMenu = function (menu) {
+
+    this.mainMenuDiv = document.createElement("div")
+    this.mainMenuDiv.className = "omgwm-main-menu"
+ 
+    menu.items.forEach(menuItem => {
+        var menuItemDiv = document.createElement("div")
+        menuItemDiv.className = "omgwm-main-menu-item"
+        menuItemDiv.innerHTML = menuItem.name
+        this.mainMenuDiv.appendChild(menuItemDiv)
+        menuItem.div = menuItemDiv
+
+        menuItemDiv.onclick = e => {
+            this.showSubMenu(menuItem)
+        }
+    })
+
+    this.div.appendChild(this.mainMenuDiv)
+    this.offsetTop = this.mainMenuDiv.clientHeight + 2
+}
+
+OMGWindowManager.prototype.showSubMenu = function (menu) {
+    if (this.menuShowing) {
+        this.menuShowing.menuDiv.style.display = "none"
+        if (this.menuShowing === menu) {
+            this.menuShowing = null
+            return
+        }
+    }
+    this.menuShowing = menu
+    if (!menu.menuDiv) {
+        menu.menuDiv = document.createElement("div")
+        menu.menuDiv.className = "omgwm-menu"
+        menu.menuDiv.style.top = this.offsetTop + "px"
+        menu.menuDiv.style.left = menu.div.offsetLeft + "px"
+
+        menu.items.forEach(menuItem => {
+            if (menuItem.separator) {
+                menu.menuDiv.appendChild(document.createElement("hr"))
+                return
+            }
+            var menuItemDiv = document.createElement("div")
+            menuItemDiv.className = "omgwm-menu-item"
+            menuItemDiv.innerHTML = menuItem.name
+            menu.menuDiv.appendChild(menuItemDiv)
+            menuItem.div = menuItemDiv
+    
+            menuItem.div.onclick = e => {
+                menu.menuDiv.style.display = "none"
+                this.menuShowing = null
+                if (menuItem.onclick) {
+                    menuItem.onclick()
+                }
+            }
+        })
+
+        this.div.appendChild(menu.menuDiv)
+    }
+    menu.menuDiv.style.zIndex = this.nextZ++
+    this.menuShowing.menuDiv.style.display = "block"
 }

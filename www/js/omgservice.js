@@ -282,7 +282,7 @@ omg.loadSearchResult = function (result, params) {
         params.resultList.appendChild(resultDiv)
     }
 
-    var viewerParams = params.viewerParams || {}
+    var viewerParams = Object.assign({}, params.viewerParams)
     viewerParams.div = resultDiv
     
     //viewerParams.onPlay = params.onPlay
@@ -302,7 +302,14 @@ omg.loadSearchResult = function (result, params) {
         resultDiv.className = "omg-viewer-simple-list"
     }
     else {
-        new OMGEmbeddedViewer(viewerParams);
+        if (typeof OMGEmbeddedViewer === "undefined") {
+            omg.util.loadScripts(["/js/embedded_viewer.js"], () => {
+                new OMGEmbeddedViewer(viewerParams);
+            })
+        }
+        else {  
+            new OMGEmbeddedViewer(viewerParams);
+        }
     }
 }
 
@@ -384,6 +391,7 @@ omg.util.getFileSizeCaption = function (bytes) {
 }
 
 omg.util.getUniqueName = function (name, names) {
+    console.warn("omg.util.getUniqueName, deprecating?")
     var isUnique = true;
     for (var i = 0; i < names.length; i++) {
         if (name === names[i]) {
