@@ -26,7 +26,7 @@ OMGSearchBox.prototype.search = function () {
         viewerParams: {
             maxHeight:60, 
             viewMode: "MICRO", 
-            onclickcontent: e=> this.onclickcontent()
+            onclickcontent: e => this.onclickcontent(e)
         }
     }
     omg.search(params, this.loadSearchResults)

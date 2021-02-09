@@ -260,3 +260,10 @@ OMGWindowManager.prototype.showSubMenu = function (menu) {
     menu.menuDiv.style.zIndex = this.nextZ++
     this.menuShowing.menuDiv.style.display = "block"
 }
+
+OMGWindowManager.prototype.clearAll = function () {
+
+    for (var i = this.windows.length - 1; i >= 0; i--) {
+        this.close(this.windows[i])
+    }
+}
