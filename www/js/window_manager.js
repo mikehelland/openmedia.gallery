@@ -70,6 +70,9 @@ OMGWindowManager.prototype.newWindow = function (options) {
     win.closeDiv.onclick = e => {
         this.close(win)
     }
+    win.close = e => {
+        this.close(win)
+    }
 
     if (!win.hidden) {
         this.div.appendChild(win.div)
@@ -229,11 +232,21 @@ OMGWindowManager.prototype.showSubMenu = function (menu) {
         }
     }
     this.menuShowing = menu
+    var offsets = omg.ui.totalOffsets(menu.div)
     if (!menu.menuDiv) {
         menu.menuDiv = document.createElement("div")
         menu.menuDiv.className = "omgwm-menu"
-        menu.menuDiv.style.top = this.offsetTop + "px"
-        menu.menuDiv.style.left = menu.div.offsetLeft + "px"
+
+        var top = offsets.top
+        var left = offsets.left
+        if (menu.toTheRight) {
+            left += menu.div.clientWidth
+        }
+        else {
+            top += menu.div.clientHeight
+        }
+        menu.menuDiv.style.left = left + "px"
+        menu.menuDiv.style.top = top + "px"
 
         menu.items.forEach(menuItem => {
             if (menuItem.separator) {

@@ -87,8 +87,10 @@ module.exports = function (app, httpsServer) {
                 admin = socket
                 socket.send(JSON.stringify({action: "list", rooms: rooms}))
             }
-            else if (typeHandler && room) {
-                typeHandler(msg, room.thing, passOn)
+            else if (handlers[msg.msgtype]) {
+                try {
+                    handlers[msg.msgtype](msg, room.thing, passOn)
+                } catch (e) {console.error(e)}
             }
             else {
                 // everything else
@@ -102,7 +104,7 @@ module.exports = function (app, httpsServer) {
         var sendToRoom = msg => {
             var str = JSON.stringify(msg)
             for (var user in room.users) {
-                if (user !== name && sockets[room.users[user].id] &&
+                if ((msg.meToo || user !== name && sockets[room.users[user].id]) &&
                         sockets[room.users[user].id].readyState === WebSocket.OPEN) {
                     sockets[room.users[user].id].send(str)
                 }
