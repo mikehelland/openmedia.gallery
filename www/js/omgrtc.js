@@ -14,6 +14,8 @@ function OMGRealTime(signalingServer) {
     this.events = {}
     
     this.on("joined", msg => {
+        if (this.onprejoined) this.onprejoined(msg.room)
+        
         this.updateUserList(msg.room.users)
         this.isJoined = true
         if (this.isRejoining) {
