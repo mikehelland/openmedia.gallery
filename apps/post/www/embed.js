@@ -13,12 +13,14 @@ function OMGEmbeddedViewerPOST(viewer) {
     this.div.appendChild(this.textDiv)
     parentDiv.appendChild(this.div)
 
-    omg.util.loadScripts(
+    if (data.text) {
+        omg.util.loadScripts(
             ["https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"],
             () => {
                 this.markdown(data.text)
             }
-    )
+        )
+    }
 
     if (data.type.startsWith("TEXT")) {
         this.makeAttachments(data.attachments)
@@ -27,7 +29,7 @@ function OMGEmbeddedViewerPOST(viewer) {
         this.makeAttachment(data, "image")
     }
     else if (data.type === "IMAGESET") {
-        this.makeAttachments(data.set)
+        this.makeImageSet(data)
     }
 }
 
@@ -104,3 +106,16 @@ OMGEmbeddedViewerPOST.prototype.makeAttachment = function(attachment, type) {
 }
 
     
+OMGEmbeddedViewerPOST.prototype.makeImageSet = function (imageset) {
+    for (var image of imageset.set) {
+        var div = document.createElement("img")
+        if (this.viewer.params.maxHeight) {
+            div.style.maxHeight = this.viewer.params.maxHeight + "px"
+            console.log(this.div, this.div.clientWidth)
+            div.style.maxWidth = this.div.clientWidth / imageset.set.length - imageset.set.length + "px"
+        }
+        div.src = image.url
+        div.className = "omg-viewer-imageset-image"
+        this.div.parentElement.appendChild(div)
+    }
+}

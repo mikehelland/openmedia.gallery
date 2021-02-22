@@ -9,10 +9,13 @@ module.exports = (app) => {
     // Initialized the Square api client:
     //   Set sandbox environment for testing purpose
     //   Set access token
-    const client = new Client({
-        //environment: Environment.Sandbox,
+    var sqSetup = {
         accessToken: accessToken,
-    });
+    }
+    if (process.env.OMG_SQUARE_SANDBOX) {
+        sqSetup.environment = Environment.Sandbox
+    }
+    const client = new Client(sqSetup);
 
     app.post('/process-payment', async (req, res) => {
         const requestParams = req.body;

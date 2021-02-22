@@ -272,6 +272,12 @@
    max-width: 100%;
 }
 
+.omg-viewer-imageset-image {
+   padding: 2x;
+   border: 1px solid gray;
+   box-sizing: border-box;
+}
+
 .omg-viewer-embed {
    position:relative;
    width: 100%;
