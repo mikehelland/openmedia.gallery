@@ -57,7 +57,7 @@ function OMGEmbeddedViewer(params) {
     else if (!window[this.type.embedClassName]) {
         if (this.type.onready) {
             this.type.onready.push(() => {
-                this.embedViewer = new (window[this.type.embedClassName])(this) //this.type.embedClass(this)
+                this.embedViewer = new (window[this.type.embedClassName])(this) 
             })    
         }
         else {
@@ -65,7 +65,9 @@ function OMGEmbeddedViewer(params) {
         }
     }
     else {
-        this.embedViewer = new window[this.type.embedClassName](this) //this.type.embedClass(this)
+        try {
+            this.embedViewer = new window[this.type.embedClassName](this) 
+        } catch (e) {console.error(e)}
     }
 
     if (this.params.showComments) {

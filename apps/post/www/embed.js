@@ -111,7 +111,6 @@ OMGEmbeddedViewerPOST.prototype.makeImageSet = function (imageset) {
         var div = document.createElement("img")
         if (this.viewer.params.maxHeight) {
             div.style.maxHeight = this.viewer.params.maxHeight + "px"
-            console.log(this.div, this.div.clientWidth)
             div.style.maxWidth = this.div.clientWidth / imageset.set.length - imageset.set.length + "px"
         }
         div.src = image.url
