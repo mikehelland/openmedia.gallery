@@ -3,11 +3,12 @@ const {app, express, listen} = require("./server/setup")
 // connect to the database
 require("./server/database")(app)
 
-// the server can support different types by adding to www/apps/
-require("./server/types")(app, express)
-
 require("./server/authentication")(app)
 require("./server/routes")(app)
+
+
+// the server can support different types by adding to www/apps/
+require("./server/types")(app, express)
 
 //setup a route for payments
 if (process.env.OMG_SQUARE) {

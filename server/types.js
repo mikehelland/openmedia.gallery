@@ -77,6 +77,17 @@ module.exports = function (expressApp, express) {
             })
             console.log("Found app " + app)
         }
+
+        if (fs.existsSync(path + "server.js")) {
+            console.log("running " + path + "server.js")
+            try {
+                require("./../" + path + "server.js")(expressApp)
+            }
+            catch (e) {
+                console.error("error running " + path + "server.js")
+                console.error(e)
+            }
+        }
             
     })
 

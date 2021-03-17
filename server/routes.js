@@ -9,12 +9,9 @@ module.exports = (app) => {
     
     let multer = require('multer');
     const upload = multer();
-
-    var types = app.get("types")
-    var apps = app.get("apps")
     
     app.get('/context', function (req, res) {
-        var output = {types: types, apps: apps}
+        var output = {types: app.get("types"), apps: app.get("apps")}
         if (req.user) {
             delete req.user.password;
             delete req.user.bpassword;
@@ -348,7 +345,10 @@ module.exports = (app) => {
             if (typeof user.upload_limit === "string") {
                 user.upload_limit = parseInt(user.upload_limit)
             }
-            if (user.upload_limit !== -1 && user.uploaded_bytes + req.files[0].buffer.length < user.upload_limit) {
+            if (typeof user.uploaded_bytes === "string") {
+                user.uploaded_bytes = parseInt(user.uploaded_bytes)
+            }
+            if (user.upload_limit !== -1 && user.uploaded_bytes + req.files[0].buffer.length > user.upload_limit) {
                 return res.status(500).send({"error": "upload limit reached"});
             }
 

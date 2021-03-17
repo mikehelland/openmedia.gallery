@@ -1,4 +1,4 @@
-function OMGWindowManager(config) {
+export default function OMGWindowManager(config) {
 
     this.div = config.div
     this.div.className = "omgwm-desktop"
