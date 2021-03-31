@@ -198,7 +198,9 @@ OMGWindowManager.prototype.showFragment = function (fragment, winOptions) {
         fragment.window.onshow = () => {fragment.onshow()}
     }
 
-    this.show(fragment.window)
+    if (!winOptions.hidden) {
+        this.show(fragment.window)
+    }
     return fragment.window
 }
 

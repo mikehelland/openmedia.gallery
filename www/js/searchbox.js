@@ -26,7 +26,14 @@ OMGSearchBox.prototype.search = function () {
         viewerParams: {
             maxHeight:60, 
             viewMode: "MICRO", 
-            onclickcontent: e => this.onclickcontent(e)
+            onclickcontent: e => {
+                if (this.selectedServer) {
+                    console.log(this.selectedServer)
+                    e.data.omgurl = this.selectedServer + "/data/" + e.data.id
+                }
+                
+                this.onclickcontent(e)
+            }
         }
     }
     omg.search(params, this.loadSearchResults)
@@ -51,7 +58,10 @@ OMGSearchBox.prototype.setupControls = function () {
     this.searchServer.innerHTML = serverString + "<option value='ALL'>All Servers</option>"
     this.searchServer.onchange = e => {
         this.search()
+        this.selectedServer = this.searchServer.value
     }
+
+    this.selectedServer = window.location.origin
 
     if (showServers) {
         this.div.appendChild(this.searchServer)
@@ -71,6 +81,6 @@ OMGSearchBox.prototype.setupControls = function () {
         this.searchType.innerHTML = '<option selected="" value="">All Types</option>'
     }
 
-    this.searchType.onchange = () => searchBox.search()
+    this.searchType.onchange = () => this.search()
 
 }
