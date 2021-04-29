@@ -13,7 +13,7 @@ app.use(cors());
  
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-app.use(bodyParser.json({limit: '250kb', extended: true}))
+app.use(bodyParser.json({limit: '10mb', extended: true}))
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(cookieParser());
 
