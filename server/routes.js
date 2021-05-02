@@ -71,7 +71,7 @@ module.exports = (app) => {
 
     app.get('/data/', function (req, res) {
         var perPage = req.query.perPage || 20;
-        var options = {limit : perPage, order : "created_at desc"};
+        var options = {limit : perPage, order : "body ->> 'last_modified' desc"};
         var find = {};
         if (req.query.page) {
             options.offset = (parseInt(req.query.page) - 1) * perPage;
