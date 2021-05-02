@@ -234,7 +234,7 @@ OMGWindowManager.prototype.showSubMenu = function (menu) {
         }
     }
     this.menuShowing = menu
-    var offsets = omg.ui.totalOffsets(menu.div)
+    var offsets = this.getTotalOffsets(menu.div)
     if (!menu.menuDiv) {
         menu.menuDiv = document.createElement("div")
         menu.menuDiv.className = "omgwm-menu"
@@ -281,4 +281,26 @@ OMGWindowManager.prototype.clearAll = function () {
     for (var i = this.windows.length - 1; i >= 0; i--) {
         this.close(this.windows[i])
     }
+}
+
+OMGWindowManager.prototype.getTotalOffsets = function (element, parent) {
+    
+    var top = 0, left = 0;
+    do {
+        top += element.offsetTop || 0;
+        left += element.offsetLeft || 0;
+
+        top -= element.scrollTop || 0
+        left -= element.scrollLeft || 0
+        element = element.offsetParent;
+        if (parent && parent === element) {
+            break;
+        }
+
+    } while (element);
+
+    return {
+        top: top - document.documentElement.scrollTop,
+        left: left - document.documentElement.scrollLeft
+    };
 }
