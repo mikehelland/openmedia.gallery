@@ -12,7 +12,7 @@
       }
       .main-column {
          flex-grow: 1;
-         max-width: 800px;
+         
       }
       .left-or-top-column {
          margin-right: 20px;
@@ -100,6 +100,13 @@
    <script src="js/embedded_viewer.js"></script>
  
    <script>
+      var viewerParams = {
+         deleteButton: true,
+         tipJar: false,
+         width: "300px",
+         height: "240px"
+      }
+
       omg.ui.setupUserControls(document.getElementsByClassName("title-bar-user-controls")[0], function (user) {
          /*omg.util.getUserThings({user: user, 
             resultList: document.getElementsByClassName("search-things")[0],
@@ -151,9 +158,10 @@
          searchForm.onsubmit = () => {
             omg.search({
                users:  "me",
+               resultStyle: "omg-viewer-thumb",
                resultList: document.getElementsByClassName("search-things")[0],
                metaData: true,
-               viewerParams: {deleteButton: true},
+               viewerParams,
                type: filterTypeInput.value,
                q: queryInput.value
             }, true) 
@@ -172,8 +180,9 @@
             omg.search({
                users:  "me",
                resultList: document.getElementsByClassName("search-things")[0],
+               resultStyle: "omg-viewer-thumb",
                metaData: true,
-               viewerParams: {deleteButton: true, maxHeight: 320}               
+               viewerParams
             }, true)
 
          })

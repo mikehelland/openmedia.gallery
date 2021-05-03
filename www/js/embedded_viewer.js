@@ -211,14 +211,15 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     var bottomRow = document.createElement("div")
     bottomRow.className = "omg-viewer-bottom-row"
 
-    this.tipButton = document.createElement("div");
-    this.tipButton.className = "omg-music-controls-button";
-    this.tipButton.innerHTML = "Tip";
-    this.tipButton.onclick = () => {
-        this.showTipJar()
-    };
-    bottomRow.appendChild(this.tipButton)
-
+    if (typeof this.params.tipJar !== "boolean" || this.params.tipJar) {
+        this.tipButton = document.createElement("div");
+        this.tipButton.className = "omg-music-controls-button";
+        this.tipButton.innerHTML = "Tip";
+        this.tipButton.onclick = () => {
+            this.showTipJar()
+        };
+        bottomRow.appendChild(this.tipButton)
+    }
     
     var commentCaption = ""
     this.commentButton = document.createElement("div");
@@ -289,18 +290,18 @@ OMGEmbeddedViewer.prototype.makeMetaData = function () {
     dataDiv = document.createElement("span");
     dataDiv.className = "omg-thing-vote";
     dataDiv.style.border = "none"
-    dataDiv.innerHTML = this.metaData.playcount + " views"//" &#9658;";
+    dataDiv.innerHTML = this.metaData.playcount + " &#9656;";
     bottomRow.appendChild(dataDiv);        
 
     dataDiv = document.createElement("span");
     dataDiv.className = "omg-thing-vote";
-    dataDiv.innerHTML = this.metaData.downvotes + " &#9660;";
+    dataDiv.innerHTML = this.metaData.downvotes + " &#9662;";
     dataDiv.onclick = async e => {
         var ok = await omg.ui.loginRequired()
         
         if (ok) {
             omg.server.postHTTP("vote/", {id_thing: this.data.id, vote: -1}, () => {
-                e.target.innerHTML = this.metaData.downvotes * 1 + 1 + " &#9660;"
+                e.target.innerHTML = this.metaData.downvotes * 1 + 1 + " &#9662;"
             })
         }
     }
@@ -308,13 +309,13 @@ OMGEmbeddedViewer.prototype.makeMetaData = function () {
 
     dataDiv = document.createElement("span");
     dataDiv.className = "omg-thing-vote";
-    dataDiv.innerHTML = this.metaData.upvotes + " &#9650;";
+    dataDiv.innerHTML = this.metaData.upvotes + " &#9652;";
     dataDiv.onclick = async e => {
         var ok = await omg.ui.loginRequired()
         
         if (ok) {
             omg.server.postHTTP("/vote/", {id_thing: this.data.id, vote: 1}, () => {
-                e.target.innerHTML = this.metaData.upvotes * 1 + 1 + " &#9650;"
+                e.target.innerHTML = this.metaData.upvotes * 1 + 1 + " &#9652;"
             })
         }
     }
