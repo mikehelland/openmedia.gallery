@@ -11,7 +11,20 @@
    margin-bottom:9px;
 }
 
+.omg-result-list {
+   display: flex;
+   flex-wrap: wrap;
+}
+
+.omg-viewer-thumb {
+   margin:4px;
+}
+
+
 .omg-viewer-thing {
+   height:100%;
+   display: flex;
+   flex-direction: column;
    background: rgba(0, 0, 0, 0) linear-gradient(135deg, rgb(249, 241, 232) 0%, rgb(205, 214, 227) 100%) repeat scroll 0% 0%;
 }
 
@@ -26,7 +39,7 @@
 }
 .omg-thing-right-data {
    float: right;
-   padding:5px;
+   padding-right:3px;
 }
 
 .omg-viewer-bottom-row {
@@ -283,6 +296,7 @@
    width: 100%;
    overflow: hidden;
    box-sizing: border-box;
+   flex-grow: 1;
 }
 
 .omg-viewer-play-button {
@@ -303,4 +317,9 @@
 .omg-thing-top-row-overlay {
    position:absolute;
    width: 100%;
+}
+
+.omg-viewer-comment-icon {
+   position: relative;
+   top:3px;
 }

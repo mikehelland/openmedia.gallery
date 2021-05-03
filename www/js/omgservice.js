@@ -234,7 +234,9 @@ omg.search = function (params, loadSearchResults) {
 omg.loadSearchResults = function (params, results, callback) {
 
     params.resultList.innerHTML = ""
-
+    params.listDiv = document.createElement("div")
+    params.listDiv.className = params.listStyle || "omg-result-list"
+    
     if (params.page && params.page > 1 && !params.noNextPrev) {
         var prevButton = document.createElement("button")
         prevButton.innerHTML = "< Previous"
@@ -244,6 +246,8 @@ omg.loadSearchResults = function (params, results, callback) {
             omg.search(params, callback || true)
         }
     }
+
+    params.resultList.appendChild(params.listDiv)
 
     if (results.length === 0) {
         return
@@ -262,6 +266,7 @@ omg.loadSearchResults = function (params, results, callback) {
         var nextButton = document.createElement("button")
         nextButton.innerHTML = "Next >"
         nextButton.style.float = "right"
+        params.resultList.appendChild(document.createElement("br"))
         params.resultList.appendChild(nextButton)
         nextButton.onclick = () => {
             params.page = (params.page || 1) + 1
@@ -272,17 +277,30 @@ omg.loadSearchResults = function (params, results, callback) {
 
 omg.loadSearchResult = function (result, params) {
 
+    var viewerParams = Object.assign({}, params.viewerParams)
+    
     var resultDiv = document.createElement("div");
     resultDiv.className = "omg-viewer";
+    if (params.resultStyle) {
+        resultDiv.classList.add(params.resultStyle)
+    }
+    if (viewerParams.width) {
+        console.log(params.width)
+        resultDiv.style.width = viewerParams.width
+    }
+    if (viewerParams.height) {
+        resultDiv.style.height = viewerParams.height
+    }
+
+    var parentDiv = params.listDiv || params.resultList
 
     if (params.prepend) {
-        params.resultList.insertBefore(resultDiv, params.resultList.firstChild)
+        parentDiv.insertBefore(resultDiv, parentDiv.firstChild)
     }
     else {
-        params.resultList.appendChild(resultDiv)
+        parentDiv.appendChild(resultDiv)
     }
 
-    var viewerParams = Object.assign({}, params.viewerParams)
     viewerParams.div = resultDiv
     
     //viewerParams.onPlay = params.onPlay

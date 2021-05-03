@@ -26,6 +26,7 @@ fp.search = function () {
     fp.searchParams.sort = fp.searchSort.value
     fp.searchParams.users = fp.searchUser.value
     fp.searchParams.q = fp.searchTerms.value
+    fp.searchParams.resultStyle = "omg-viewer-thumb"
     omg.search(fp.searchParams, true);
 };
 
@@ -48,8 +49,11 @@ fp.nowPlayingTitle = document.getElementById("now-playing-title")
 fp.nowPlaying = document.getElementsByClassName("now-playing")[0]
 
 fp.searchParams.viewerParams = {}
-fp.searchParams.viewerParams.maxHeight = 320
+fp.searchParams.viewerParams.width = "300px"
+fp.searchParams.viewerParams.height = "240px"
+
 fp.searchParams.viewerParams.useExternalPlayer = true
+//fp.searchParams.viewerParams.viewMode = "MICRO"
 
 var thingDetail = document.getElementById("thing-detail-panel")
         

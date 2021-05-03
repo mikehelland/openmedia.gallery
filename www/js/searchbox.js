@@ -23,8 +23,10 @@ OMGSearchBox.prototype.search = function () {
         type: this.searchType.value, 
         resultList: this.resultList, 
         server: this.searchServer.value, 
+        resultStyle: "omg-viewer-thumb",
         viewerParams: {
-            maxHeight:60, 
+            width:"200px",
+            height:"120px",
             viewMode: "MICRO", 
             onclickcontent: e => {
                 if (this.selectedServer) {

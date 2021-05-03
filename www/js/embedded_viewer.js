@@ -219,12 +219,14 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     };
     bottomRow.appendChild(this.tipButton)
 
+    
+    var commentCaption = ""
     this.commentButton = document.createElement("div");
     this.commentButton.className = "omg-music-controls-button";
-    this.commentButton.innerHTML = "Comment";
     if (this.metaData && this.metaData.commentcount > 0) {
-        this.commentButton.innerHTML += " (" + this.metaData.commentcount + ")"
+        commentCaption += " (" + this.metaData.commentcount + ")"
     }
+    this.commentButton.innerHTML = "<img class='omg-viewer-comment-icon' src='/img/comment.png'>" + commentCaption;
     this.commentButton.onclick = () => {
         this.showComments()
     };
