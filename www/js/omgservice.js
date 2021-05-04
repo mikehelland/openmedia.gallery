@@ -217,7 +217,7 @@ omg.search = function (params, loadSearchResults) {
         url = url + "&sort=" + params.sort;
     }
 
-    params.perPage = params.perPage || 20
+    params.perPage = params.perPage || 24
     url = url + "&perPage=" + params.perPage
 
     omg.server.getHTTP(url, function (results) {
