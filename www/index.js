@@ -70,6 +70,9 @@ for (var ifg = 0; ifg < formattingGuideLinks.length; ifg++) {
     }
 }
 
+fp.searchParams.viewerParams.onclickcomment = viewer => {
+    fp.searchParams.viewerParams.onclickcontent(viewer)
+}
 fp.searchParams.viewerParams.onclickcontent = viewer => {
 
     if (fp.isMobileDiv.clientWidth) {

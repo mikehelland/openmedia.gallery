@@ -342,6 +342,12 @@ OMGEmbeddedViewer.prototype.showTipJar = function () {
 }
 
 OMGEmbeddedViewer.prototype.showComments = function () {
+    if (this.params.onclickcomment) {
+        this.params.onclickcomment(this)
+        return
+    }
+
+
     if (this.isCommentsShowing) {
         this.commentSectionDiv.style.display = "none"
         this.isCommentsShowing = false
