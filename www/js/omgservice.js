@@ -253,6 +253,10 @@ omg.loadSearchResults = function (params, results, callback) {
         return
     }
 
+    if (!results.forEach) {
+        console.error(results)
+    }
+
     if (callback) {
         callback(results)
     }

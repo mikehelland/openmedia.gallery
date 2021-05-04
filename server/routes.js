@@ -175,7 +175,7 @@ module.exports = (app) => {
             } 
             else {
                 if (docs.user_id === req.user.id || req.user.admin) {
-                    db.things.destroy({id: req.params.id}, function (err, result) {
+                    db.things.save({id: req.params.id, deleted: true}, function (err, result) {
                         if (!err) {
                             res.send(result);
                         }
@@ -392,6 +392,7 @@ module.exports = (app) => {
         else {
             find["body ->> 'draft'"]  = null
         }
+        find["deleted"]  = "false"
         if (req.query.type) {
             if (req.query.type === "MELODY" || req.query.type === "BASSLINE" || req.query.type === "DRUMBEAT") {
                 find["body ->> 'partType'"] = req.query.type;
