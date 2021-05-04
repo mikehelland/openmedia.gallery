@@ -167,7 +167,7 @@ module.exports = (app, express) => {
         }
 
         console.log(new Date(), "STOPPING server through admin route!")
-        res.send({msg: "stopping server"})
+        res.send("Stopping Server...<br><br><a href='/admin/'>Back to Admin</a><br><br><a href='/'>Home</a>")
         setTimeout(() => process.exit(1), 1000)
     })
 

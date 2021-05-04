@@ -214,13 +214,13 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     if (typeof this.params.tipJar !== "boolean" || this.params.tipJar) {
         this.tipButton = document.createElement("div");
         this.tipButton.className = "omg-music-controls-button";
-        this.tipButton.innerHTML = "Tip";
+        this.tipButton.innerHTML = "<img class='omg-viewer-comment-icon' src='/img/tip16.png'>";
         this.tipButton.onclick = () => {
             this.showTipJar()
         };
         bottomRow.appendChild(this.tipButton)
     }
-    
+
     var commentCaption = ""
     this.commentButton = document.createElement("div");
     this.commentButton.className = "omg-music-controls-button";
@@ -236,7 +236,7 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     if (this.data.id || this.data.url) {
         this.shareButton = document.createElement("a");
         this.shareButton.className = "omg-music-controls-button";
-        this.shareButton.innerHTML = "Link";
+        this.shareButton.innerHTML = "<img class='' src='/img/link.png'>";
         this.shareButton.href = this.data.url ||
                 (this.viewerURL ? 
                     this.viewerURL + "?id=" + this.data.id :
@@ -247,7 +247,7 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
     if (this.data.id && this.editorURL) {
         this.editButton = document.createElement("a");
         this.editButton.className = "omg-music-controls-button";
-        this.editButton.innerHTML = "Edit";
+        this.editButton.innerHTML = "<img class='omg-viewer-comment-icon' src='/img/edit16.png'>";
         this.editButton.href = this.editorURL + "?id=" + this.data.id;
         bottomRow.appendChild(this.editButton)
     }
