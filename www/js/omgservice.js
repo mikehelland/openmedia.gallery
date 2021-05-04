@@ -289,7 +289,6 @@ omg.loadSearchResult = function (result, params) {
         resultDiv.classList.add(params.resultStyle)
     }
     if (viewerParams.width) {
-        console.log(params.width)
         resultDiv.style.width = viewerParams.width
     }
     if (viewerParams.height) {
