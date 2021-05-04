@@ -18,7 +18,7 @@ if (process.env.OMG_SQUARE) {
 require("./server/admin")(app, express)
 
 app.use(express.static('custom/www', {index: "index.htm"}));
-app.use(express.static('www', {index: "index.htm"}));
+app.use(express.static('www', {index: ["index.htm", "browse.htm"]}));
 
 const httpsServer = listen()
 
