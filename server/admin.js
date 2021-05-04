@@ -1,5 +1,6 @@
 module.exports = (app, express) => {
     const fs = require('fs')
+    const links = "<br><br><a href='/admin/'>Back to Admin</a><br><br><a href='/'>Home</a>"
     app.use('/admin', function(req,res,next){
         if (!req.user) {
             return res.redirect("/signin.htm?fwd=%2fadmin" + encodeURIComponent(req.url));
@@ -113,7 +114,7 @@ module.exports = (app, express) => {
         const { exec } = require("child_process");
 
         exec("./apps/update.sh", (error, stdout, stderr) => {
-            let output = "<a href='stop_server'>Restart OMG</a><hr>"
+            let output = links + "<a href='stop_server'>Restart OMG</a><hr>"
             if (error) {
                 output += `<pre>error: ${error.message}</pre>`
             }
@@ -167,7 +168,7 @@ module.exports = (app, express) => {
         }
 
         console.log(new Date(), "STOPPING server through admin route!")
-        res.send("Stopping Server...<br><br><a href='/admin/'>Back to Admin</a><br><br><a href='/'>Home</a>")
+        res.send("Stopping Server..." + links)
         setTimeout(() => process.exit(1), 1000)
     })
 
