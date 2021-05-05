@@ -46,7 +46,8 @@ OMGWindowManager.prototype.newWindow = function (options) {
         win.div.appendChild(win.closeDiv)
     }
 
-    if (options.div) {
+    // this might be called with a hidden div already on the page
+    if (options.div && options.div.parentElement) {
         options.div.parentElement.removeChild(options.div)
     }
     win.div.appendChild(win.contentDiv)
