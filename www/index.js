@@ -232,21 +232,34 @@ dropZone.ondrop = async (e) => {
     e.preventDefault()
     dropZone.classList.remove("drop-zone-hover")
 
-    var items = e.dataTransfer.items
+    var files = []
+    var file
+    var item
+    for (var i = 0; i < e.dataTransfer.items.length; i++) {
+        var item = e.dataTransfer.items[i]
+        if (item.kind === "file") {
+            file = item.getAsFile()
+            files.push({file, type: item.type}) 
+        }
+        else if (item.type === "text/uri-list") {
+            item.getAsString(s => files.push({uri: s}))
+        }
 
+    }
+    
     var ok = await omg.ui.loginRequired()
     if (!ok) {
         return
     }
 
-    if (items) {
+    if (files) {
         if (draftPost && draftPost.id) {
-            handleDroppedItems(items)
+            handleDroppedItems(files)
         }
         else {
             omg.server.post(makeDraftPost(), res => {
                 draftPost = res
-                handleDroppedItems(items)
+                handleDroppedItems(files)
             })
         }
     }
@@ -254,17 +267,18 @@ dropZone.ondrop = async (e) => {
 
 var handleDroppedItems = (items) => {
     for (var i = 0; i < items.length; i++) {
-        if (items[i].kind === "file") {
+        console.log(items[i])
+        if (items[i].file) {
             handleDroppedFile(items[i])
         }
-        else if (items[i].type === "text/uri-list") {
-            items[i].getAsString(s => handleDroppedURI(s))
+        else if (items[i].uri) {
+            handleDroppedURI(items[i].uri)
         }
     }
 }
 
 var handleDroppedFile = (item) => {
-    var file = item.getAsFile()
+    var file = item.file
     var media = {
         mimeType: item.type, //.startsWith("image/")
         url: window.location.origin + "/uploads/" + omg.user.id + "/" + draftPost.id + "/" + file.name, 
