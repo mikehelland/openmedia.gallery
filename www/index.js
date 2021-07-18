@@ -277,7 +277,7 @@ var handleDroppedItems = (items) => {
     }
 }
 
-var handleDroppedFile = (item) => {
+var handleDroppedFile = async (item) => {
     var file = item.file
     var media = {
         mimeType: item.type, //.startsWith("image/")
@@ -294,10 +294,23 @@ var handleDroppedFile = (item) => {
     fd.append('file', file);
     fd.append('filename', file.name);
     
-    omg.server.postHTTP("/upload", fd, (res)=>{
-        statusDiv.innerHTML = res.success ? 
-            "<font color='green'>Uploaded</font>" : ("<font color='red'>Error</font> " + res.error)
-    });
+    var response = await fetch("/upload", {
+        method: "post",
+        body: fd
+    })
+    
+    // the server responds with 500 error code for things that aren't really server errors, eg upload limit reached
+    if (response.status !== 200 && response.status !== 500) {
+        console.log(response.status)
+        statusDiv.innerHTML = "<font color='red'>Error</font> " + response.status + ": " + response.statusText
+    }
+    else {
+        response.json().then(res => {
+            statusDiv.innerHTML = res.success ? 
+                "<font color='green'>Uploaded</font>" : ("<font color='red'>Error</font> " + res.error)
+        })
+    }
+
 }
 
 var makeMediaName = (filename) => {
