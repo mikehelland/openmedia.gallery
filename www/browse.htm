@@ -161,6 +161,11 @@
             margin:15px;
         }
 
+        .nav-app-name {
+            text-align: center;
+            font-size: 10px;
+            color: #CCC;
+        }
     
    </style>
 </head>
@@ -175,16 +180,15 @@
     <div class="header-shadow">&nbsp;</div>
 
     <div id="main-body">    
-    <nav class="main-nav">
-        <ul class="main-nav-ul">
-            <li><a href="/">&#8962; <span class="nav-text">Home</span></a></li>
-            <div id="create-list">
-            </div>    
-            <li><a href="live.htm">&#9679; <span class="nav-text">Live!</span></a></li>
-            <li><a href="docs/">? <span class="nav-text">Help</span></a></li>
-        </ul>
-        <!--todo recent list somewhere?-->
-    </nav>
+    <div class="main-nav" id="nav-list">
+        <a class="nav-list-item" href="/">&#8962; Home</a>
+        <div id="create-list">
+        </div>    
+        <a class="nav-list-item" href="live.htm">&#9679; Live!</a>
+        <a class="nav-list-item" href="docs/">? Help</a>
+
+    </div>
+    
         
     <div class="main-column">
 

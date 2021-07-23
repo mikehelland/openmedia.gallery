@@ -130,14 +130,36 @@ omg.server.getTypes(types => {
         optionEl.innerHTML = type
         fp.searchType.appendChild(optionEl)
 
-        if (types[type].editors.length > 0) {
-            var editorLink = document.createElement("li")
-            editorLink.innerHTML = "<a href='" + types[type].editors[0].url + 
-                    "' class='create-link'>+ <span class='nav-text'>" + 
-                    type.substring(0, 1).toUpperCase() +
-                    type.substring(1).toLowerCase() + "</span></a>"
+        var editorLink 
+
+        if (types[type].editors.length === 1) {
+            editorLink = document.createElement("a")
+            editorLink.className = "nav-list-item"
+            editorLink.href = types[type].editors[0].url
+            editorLink.innerHTML = "+ " + 
+                type.substring(0, 1).toUpperCase() +
+                type.substring(1).toLowerCase() 
             listEl.appendChild(editorLink)
         }
+        else if (types[type].editors.length > 1) {
+            listEl.appendChild(document.createElement("hr"))
+            editorLink = document.createElement("div")
+            editorLink.className = "nav-list-header"
+            editorLink.innerHTML = "+ " + 
+                type.substring(0, 1).toUpperCase() +
+                type.substring(1).toLowerCase() + " with:"
+            listEl.appendChild(editorLink)
+
+            for (let editor of types[type].editors) {
+                editorLink = document.createElement("a")
+                editorLink.className = "nav-list-item"
+                editorLink.href = editor.url
+                editorLink.innerHTML = "- " + editor.name
+                listEl.appendChild(editorLink)
+            }
+            listEl.appendChild(document.createElement("hr"))
+        }
+        
     }
     fp.search()
     omg.server.getId(1, result => {
@@ -148,6 +170,8 @@ omg.server.getTypes(types => {
     })
     
 })
+
+
 
 var previewTextDiv = document.getElementById("post-preview-text")
 var previewArea = document.getElementById("post-preview-area")
