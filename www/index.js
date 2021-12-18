@@ -428,3 +428,31 @@ var suggestTypes = (attachments) => {
 document.getElementById("now-playing-back").onclick = e => {
     fp.nowPlaying.style.display = "none"
 }
+
+var uploadFiles = document.getElementById("upload-files")
+
+uploadFiles.onchange = async e => {
+
+    var ok = await omg.ui.loginRequired()
+    if (!ok) {
+        return
+    }
+
+    var handleItems = () => {
+        for (var file of uploadFiles.files) {
+            handleDroppedFile({type: file.type, file})
+        }
+    }
+
+    if (draftPost && draftPost.id) {
+        handleItems()
+    }
+    else {
+
+        omg.server.post(makeDraftPost(), res => {
+            draftPost = res
+            handleItems()
+        })
+    }
+}
+
