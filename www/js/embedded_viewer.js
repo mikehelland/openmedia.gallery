@@ -237,11 +237,19 @@ OMGEmbeddedViewer.prototype.makeBottomRow = function () {
         this.shareButton = document.createElement("a");
         this.shareButton.className = "omg-music-controls-button";
         this.shareButton.innerHTML = "<img class='' src='/img/link.png'>";
-        this.shareButton.href = this.data.url ||
+        this.shareButton.href = //this.data.url ||
                 (this.viewerURL ? 
                     this.viewerURL + "?id=" + this.data.id :
                     "/view/" + this.data.id)
         bottomRow.appendChild(this.shareButton)
+    }
+
+    if (this.data.url) {
+        this.rawButton = document.createElement("a");
+        this.rawButton.className = "omg-music-controls-button";
+        this.rawButton.innerHTML = "Raw";
+        this.rawButton.href = this.data.url
+        bottomRow.appendChild(this.rawButton)
     }
 
     if (this.data.id && this.editorURL) {
