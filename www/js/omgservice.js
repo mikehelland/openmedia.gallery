@@ -273,9 +273,12 @@ omg.loadSearchResults = function (params, results, callback) {
         params.resultList.appendChild(document.createElement("br"))
         params.resultList.appendChild(nextButton)
         nextButton.onclick = () => {
-            nextButton.parentElement.scroll(0, 0)
-            params.page = (params.page || 1) + 1
-            omg.search(params, callback || true)
+            params.resultList.innerHTML = ""
+            params.resultList.scroll(0, 0)
+            setTimeout(() => {
+                params.page = (params.page || 1) + 1
+                omg.search(params, callback || true)
+            }, 10)
         }    
     }
 };
