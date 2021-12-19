@@ -83,9 +83,18 @@
             var text = document.getElementById("post-raw-input").value
             try {
                 var json = JSON.parse(text)
-                omg.server.postHTTP("/admin/data/", json, data => {
-                    window.location = "/data/" + data.id
-                })
+                if (Array.isArray(json)) {
+                    json.forEach(element => {
+                        omg.server.postHTTP("/admin/data/", element, data => {
+                            console.log("/data/" + data.id)
+                        })
+                    })
+                }
+                else {
+                    omg.server.postHTTP("/admin/data/", json, data => {
+                        window.location = "/data/" + data.id
+                    })
+                }
             } catch (e) {console.log(e)}
         }
 
