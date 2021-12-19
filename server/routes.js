@@ -413,6 +413,9 @@ module.exports = (app) => {
             if (req.query.sort === "most-plays") {
                 options.order = "playcount desc"
             }
+            else if (req.query.sort === "most-votes") {
+                options.order = "upvotes - downvotes desc"
+            }
         }
         options.columns = findColumns
         if (req.query.q) {
