@@ -88,7 +88,7 @@ return `<!DOCTYPE html>
                 metaData: data,
                 showComments: true,
                 autoPlay: true,
-                //maxHeight: 480 //window.innerHeight - 44 - 250
+                maxHeight: data.body.type === "TEXT" ? undefined: 480 //window.innerHeight - 44 - 250
             });
         })
     }
