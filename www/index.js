@@ -215,6 +215,7 @@ document.getElementById("post-button").onclick = async e => {
             draftPost.type = "TEXT"
             newPost = draftPost
         }
+        newPost.id = draftPost.id
     }
     newPost.text = postInput.value
 
@@ -237,6 +238,8 @@ document.getElementById("post-button").onclick = async e => {
 
 var makeDraftPost = () => {
     return {
+        type: "TEXT",
+        text: postInput.value,
         draft: true,
         attachments: []
     }
