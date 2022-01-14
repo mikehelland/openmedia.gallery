@@ -124,7 +124,8 @@ document.getElementsByClassName("main-nav-drawer-icon")[0].onclick = function ()
 
 
 var listEl = document.getElementById("create-list")
-omg.server.getTypes(types => {
+omg.getContext().then(o => {
+    var types = o.types
     for (var type in types) {
         var optionEl = document.createElement("option")
         optionEl.innerHTML = type
@@ -160,6 +161,9 @@ omg.server.getTypes(types => {
             listEl.appendChild(document.createElement("hr"))
         }
         
+    }
+    if (o.pageParams.type) {
+        fp.searchType.value = o.pageParams.type
     }
     fp.search()
     omg.server.getId(1, result => {
