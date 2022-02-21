@@ -133,7 +133,7 @@ omg.server.signup = function (username, password, callback, errCallback) {
                     if (callback) callback(res.user)
                 }
                 else {
-                    if (errCallback) errCallback(res)
+                    if (errCallback) errCallback(res.err)
                 }
             }            
     });

@@ -30,6 +30,14 @@ app.use(session({
 
 var fs = require("fs");
 
+// instance settings, not really for env variables
+var config
+if (fs.existsSync("config.json")) {
+    config = JSON.parse(fs.readFileSync("config.json"))
+}
+app.omgConfig = config || {}
+
+
 // if we're running behind nginx, it will handle https, and we only want http in node
 // otherwise, we're handling https ourselves, so enforce it
 if (!process.env.OMG_HTTP_ONLY) {

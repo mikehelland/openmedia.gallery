@@ -38,12 +38,18 @@ omg.ui.loginRequired = () => {
     var signupPassword = document.getElementById("signup-area-password")
     var signupButton = document.getElementById("signup-area-button")
 
+    var signupError = loginArea.getElementsByClassName("invalid-signup")[0]
+
     var promise = new Promise((resolve, reject) => {
         loginButton.onclick = () => omg.server.login(loginUsername.value, loginPassword.value, onlogin, err => {
             loginArea.getElementsByClassName("invalid-login")[0].style.display = "block";
         });
         signupButton.onclick = () => omg.server.signup(signupUsername.value, signupPassword.value, onlogin, err=> {
-            loginArea.getElementsByClassName("invalid-signup")[0].style.display = "block";
+            console.log(err)
+            if (typeof err === "string") {
+                signupError.innerHTML = err
+            }
+            signupError.style.display = "block";
         });
 
         var onlogin = (results) => {

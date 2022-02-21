@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>omg admin</title>
+        <link rel="stylesheet" type="text/css" href="/css/viewer.css"/>
+    
+        <style>
+            body {
+                background-color: black;
+                color:white;
+            }
+
+            #post-raw-input {
+                width: 600px;
+                height: 250px
+            }
+
+            li {
+                display: inline list-item;
+                padding:10px;
+            }
+            li a {
+                font-size: 20px;
+                color:white;
+            }
+
+            .search-box-results {
+                max-width: 800px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <h2>OMG Admin Settings</h2>
+
+        <a href="/admin/">Admin Home</a>
+        <hr>
+        <div>
+            Setting Name: <input id="setting-name"> Value: <input id="setting-value"> <button id="set-value">Save Value</button>
+        </div>
+
+        <hr>
+        <div id="list"></div>
+
+        <script src="/js/omgservice.js"></script>
+        <script>
+            var list = document.getElementById("list")
+
+            var loadResults = res => {
+                list.innerHTML = ""
+                for (var setting in res) {
+                    var div = document.createElement("div")
+                    div.innerHTML = setting + ": " + res[setting]
+                    list.appendChild(div)
+                }
+            }
+
+
+            fetch("/admin/config").then(res => res.json()).then(res => {
+                loadResults(res)
+            })
+
+            document.getElementById("set-value").onclick = e => {
+                omg.server.postHTTP("/admin/config", 
+                    {
+                        setting: document.getElementById("setting-name").value,
+                        value: document.getElementById("setting-value").value
+                    }, loadResults)
+            }
+
+
+        </script>
+    </body>
+</html>

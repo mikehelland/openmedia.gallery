@@ -208,6 +208,42 @@ module.exports = (app, express) => {
         });
     });
 
+
+    app.get("/admin/config", function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send([])
+        }
+        
+        res.send(app.omgConfig)
+    })
+
+    app.post("/admin/config", function (req, res) {
+        if (!req.user || !req.user.admin) {
+            return res.send([])
+        }
+
+        console.log(req.body)
+        if (!req.body.setting) {
+            console.log("no setting name")
+            return res.send([])
+        }
+
+        app.omgConfig[req.body.setting] = req.body.value
+
+        fs.writeFile("config.json", JSON.stringify(app.omgConfig), (err) => {
+            if (err) {
+                console.error('Error: ', err);
+                res.status(500).send({"error": err.message});
+            } else {
+                res.send(app.omgConfig)
+            }
+        });
+        
+    })
+
+
+
+    // static last
     app.use("/admin", express.static('admin', {index: "index.htm"}));
 
 }

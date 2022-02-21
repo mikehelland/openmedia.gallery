@@ -54,6 +54,10 @@ module.exports = function (app) {
     passport.use("signup", new LocalStrategy(
         function (username, password, done) {
             var db = app.get("db");
+
+            if (app.omgConfig.NO_NEW_ACCOUNTS) {
+                return done("No new accounts are allowed on this server")
+            }
             
             db.users.findOne({username: username}, function (err, user) {
                 if (err) {
@@ -141,12 +145,12 @@ module.exports = function (app) {
     app.post('/api-signup', (req, res) => {
         passport.authenticate('signup', (err, user, info) => {
             if (err || !user) {
-                return res.send({ success: false });
+                return res.send({ success: false, err });
             }
             
             req.logIn(user, function(err) {
                 if (err) {
-                    res.send({ success: false })
+                    res.send({ success: false, err })
                 }
                 else {
                     res.send({ success: true, user: user });

@@ -9,3 +9,4 @@ www/preview/*
 *.pem
 runomg.sh
 NOUPDATE
+config.json
