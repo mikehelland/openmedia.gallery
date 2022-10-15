@@ -40,6 +40,17 @@ omg.ui.loginRequired = () => {
 
     var signupError = loginArea.getElementsByClassName("invalid-signup")[0]
 
+    loginPassword.onkeyup = e => {
+        if (e.key === "Enter") {
+            loginButton.onclick()
+        }
+    }
+    signupPassword.onkeyup = e => {
+        if (e.key === "Enter") {
+            signupButton.onclick()
+        }
+    }
+
     var promise = new Promise((resolve, reject) => {
         loginButton.onclick = () => omg.server.login(loginUsername.value, loginPassword.value, onlogin, err => {
             loginArea.getElementsByClassName("invalid-login")[0].style.display = "block";
