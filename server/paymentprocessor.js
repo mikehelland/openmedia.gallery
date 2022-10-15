@@ -19,6 +19,7 @@ module.exports = (app) => {
 
     app.post('/process-payment', async (req, res) => {
         const requestParams = req.body;
+        const paymentParams = req.body.params
 
         if (typeof requestParams.amount !== "number" || requestParams.amount < 0) {
             return res.send({"error": "Invalid amount"})
@@ -54,7 +55,7 @@ module.exports = (app) => {
             res.status(200).json({
                 'result': response.result
             });
-            db.saveDoc("payments", {processor: "Square", success: true, result: response.result, user_id, username, datetime}, (err, result) => {})
+            db.saveDoc("payments", {processor: "Square", success: true, result: response.result, user_id, username, datetime, paymentParams}, (err, result) => {})
         } catch(error) {
             let errorResult = null;
             if (error instanceof ApiError) {
@@ -65,7 +66,7 @@ module.exports = (app) => {
             res.status(500).json({
                 'error': errorResult
             });
-            db.saveDoc("payments", {processor: "Square", success: false, result: errorResult, user_id, username, datetime}, (err, result) => {})
+            db.saveDoc("payments", {processor: "Square", success: false, result: errorResult, user_id, username, datetime, paymentParams}, (err, result) => {})
         }
     });
 
