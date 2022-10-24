@@ -1,7 +1,8 @@
 module.exports = (app) => {
 
     const { Client, Environment, ApiError } = require('square');
-
+    const JSONBig = require('json-bigint');
+    
     // Set the Access Token which is used to authorize to a merchant (Square)
     const accessToken = process.env.OMG_SQUARE;
 
@@ -52,11 +53,16 @@ module.exports = (app) => {
             if (response.result.payment) {
                 delete response.result.payment.cardDetails
             }
-            res.status(200).json({
+            /*res.status(200).json({
                 'result': response.result
-            });
-            db.saveDoc("payments", {processor: "Square", success: true, result: response.result, user_id, username, datetime, paymentParams}, (err, result) => {})
+            });*/
+
+            var parsed = JSONBig.parse(JSONBig.stringify(response.result))
+
+            res.send(parsed)
+            db.saveDoc("payments", {processor: "Square", success: true, result: parsed, user_id, username, datetime, paymentParams}, (err, result) => {})
         } catch(error) {
+            console.log(error)
             let errorResult = null;
             if (error instanceof ApiError) {
                 errorResult = error.errors;
